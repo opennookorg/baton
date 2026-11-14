@@ -1,11 +1,12 @@
 """API tests for app.server against the fake service and the unimplemented real service."""
 
+from types import SimpleNamespace
+
 import pytest
 from fastapi.testclient import TestClient
 
 from app import fake_service
 from app.server import create_app
-from baton import service as real_service
 
 LINES = ("frozen", "count_only", "baton", "reweight", "shortcuts", "merging", "splitting", "gap_filling")
 CSI_TITLE = "PVC stays Pending: volume attach timeout from the CSI driver"
@@ -16,9 +17,14 @@ def client() -> TestClient:
     return TestClient(create_app(fake_service))
 
 
+def not_implemented(*args, **kwargs):
+    raise NotImplementedError
+
+
 @pytest.fixture
 def stub_client() -> TestClient:
-    return TestClient(create_app(real_service))
+    stub = SimpleNamespace(**{name: not_implemented for name in ("route_issue", "record_outcome", "curve", "graph_around", "stats")})
+    return TestClient(create_app(stub))
 
 
 def test_route_returns_top_teams_with_paths(client):

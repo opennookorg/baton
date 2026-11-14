@@ -142,6 +142,8 @@ class Learner:
         state = self.state
         if issue.number in state.history:
             state.remove_issue(issue.number)
+        if issue.number in state.learned_order:
+            state.learned_order.remove(issue.number)
         state.add_issue(issue.number, PastIssue(issue.title, entities, teams))
         state.learned_order.append(issue.number)
         for entity in entities:
