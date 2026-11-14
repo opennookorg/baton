@@ -202,7 +202,9 @@ def phrase(raw: str) -> str | None:
     if "/" in raw:
         return None
     text = " ".join(PHRASE_TOKEN.findall(raw.lower())[:ERROR_WORDS])
-    return text if len(text) >= 3 and text not in VAGUE_PHRASES and text not in STOP_WORDS else None
+    if len(text) < 3 or text in VAGUE_PHRASES or text in STOP_WORDS or SEPARATORS.sub("", text) in COMPONENT_BY_SQUASHED:
+        return None
+    return text
 
 
 def errors(full_text: str, prose_text: str) -> set[str]:

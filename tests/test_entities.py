@@ -48,7 +48,8 @@ def test_error_phrases_cut_to_six_words():
 
 
 def test_title_paths_and_vague_inline_code_are_not_words_or_phrases():
-    found = names("Flaky test in pkg/kubelet/cm", "set it to `true` or `pkg/x/y`")
+    found = names("Flaky test in pkg/kubelet/cm", "set it to `true` or `pkg/x/y` on `kube-proxy`")
+    assert "comp:kube-proxy" in found
     assert "word:flake" in found and "word:pkg" not in found
     assert not {n for n in found if n.startswith("err:")}
 
