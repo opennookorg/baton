@@ -10,13 +10,14 @@ from html import escape
 from pathlib import Path
 
 from baton.config import CURVE_FILE
+from eval.no_graph import NO_GRAPH_FILE
 from eval.recovery import RECOVERY_FILE
 
 ASSETS = Path(__file__).resolve().parent.parent / "docs" / "assets"
 WIDTH, HEIGHT = 960, 540
 LEFT, RIGHT, TOP, BOTTOM = 64, 150, 92, 56
 SURFACE, INK, INK_2, MUTED, GRID = "#fcfcfb", "#0b0b0b", "#52514e", "#8a8984", "#e6e5e1"
-BLUE, ORANGE, GRAY = "#2a78d6", "#eb6834", "#8a8984"
+BLUE, ORANGE, GRAY, GREEN = "#2a78d6", "#eb6834", "#8a8984", "#1f8a5b"
 CHROME_CANDIDATES = ("/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", "google-chrome", "chromium", "chromium-browser")
 FONT = "-apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif"
 
@@ -65,8 +66,14 @@ def line_chart(title: str, subtitle: str, series: list[dict], x_max: int, y_max:
     return "\n".join(parts)
 
 
-def curve_svg(curve: dict) -> str:
-    """Test top-1 against issues learned for frozen, count_only and baton."""
+def no_graph_series(no_graph: dict, key: str, value: str, label: str) -> dict:
+    """The naive Bayes baseline as a dashed series, from issue 0."""
+    points = [(0, 0.0)] + [(point["issues"], point[value]) for point in no_graph["lines"]["naive_bayes"][key]]
+    return {"name": "naive Bayes, no graph", "points": points, "color": GREEN, "dashed": True, "label": label.format(points[-1][1] * 100)}
+
+
+def curve_svg(curve: dict, no_graph: dict) -> str:
+    """Test top-1 against issues learned for frozen, count_only, baton and the no-graph naive Bayes baseline."""
     styles = {"baton": (BLUE, False), "count_only": (ORANGE, False), "frozen": (GRAY, True)}
     series = [
         {
@@ -77,13 +84,13 @@ def curve_svg(curve: dict) -> str:
             "label": f"{curve['lines'][name][-1]['top1'] * 100:.1f}% top-1",
         }
         for name, (color, dashed) in styles.items()
-    ]
+    ] + [no_graph_series(no_graph, "points", "top1", "{:.1f}% top-1")]
     x_max = max(point["issues"] for point in curve["lines"]["baton"])
     test = curve["meta"]["test_issues"]
     return line_chart("Baton keeps getting better as issues are fixed", f"Top-1 accuracy on {test} newer issues it never learns from (HydraDB, live)", series, x_max, 0.8)
 
 
-def recovery_svg(recovery: dict) -> str:
+def recovery_svg(recovery: dict, no_graph: dict) -> str:
     """Top-1 on the moved team's test issues, before and after the simulated reorg."""
     meta = recovery["meta"]
     styles = {"baton": BLUE, "count_only": ORANGE}
@@ -95,7 +102,7 @@ def recovery_svg(recovery: dict) -> str:
             "label": f"{recovery['lines'][name][-1]['moved_top1'] * 100:.0f}% at the end",
         }
         for name, color in styles.items()
-    ]
+    ] + [no_graph_series(no_graph, "recovery", "moved_top1", "{:.0f}% at the end")]
     x_max = recovery["lines"]["baton"][-1]["issues"]
     subtitle = f"Simulated: from issue {meta['reorg_at']:,}, {meta['from_team']} work goes to {meta['to_team']}. Top-1 on the {meta['moved_test_issues']} moved test issues (offline mirror)"
     return line_chart("After a reorg, baton relearns who owns the work", subtitle, series, x_max, 1.0, (meta["reorg_at"], "reorg"))
@@ -131,9 +138,10 @@ def main() -> None:
     if browser is None:
         raise SystemExit("needs Google Chrome or Chromium for the PNG step")
     ASSETS.mkdir(parents=True, exist_ok=True)
-    render_svg(browser, curve_svg(json.loads(CURVE_FILE.read_text())), ASSETS / "curve.png")
+    no_graph = json.loads(NO_GRAPH_FILE.read_text())
+    render_svg(browser, curve_svg(json.loads(CURVE_FILE.read_text()), no_graph), ASSETS / "curve.png")
     if RECOVERY_FILE.exists():
-        render_svg(browser, recovery_svg(json.loads(RECOVERY_FILE.read_text())), ASSETS / "recovery.png")
+        render_svg(browser, recovery_svg(json.loads(RECOVERY_FILE.read_text()), no_graph), ASSETS / "recovery.png")
     if args.dashboard:
         screenshot(browser, args.dashboard, ASSETS / "dashboard.png", 1440, 980, wait_ms=15000)
     print(sorted(path.name for path in ASSETS.glob("*.png")))
