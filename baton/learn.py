@@ -1,6 +1,6 @@
 """The learning loop: route (gap filling first if unsure), reveal, write the issue, reweight; every BATCH_SIZE issues run shortcut, merge and split passes and prune history."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from baton import db
 from baton.config import BATCH_SIZE, LearnParams, Techniques
@@ -12,6 +12,9 @@ from baton.models import Issue
 from baton.passes import ReservePool, merge_pairs, needs_gap_fill, split_pass, with_compounds
 from baton.router import Routed, known_entities, route_live, route_state
 from baton.snapshots import GraphState, Link, Pair, PastIssue
+
+BATON_TECHNIQUES = Techniques(reweight=True, shortcuts=True, merging=False, splitting=False, gap_filling=True)
+BATON_PARAMS = replace(LearnParams(), gap_confidence=0.4, gap_min_known=8, gap_pull=20)
 
 
 def winning_pairs(routed: Routed, team: str | None) -> set[Pair]:
