@@ -45,7 +45,7 @@ def test_routes_upsert_is_idempotent_and_updates(graph):
     db.upsert_routes([route(ENTITY_A, TEAM_SHORT, 0.5)])
     db.upsert_routes([route(ENTITY_A, TEAM_SHORT, 2.0, hits=3, misses=1)])
     links = db.routes_from_entities([ENTITY_A])
-    assert links == [{"entity": ENTITY_A, "team": TEAM_SHORT, "strength": 2.0, "cost": 0.5, "hits": 3, "misses": 1}]
+    assert links == [{"entity": ENTITY_A, "team": TEAM_SHORT, "strength": 2.0, "cost": 0.5, "hits": 3, "misses": 1, "shortcut": False}]
     assert db.routes_to_team(TEAM_SHORT) == links
 
 
