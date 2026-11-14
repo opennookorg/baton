@@ -168,11 +168,11 @@ uv run python -m eval.loadtest
 
 | Endpoint | Requests | Failures | Median | p95 |
 |---|---|---|---|---|
-| `POST /route` | 592 | 0 | 1,200 ms | 2,700 ms |
-| `POST /learn` | 51 | 0 | 1,400 ms | 3,500 ms |
-| All | 643 | 0 | 1,200 ms | 2,800 ms |
+| `POST /route` | 420 | 0 | 1,700 ms | 4,400 ms |
+| `POST /learn` | 33 | 0 | 1,800 ms | 9,000 ms |
+| All | 453 | 0 | 1,700 ms | 4,600 ms |
 
-About 10 routes a second with no failures while learning writes ran: 28 of the 51 learn calls were new issues (issues learned went from 1,700 to 1,728), the rest were already in the graph and changed nothing. A single route on its own takes about 220 ms median (427 ms p95), almost all of it inside `algo.MSpaths`. Entity lookup takes 0.4 ms and scoring in Python 0.1 ms, so the queueing under load is the path query. The load test changes the graph, so restore it afterwards with `uv run python -m eval.restore_graph`.
+About 7 routes a second with no failures while learning writes ran: 16 of the 33 learn calls were new issues (issues learned went from 1,700 to 1,716), the rest were already in the graph and changed nothing. A single route on its own takes 179 ms median (549 ms p95, from the live curve run), almost all of it inside `algo.MSpaths`, so the queueing under load is the path query. The graph is bigger than in our first load test (2,618 issues against 2,286, because gap filling pulls in more history), and routing under load dropped from about 10 to about 7 a second. The load test changes the graph, so restore it afterwards with `uv run python -m eval.restore_graph`.
 
 ## Recovery after a reorg (simulated)
 

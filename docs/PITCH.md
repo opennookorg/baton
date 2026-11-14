@@ -32,7 +32,7 @@ Three minutes, in the order from `docs/SPEC.md`. Every number is from `results/`
 
 > All of this lives in HydraDB. Here is the graph around "scheduler": the issues it appeared in, the teams that fixed them and the direct links Baton learned. Every route is one weighted `algo.MSpaths` query from the issue's entities to every team.
 >
-> Under load, 20 users for a minute, routing while it learns: 643 requests, zero failures, about 10 routes a second on one laptop, 1.2 seconds median. A single route alone takes about 220 milliseconds.
+> Under load, 20 users for a minute, routing while it learns: 453 requests, zero failures, about 7 routes a second on one laptop, 1.7 seconds median. A single route alone takes about 180 milliseconds.
 
 ### 2:30 to 3:00: the business
 
@@ -61,6 +61,6 @@ Three minutes, in the order from `docs/SPEC.md`. Every number is from `results/`
 | Stream top-1, baton / naive Bayes / lookup | 0.700 / 0.645 / 0.617 | `results/tuning.json`, `results/no_graph.json` |
 | Baton vs naive Bayes on the stream, paired | 175 vs 82 issues only one got right, McNemar z = 5.8 | `eval/no_graph.py` and the baton stream |
 | Demo issue #142930 at 0 / 500 / 1,700 | none / sig/node / sig/scheduling (0.468) | `service.route_issue` with `as_of` |
-| Load test | 643 requests, 0 failures, 1,200 ms median, about 10 routes/s | `results/loadtest.json` |
-| Single route | 220 ms median | route profile in `results/loadtest.json` |
+| Load test | 453 requests, 0 failures, 1,700 ms median, about 7 routes/s | `results/loadtest.json` |
+| Single route | 179 ms median, 549 ms p95 | live curve run, `results/curve.json` meta |
 | Reorg recovery | moved-team top-1 0.647 before, 0.196 at the reorg, 0.726 at issue 1,400 (naive Bayes 0.392) | `results/recovery.json`, `results/no_graph.json` |

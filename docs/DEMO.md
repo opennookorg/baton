@@ -27,7 +27,7 @@ uv run uvicorn app.server:app --port 8000
 | 1:10 | Curve card | Point at frozen (flat 0.543), count_only (0.593), baton (0.700), and the dotted naive Bayes line (0.703, no graph). |
 | 1:50 | Curve card | Top-3 0.860. Mention sig labels hidden and tuning on the learning stream only. |
 | 2:00 | Graph card | Type `scheduler`, press Show. |
-| 2:15 | Terminal or `results/loadtest.json` | 643 requests, 0 failures, 1.2 s median, about 10 routes/s while learning. |
+| 2:15 | Terminal or `results/loadtest.json` | 453 requests, 0 failures, 1.7 s median, about 7 routes/s while learning. |
 | 2:30 | Counters strip | 107 misroutes avoided per 1,000. Optional: `docs/assets/recovery.png`. |
 | 2:50 | README | GPL-3.0 and `uv run python -m eval.run_curve`. |
 
