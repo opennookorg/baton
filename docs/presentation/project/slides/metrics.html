@@ -8,9 +8,9 @@
 <div class="card rise" style="--i:1"><h3>Top-1 and top-3</h3><p class="small muted">Right when the top team, or one of the top three, is one of the issue’s sig/ labels.</p></div>
 <div class="card rise" style="--i:2"><h3>No label leaks</h3><p class="small muted">Title tags like “[sig-node]” are stripped first: 360 of 1,700 learning and 98 of 300 test issues had one.</p></div>
 <div class="card rise" style="--i:3"><h3>Tuned on the stream</h3><p class="small muted">Every learning value was picked on learning-stream accuracy. The test set was never scored while tuning.</p></div>
-<div class="card rise" style="--i:4"><h3>Two baselines</h3><p class="small muted"><b>frozen</b>: built once from 200 issues, never updated. <b>count_only</b>: every issue added, raw counts.</p></div>
+<div class="card rise" style="--i:4"><h3>Four baselines</h3><p class="small muted"><b>frozen</b> and <b>count_only</b> on HydraDB, plus <b>lookup</b> and <b>naive Bayes</b> with no graph at all.</p></div>
 <div class="card rise" style="--i:5"><h3>One command</h3><p class="small muted">uv run python -m eval.run_curve reruns all eight lines live on HydraDB.</p></div>
 </div>
 <div class="foot"><p>Source: results/curve.json, results/tuning.json</p><div class="pg"></div></div>
-<aside>Judges asked for the right metrics, not vanity numbers. So: a time split, the way it would be used, with the newest 300 issues held out. Top-1 is what you need to route automatically, top-3 is what a human triager sees. Sig mentions in titles are hidden so the answer cannot leak. Every learning value was tuned on the learning stream only. And there are two baselines: a frozen graph, which is what an ownership list is, and count-only, which is the same data with no learning.</aside>
+<aside>Judges asked for the right metrics, not vanity numbers. So: a time split, the way it would be used, with the newest 300 issues held out. Top-1 is what you need to route automatically, top-3 is what a human triager sees. Sig mentions in titles are hidden so the answer cannot leak. Every learning value was tuned on the learning stream only. And there are four baselines: a frozen graph, which is what an ownership list is, count-only, which is the same graph with no learning, and two classifiers with no graph at all, a lookup table and naive Bayes.</aside>
 </section>

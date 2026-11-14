@@ -22,7 +22,9 @@ Three minutes, in the order from `docs/SPEC.md`. Every number is from `results/`
 
 > Here is the whole test set: the newest 300 issues, scored after every batch of 100 learned. The labels in titles, like "[sig-node]", are hidden so nothing leaks.
 >
-> The grey line is a graph built once and never updated: 52 percent, flat forever. That is your ownership list. Orange adds every fixed issue but only counts: 58 percent. Blue is Baton. It rewards links that predicted the right team, penalises the ones that did not, adds direct shortcuts for strong patterns, and pulls in older issues where it knows too little. It ends at 67 percent top-1 and 82 percent top-3.
+> The grey line is a graph built once and never updated: 54 percent, flat forever. That is your ownership list. Orange adds every fixed issue to the same HydraDB graph but only counts: 59 percent. Blue is Baton. It rewards links that predicted the right team, penalises the ones that did not, adds direct shortcuts for strong patterns, and pulls in older issues where it knows too little. It ends at 70 percent top-1 and 86 percent top-3.
+>
+> Is the graph needed at all? We ran the best plain-store classifier we could write, naive Bayes on the same words, no graph. On this fixed test set it ties Baton: 70.3 against 70.0. But a router is used live, routing each issue before anyone knows the answer. On that stream of 1,700 issues Baton gets 70 percent and naive Bayes 64.5, and on the same issues the difference is far outside chance. And Baton shows the path for every route.
 >
 > Every learning value was tuned on the learning stream only. We built merging and splitting too, each has its own line, and we left them out of Baton because they did not help on the learning stream.
 
@@ -34,7 +36,7 @@ Three minutes, in the order from `docs/SPEC.md`. Every number is from `results/`
 
 ### 2:30 to 3:00: the business
 
-> Baton beats count-only routing by 9 points of top-1. That is 90 fewer misroutes for every 1,000 issues: 90 issues that do not sit in the wrong queue, do not get bounced, and reach the people who can fix them first time. And when ownership changes, Baton follows. In a simulated reorg it relearned the moved team's work within 500 issues. Nobody had to update a list. Baton is open source, GPL-3.0, and every number you saw reproduces with one command.
+> Learning on the graph beats count-only routing on the same graph by 11 points of top-1. That is 107 fewer misroutes for every 1,000 issues: issues that do not sit in the wrong queue, do not get bounced, and reach the people who can fix them first time. And when ownership changes, Baton follows. In a simulated reorg it was back above its old accuracy on the moved team within 500 issues, at 73 percent, while naive Bayes was still at 39. Nobody had to update a list. Baton is open source, GPL-3.0, and every number you saw reproduces with one command.
 
 ## The 60-second backup
 
@@ -44,7 +46,7 @@ Three minutes, in the order from `docs/SPEC.md`. Every number is from `results/`
 >
 > Take a real Kubernetes scheduler issue. On an empty graph Baton routes nothing. At 500 issues it guesses sig/apps, wrong. At 1,700 it says sig/scheduling, through "scheduler", and shows the path.
 >
-> On 300 newer issues it never learns from, a frozen graph gets 52 percent right. Counting gets 58. Baton gets 67, with 82 percent in the top three. That is 90 fewer misroutes per 1,000 issues. Under load it served 643 requests with zero failures while it learned.
+> On 300 newer issues it never learns from, a frozen graph gets 54 percent right. Counting on the same graph gets 59. Baton gets 70, with 86 percent in the top three: 107 fewer misroutes per 1,000 issues. A naive Bayes classifier with no graph ties it on that fixed set, but routing live, before the answer is known, Baton wins 70 to 64.5 and relearns a reorg twice as fast. Under load it served 643 requests with zero failures while it learned.
 >
 > No AI model in the router, tuned on the learning stream only, and one command reproduces the curve.
 
@@ -52,10 +54,13 @@ Three minutes, in the order from `docs/SPEC.md`. Every number is from `results/`
 
 | Claim | Value | Source |
 |---|---|---|
-| Frozen, count_only, baton test top-1 | 0.517, 0.580, 0.670 | `results/curve.json` |
-| Baton test top-3 | 0.823 | `results/curve.json` |
-| Misroutes avoided per 1,000 | 90 | `results/curve.json` `meta.summary` |
+| Frozen, count_only, baton test top-1 | 0.543, 0.593, 0.700 | `results/curve.json` |
+| Baton test top-3 | 0.860 | `results/curve.json` |
+| Misroutes avoided per 1,000, against count_only | 107 | `results/curve.json` `meta.summary` |
+| Naive Bayes and lookup, no graph, test top-1 | 0.703, 0.603 | `results/no_graph.json` |
+| Stream top-1, baton / naive Bayes / lookup | 0.700 / 0.645 / 0.617 | `results/tuning.json`, `results/no_graph.json` |
+| Baton vs naive Bayes on the stream, paired | 175 vs 82 issues only one got right, McNemar z = 5.8 | `eval/no_graph.py` and the baton stream |
 | Demo issue #142930 at 0 / 500 / 1,700 | none / sig/apps / sig/scheduling (0.261) | `service.route_issue` with `as_of` |
 | Load test | 643 requests, 0 failures, 1,200 ms median, about 10 routes/s | `results/loadtest.json` |
 | Single route | 220 ms median | route profile in `results/loadtest.json` |
-| Reorg recovery | moved-team top-1 0.176 at the reorg, 0.804 at issue 1,400 | `results/recovery.json` |
+| Reorg recovery | moved-team top-1 0.647 before, 0.196 at the reorg, 0.726 at issue 1,400 (naive Bayes 0.392) | `results/recovery.json`, `results/no_graph.json` |
