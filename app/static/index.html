@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Baton</title>
+  <meta name="description" content="Baton routes Kubernetes issues to the team that owns them, and learns ownership from what actually gets fixed.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&family=Schibsted+Grotesk:wght@600;700;800&display=swap">
+  <link rel="stylesheet" href="/static/styles.css">
+  <script>
+    try { const t = localStorage.getItem("baton-theme"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+</head>
+<body>
+  <div id="service-banner" class="banner" role="status" hidden></div>
+
+  <header class="masthead">
+    <div class="brand">
+      <span class="mark" aria-hidden="true"></span>
+      <div>
+        <h1>Baton</h1>
+        <p class="tagline">Routes each Kubernetes issue to the team that owns it, and learns ownership from what actually gets fixed.</p>
+      </div>
+    </div>
+    <button id="theme-toggle" class="ghost-btn" type="button" aria-label="Switch colour theme">
+      <span id="theme-label">Auto</span>
+    </button>
+  </header>
+
+  <section class="counters" aria-label="What the graph has learned" id="counters">
+    <div class="counter"><span class="counter-value" data-stat="issues_learned">-</span><span class="counter-label">Issues learned</span></div>
+    <div class="counter"><span class="counter-value" data-stat="links_reweighted">-</span><span class="counter-label">Links reweighted</span></div>
+    <div class="counter"><span class="counter-value" data-stat="merges">-</span><span class="counter-label">Names merged</span></div>
+    <div class="counter"><span class="counter-value" data-stat="shortcuts">-</span><span class="counter-label">Shortcuts created</span></div>
+    <div class="counter counter-hero"><span class="counter-value" data-stat="misroutes_avoided">-</span><span class="counter-label">Misroutes avoided <span class="muted">per 1,000 issues vs count-only</span></span></div>
+  </section>
+
+  <main class="grid">
+    <section class="card chart-card" aria-labelledby="chart-title">
+      <div class="card-head">
+        <div>
+          <h2 id="chart-title">Accuracy on 300 unseen issues</h2>
+          <p class="sub">Scored after every 100 learning issues. The graph never learns from these.</p>
+        </div>
+        <div class="segmented" role="group" aria-label="Accuracy measure">
+          <button type="button" class="seg is-on" data-metric="top1" aria-pressed="true">Top 1</button>
+          <button type="button" class="seg" data-metric="top3" aria-pressed="false">Top 3</button>
+        </div>
+      </div>
+      <div class="legend-row" id="chart-legend" aria-label="Lines on the chart"></div>
+      <div class="chart-wrap">
+        <canvas id="curve-chart" aria-label="Accuracy chart" role="img"></canvas>
+        <div class="state" id="chart-state" hidden></div>
+      </div>
+      <div class="technique-row">
+        <span class="row-label">Add one technique to count-only</span>
+        <div id="technique-toggles" class="toggles"></div>
+      </div>
+    </section>
+
+    <section class="card try-card" aria-labelledby="try-title">
+      <div class="card-head">
+        <div>
+          <h2 id="try-title">Try an issue</h2>
+          <p class="sub">Paste a bug report. Baton names the owning team and shows the path it followed.</p>
+        </div>
+      </div>
+      <div class="presets" id="presets" aria-label="Example issues"></div>
+      <form id="route-form" class="route-form" novalidate>
+        <label class="field">
+          <span>Title</span>
+          <input id="issue-title" name="title" type="text" maxlength="500" placeholder="kubelet OOM kills pods even when cgroup memory is under the limit" required>
+        </label>
+        <label class="field">
+          <span>Body <span class="muted">optional</span></span>
+          <textarea id="issue-body" name="body" rows="3" maxlength="50000" placeholder="Logs, file paths, error messages"></textarea>
+        </label>
+        <div class="stage">
+          <div class="stage-head">
+            <label for="stage-slider">Graph as of issue</label>
+            <output id="stage-output" for="stage-slider">1,700</output>
+          </div>
+          <input id="stage-slider" type="range" min="0" max="3" step="1" value="3" aria-valuetext="issue 1,700">
+          <div class="stage-ticks" aria-hidden="true">
+            <span>0</span><span>500</span><span>1,000</span><span>1,700</span>
+          </div>
+        </div>
+        <button type="submit" class="primary-btn" id="route-btn">Route issue</button>
+      </form>
+      <div id="route-result" class="route-result" aria-live="polite"></div>
+    </section>
+
+    <section class="card graph-card" aria-labelledby="graph-title">
+      <div class="card-head">
+        <div>
+          <h2 id="graph-title">Ownership graph</h2>
+          <p class="sub">Links around one entity. Thicker links are stronger. Click any entity to move there.</p>
+        </div>
+        <form id="graph-form" class="graph-form">
+          <label class="visually-hidden" for="graph-entity">Entity</label>
+          <input id="graph-entity" type="text" value="kubelet" placeholder="kubelet" autocomplete="off" spellcheck="false">
+          <button type="submit" class="ghost-btn">Show</button>
+        </form>
+      </div>
+      <div class="graph-body">
+        <div class="graph-wrap">
+          <div id="graph" aria-label="Graph around the chosen entity"></div>
+          <div class="state" id="graph-state" hidden></div>
+        </div>
+        <ul class="graph-legend" aria-label="Graph legend">
+          <li><span class="key key-learned"></span>Learned link <span class="muted">entity to team</span></li>
+          <li><span class="key key-shortcut"></span>Shortcut <span class="muted">compressed from history</span></li>
+          <li><span class="key key-merged"></span>Merged name <span class="muted">SAME_AS</span></li>
+          <li><span class="key key-history"></span>History <span class="muted">past issue to fixing team</span></li>
+          <li class="legend-gap"><span class="node-key node-entity"></span>Entity</li>
+          <li><span class="node-key node-team"></span>Team</li>
+          <li><span class="node-key node-issue"></span>Past issue</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.30.2/cytoscape.min.js"></script>
+  <script src="/static/app.js"></script>
+</body>
+</html>
