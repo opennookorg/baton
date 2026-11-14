@@ -28,7 +28,7 @@ def read_rows(path) -> list[dict]:
     """Rows of a JSONL issues file sorted by created_at, or [] when it is missing."""
     if not path.exists():
         return []
-    return sorted((json.loads(line) for line in path.read_text().splitlines() if line.strip()), key=lambda row: row["created_at"])
+    return sorted((json.loads(line) for line in path.read_text().split("\n") if line.strip()), key=lambda row: row["created_at"])
 
 
 def load_splits() -> tuple[list[dict], list[dict]]:

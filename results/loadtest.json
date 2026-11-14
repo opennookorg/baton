@@ -1,0 +1,71 @@
+{
+  "host": "http://localhost:8000",
+  "users": 20,
+  "endpoints": {
+    "POST /route": {
+      "requests": 592,
+      "failures": 0,
+      "median_ms": 1200,
+      "p95_ms": 2700
+    },
+    "POST /learn": {
+      "requests": 51,
+      "failures": 0,
+      "median_ms": 1400,
+      "p95_ms": 3500
+    },
+    "Aggregated": {
+      "requests": 643,
+      "failures": 0,
+      "median_ms": 1200,
+      "p95_ms": 2800
+    }
+  },
+  "stats_before": {
+    "nodes": 3533,
+    "links": 24491,
+    "teams": 22,
+    "entities": 1225,
+    "issues": 2286,
+    "issues_learned": 1700,
+    "links_reweighted": 13621,
+    "merges": 0,
+    "shortcuts": 2260,
+    "misroutes_avoided": 90
+  },
+  "stats_after": {
+    "nodes": 3587,
+    "links": 24943,
+    "teams": 22,
+    "entities": 1228,
+    "issues": 2337,
+    "issues_learned": 1728,
+    "links_reweighted": 13888,
+    "merges": 0,
+    "shortcuts": 2260,
+    "misroutes_avoided": 90
+  },
+  "setup": "uvicorn app.server:app (one process) on the real service and HydraDB release build, baton end-state graph (3,533 nodes, 24,491 links); 18 users on /route (test issues), 2 on /learn (reserve-pool issues, newest first), 60 s, MacBook, 12 cores",
+  "learning_writes": "51 /learn calls: 28 were real learning steps (issues_learned 1700 to 1728), the other 23 were reserve issues already in the graph as gap-filled history, which the service treats as a no-op",
+  "single_route_profile_ms": {
+    "note": "one route at a time, 300 test issues, no load",
+    "algo_mspaths": {
+      "median": 220,
+      "p95": 427
+    },
+    "entity_lookup": {
+      "median": 0.36,
+      "p95": 0.94
+    },
+    "python_scoring": {
+      "median": 0.11,
+      "p95": 0.25
+    },
+    "paths_returned": {
+      "median": 232,
+      "p95": 579
+    }
+  },
+  "diagnosis": "almost all route time is inside HydraDB's algo.MSpaths (about 250 ms with only pathWeight returned vs 256 ms with full paths); the node runs about 3.6 fresh path queries per second on one connection and about 8 to 9 per second at 8 in parallel, so 18 routing users queue at about 10 routes per second; no cheap change keeps routing results identical (maxLen 2, a smaller pathCount, history pruning or the graph-indexer would)",
+  "graph_after": "restored with uv run python -m eval.restore_graph to the 1,700-issue snapshot: counts equal and all 300 test routes identical to before the run (top-1 0.670, top-3 0.823)"
+}
