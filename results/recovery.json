@@ -13,242 +13,242 @@
   "count_only": [
    {
     "issues": 100,
-    "top1": 0.4933,
-    "top3": 0.69,
-    "moved_top1": 0.3333,
+    "top1": 0.5367,
+    "top3": 0.7333,
+    "moved_top1": 0.4118,
     "reorg": false
    },
    {
     "issues": 200,
-    "top1": 0.5167,
-    "top3": 0.6967,
-    "moved_top1": 0.3922,
+    "top1": 0.5433,
+    "top3": 0.7433,
+    "moved_top1": 0.5098,
     "reorg": false
    },
    {
     "issues": 300,
-    "top1": 0.5333,
-    "top3": 0.7333,
-    "moved_top1": 0.3725,
+    "top1": 0.5467,
+    "top3": 0.78,
+    "moved_top1": 0.5686,
     "reorg": false
    },
    {
     "issues": 400,
-    "top1": 0.5367,
-    "top3": 0.7233,
-    "moved_top1": 0.3922,
+    "top1": 0.5633,
+    "top3": 0.79,
+    "moved_top1": 0.5098,
     "reorg": false
    },
    {
     "issues": 500,
-    "top1": 0.5567,
-    "top3": 0.74,
-    "moved_top1": 0.4314,
+    "top1": 0.5633,
+    "top3": 0.7833,
+    "moved_top1": 0.5294,
     "reorg": false
    },
    {
     "issues": 600,
-    "top1": 0.5467,
-    "top3": 0.7333,
-    "moved_top1": 0.3922,
+    "top1": 0.5533,
+    "top3": 0.7667,
+    "moved_top1": 0.451,
     "reorg": false
    },
    {
     "issues": 700,
-    "top1": 0.5567,
-    "top3": 0.74,
-    "moved_top1": 0.4314,
+    "top1": 0.5533,
+    "top3": 0.7733,
+    "moved_top1": 0.5098,
     "reorg": false
    },
    {
     "issues": 800,
-    "top1": 0.56,
-    "top3": 0.7467,
-    "moved_top1": 0.4314,
+    "top1": 0.5567,
+    "top3": 0.76,
+    "moved_top1": 0.4706,
     "reorg": false
    },
    {
     "issues": 900,
     "top1": 0.51,
-    "top3": 0.6533,
-    "moved_top1": 0.1961,
-    "reorg": true
-   },
-   {
-    "issues": 1000,
-    "top1": 0.51,
-    "top3": 0.6833,
-    "moved_top1": 0.1961,
-    "reorg": true
-   },
-   {
-    "issues": 1100,
-    "top1": 0.5067,
-    "top3": 0.7233,
-    "moved_top1": 0.1961,
-    "reorg": true
-   },
-   {
-    "issues": 1200,
-    "top1": 0.5,
-    "top3": 0.74,
+    "top3": 0.6733,
     "moved_top1": 0.2157,
     "reorg": true
    },
    {
+    "issues": 1000,
+    "top1": 0.5067,
+    "top3": 0.7,
+    "moved_top1": 0.2157,
+    "reorg": true
+   },
+   {
+    "issues": 1100,
+    "top1": 0.51,
+    "top3": 0.72,
+    "moved_top1": 0.2353,
+    "reorg": true
+   },
+   {
+    "issues": 1200,
+    "top1": 0.5167,
+    "top3": 0.76,
+    "moved_top1": 0.2745,
+    "reorg": true
+   },
+   {
     "issues": 1300,
-    "top1": 0.4967,
-    "top3": 0.77,
-    "moved_top1": 0.2549,
+    "top1": 0.5267,
+    "top3": 0.79,
+    "moved_top1": 0.3137,
     "reorg": true
    },
    {
     "issues": 1400,
-    "top1": 0.5367,
-    "top3": 0.7667,
+    "top1": 0.54,
+    "top3": 0.7867,
     "moved_top1": 0.3725,
     "reorg": true
    },
    {
     "issues": 1500,
-    "top1": 0.5567,
-    "top3": 0.78,
-    "moved_top1": 0.4902,
+    "top1": 0.5733,
+    "top3": 0.7967,
+    "moved_top1": 0.549,
     "reorg": true
    },
    {
     "issues": 1600,
-    "top1": 0.57,
+    "top1": 0.5867,
     "top3": 0.8,
-    "moved_top1": 0.6078,
+    "moved_top1": 0.6863,
     "reorg": true
    },
    {
     "issues": 1700,
-    "top1": 0.58,
-    "top3": 0.8067,
-    "moved_top1": 0.6471,
+    "top1": 0.5967,
+    "top3": 0.8033,
+    "moved_top1": 0.7059,
     "reorg": true
    }
   ],
   "baton": [
    {
     "issues": 100,
-    "top1": 0.52,
-    "top3": 0.73,
-    "moved_top1": 0.3922,
+    "top1": 0.59,
+    "top3": 0.76,
+    "moved_top1": 0.4902,
     "reorg": false
    },
    {
     "issues": 200,
-    "top1": 0.5467,
-    "top3": 0.7333,
-    "moved_top1": 0.3922,
+    "top1": 0.5767,
+    "top3": 0.7567,
+    "moved_top1": 0.5098,
     "reorg": false
    },
    {
     "issues": 300,
-    "top1": 0.5333,
-    "top3": 0.73,
-    "moved_top1": 0.3725,
+    "top1": 0.5933,
+    "top3": 0.7667,
+    "moved_top1": 0.5686,
     "reorg": false
    },
    {
     "issues": 400,
-    "top1": 0.5633,
-    "top3": 0.7667,
-    "moved_top1": 0.451,
-    "reorg": false
-   },
-   {
-    "issues": 500,
     "top1": 0.6,
-    "top3": 0.7767,
+    "top3": 0.78,
     "moved_top1": 0.6078,
     "reorg": false
    },
    {
+    "issues": 500,
+    "top1": 0.63,
+    "top3": 0.79,
+    "moved_top1": 0.6275,
+    "reorg": false
+   },
+   {
     "issues": 600,
-    "top1": 0.6,
-    "top3": 0.7867,
-    "moved_top1": 0.5882,
+    "top1": 0.6367,
+    "top3": 0.81,
+    "moved_top1": 0.6667,
     "reorg": false
    },
    {
     "issues": 700,
-    "top1": 0.6233,
-    "top3": 0.7833,
-    "moved_top1": 0.7059,
+    "top1": 0.6467,
+    "top3": 0.8033,
+    "moved_top1": 0.6667,
     "reorg": false
    },
    {
     "issues": 800,
-    "top1": 0.6333,
-    "top3": 0.7967,
+    "top1": 0.66,
+    "top3": 0.8067,
     "moved_top1": 0.7451,
     "reorg": false
    },
    {
     "issues": 900,
-    "top1": 0.5233,
-    "top3": 0.6933,
-    "moved_top1": 0.1765,
+    "top1": 0.5567,
+    "top3": 0.73,
+    "moved_top1": 0.1961,
     "reorg": true
    },
    {
     "issues": 1000,
-    "top1": 0.5567,
-    "top3": 0.74,
+    "top1": 0.5867,
+    "top3": 0.75,
     "moved_top1": 0.2745,
     "reorg": true
    },
    {
     "issues": 1100,
-    "top1": 0.5667,
-    "top3": 0.7633,
-    "moved_top1": 0.3333,
+    "top1": 0.5933,
+    "top3": 0.7933,
+    "moved_top1": 0.2941,
     "reorg": true
    },
    {
     "issues": 1200,
-    "top1": 0.5467,
-    "top3": 0.77,
-    "moved_top1": 0.2745,
+    "top1": 0.6033,
+    "top3": 0.8267,
+    "moved_top1": 0.2941,
     "reorg": true
    },
    {
     "issues": 1300,
-    "top1": 0.5933,
-    "top3": 0.79,
-    "moved_top1": 0.3922,
+    "top1": 0.6367,
+    "top3": 0.84,
+    "moved_top1": 0.451,
     "reorg": true
    },
    {
     "issues": 1400,
-    "top1": 0.68,
-    "top3": 0.85,
-    "moved_top1": 0.8039,
+    "top1": 0.7033,
+    "top3": 0.8667,
+    "moved_top1": 0.6863,
     "reorg": true
    },
    {
     "issues": 1500,
-    "top1": 0.6633,
-    "top3": 0.8267,
-    "moved_top1": 0.8824,
+    "top1": 0.6867,
+    "top3": 0.8633,
+    "moved_top1": 0.8039,
     "reorg": true
    },
    {
     "issues": 1600,
-    "top1": 0.65,
-    "top3": 0.8467,
-    "moved_top1": 0.9216,
+    "top1": 0.7,
+    "top3": 0.86,
+    "moved_top1": 0.8824,
     "reorg": true
    },
    {
     "issues": 1700,
-    "top1": 0.6567,
-    "top3": 0.8367,
-    "moved_top1": 0.8039,
+    "top1": 0.7067,
+    "top3": 0.8567,
+    "moved_top1": 0.7843,
     "reorg": true
    }
   ]
