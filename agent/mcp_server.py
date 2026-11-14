@@ -1,0 +1,95 @@
+"""Stdio MCP server exposing Baton's five triage tools over baton.service."""
+
+from collections.abc import Callable
+from typing import Any
+
+from mcp.server.mcpserver import MCPServer
+from mcp.server.mcpserver.exceptions import ToolError
+
+from baton import service
+from baton.models import Issue
+
+INSTRUCTIONS = (
+    "Baton routes GitHub issues to the team that owns them, using a graph learned from past issues. "
+    "Call route_issue first. If its confidence is under 0.6, check similar_past_issues, reporter_history "
+    "and team_profile for the top candidates. Only name teams that appear in tool results."
+)
+
+mcp = MCPServer("baton", instructions=INSTRUCTIONS)
+
+
+def _call(fn: Callable[..., Any], *args: Any) -> Any:
+    """Run a service function and turn any failure into a readable tool error."""
+    try:
+        return fn(*args)
+    except NotImplementedError:
+        raise ToolError(f"Baton backend is not ready yet: {fn.__name__} is not implemented.") from None
+    except Exception as error:
+        raise ToolError(f"{fn.__name__} failed: {type(error).__name__}: {error}") from None
+
+
+@mcp.tool(
+    description=(
+        "Route an issue to its owning team. Give the issue title and body. Returns up to 3 ranked teams, each "
+        "with its share of the score and the graph path (node names from issue signal to team) that explains it, "
+        "plus an overall confidence from 0 to 1 and how many signals were known or unknown to the graph. "
+        "Call this first for every issue."
+    )
+)
+def route_issue(title: str, body: str) -> dict:
+    """Route an issue through the Baton graph."""
+    return _call(service.route_issue, title, body).to_dict()
+
+
+@mcp.tool(
+    description=(
+        "Find past issues that share the most signals (components, paths, error strings, words) with this one. "
+        "Returns each past issue's number, title, the team that fixed it and the shared signal names. "
+        "Use it when route_issue confidence is low."
+    )
+)
+def similar_past_issues(title: str, body: str) -> dict:
+    """List past issues most similar to the given one."""
+    return {"issues": _call(service.similar_past_issues, title, body)}
+
+
+@mcp.tool(
+    description=(
+        "Look up which teams fixed earlier issues filed by this GitHub username, with counts. "
+        "Reporters often file into the same area again. Use it when route_issue confidence is low."
+    )
+)
+def reporter_history(username: str) -> dict:
+    """List teams that fixed this reporter's earlier issues."""
+    return {"username": username, "teams": _call(service.reporter_history, username)}
+
+
+@mcp.tool(
+    description=(
+        "Show the signals (components, paths, errors, words) most strongly linked to a team, with their kind and "
+        "link strength. Use it to check whether a candidate team from route_issue really owns what the issue "
+        "is about. Pass a team name exactly as route_issue returned it."
+    )
+)
+def team_profile(team: str) -> dict:
+    """List the entities most strongly linked to a team."""
+    return {"team": team, "entities": _call(service.team_profile, team)}
+
+
+@mcp.tool(
+    description=(
+        "Record the real owning team of an issue once it is known, so the graph learns from it. This writes to "
+        "the graph: call it only when a human has confirmed the team, never with your own guess. Needs the issue "
+        "number, title, body, reporter username, created_at (ISO 8601) and the confirmed team. Returns what changed."
+    )
+)
+def record_outcome(number: int, title: str, body: str, reporter: str, created_at: str, team: str) -> dict:
+    """Feed a confirmed team back into the graph."""
+    if not team.strip():
+        raise ToolError("team must be a non-empty team name.")
+    issue = Issue(number=number, title=title, body=body, created_at=created_at, reporter=reporter, sigs=(team,))
+    return _call(service.record_outcome, issue, team)
+
+
+if __name__ == "__main__":
+    mcp.run()

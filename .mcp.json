@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "baton": {
+      "type": "stdio",
+      "command": "uv",
+      "args": ["run", "python", "-m", "agent.mcp_server"]
+    }
+  }
+}
