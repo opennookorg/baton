@@ -11,7 +11,6 @@ from baton.router import Routed, route_live, route_state
 from baton.snapshots import GraphState, Link, Pair, PastIssue
 
 IMPLEMENTED_TECHNIQUES = ("reweight", "shortcuts")
-SHORTCUT_SCALE = 2.0
 
 
 def check_techniques(techniques: Techniques) -> None:
@@ -53,9 +52,9 @@ def reweight(
     return changed
 
 
-def shortcut_strength(pair: Pair, paths: int, state: GraphState) -> float:
-    """Shortcut strength: SHORTCUT_SCALE x the share of the entity's history issues the team owns (raw counts let generic entities drown the rest)."""
-    return SHORTCUT_SCALE * paths / max(state.entity_issues[pair[0]], 1)
+def shortcut_strength(pair: Pair, paths: int, state: GraphState, scale: float) -> float:
+    """Shortcut strength: scale x the share of the entity's history issues the team owns (raw counts let generic entities drown the rest)."""
+    return scale * paths / max(state.entity_issues[pair[0]], 1)
 
 
 def shortcut_pass(state: GraphState, params: LearnParams) -> tuple[dict[Pair, Link], dict[Pair, float]]:
@@ -65,7 +64,7 @@ def shortcut_pass(state: GraphState, params: LearnParams) -> tuple[dict[Pair, Li
     for pair, paths in state.history_paths.items():
         if paths < params.shortcut_min_paths:
             continue
-        new, old = shortcut_strength(pair, paths, state), state.absorbed.get(pair, 0.0)
+        new, old = shortcut_strength(pair, paths, state, params.shortcut_scale), state.absorbed.get(pair, 0.0)
         link = state.routes.get(pair)
         if new == old and link is not None and link.shortcut:
             continue
