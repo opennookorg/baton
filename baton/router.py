@@ -9,6 +9,7 @@ from baton.config import HISTORY_COST, SAME_AS_COST
 from baton.entities import extract
 from baton.ids import IdTable
 from baton.models import RouteResult, TeamScore
+from baton.passes import with_compounds
 from baton.snapshots import GraphState
 
 MAX_LEN = 3
@@ -31,10 +32,10 @@ def display_name(node: str) -> str:
 
 
 def known_entities(title: str, body: str, reporter: str, table: IdTable) -> tuple[list[str], int]:
-    """Return (entity names in the graph vocabulary, count of extracted entities that are not)."""
+    """Return (entity names in the graph vocabulary, plus split compounds present, and the count of extracted entities that are not)."""
     names = [entity.name for entity in extract(title, body, reporter)]
     known = [name for name in names if table.entity_id(name) is not None]
-    return known, len(names) - len(known)
+    return with_compounds(known, table.entities), len(names) - len(known)
 
 
 def cheapest_per_pair(paths: Iterable[dict], path_count: int = PATH_COUNT, exclude_issue: int | None = None) -> list[dict]:

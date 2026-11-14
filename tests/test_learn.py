@@ -1,8 +1,8 @@
 import pytest
 
 from baton import db
-from baton.config import BATON, COUNT_ONLY, LearnParams, Techniques
-from baton.learn import Learner, check_techniques, prunable, reweight, shortcut_pass
+from baton.config import COUNT_ONLY, LearnParams, Techniques
+from baton.learn import Learner, prunable, reweight, shortcut_pass
 from baton.snapshots import GraphState, Link, PastIssue
 from tests.test_router import ISSUES, NET, NODE, live_graph, small_table
 
@@ -52,12 +52,6 @@ def test_prune_keeps_recent_issues_and_issues_not_covered_by_links():
         state.learned_order.append(number)
     state.set_link(("a", "t"), Link(1.0))
     assert prunable(state, keep=1) == [1]
-
-
-def test_unimplemented_techniques_are_refused():
-    with pytest.raises(ValueError, match="merging"):
-        check_techniques(BATON)
-    check_techniques(LEARNED)
 
 
 def test_offline_learner_counts_and_learns_a_misroute():

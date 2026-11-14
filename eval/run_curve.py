@@ -4,26 +4,36 @@ import argparse
 import json
 import statistics
 import time
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from pathlib import Path
 
 from baton import db, snapshots
 from baton.config import BATCH_SIZE, COUNT_ONLY, CURVE_FILE, FROZEN_SIZE, SNAPSHOT_POINTS, LearnParams, Techniques
-from baton.dataset import split
+from baton.dataset import load_reserve, split
 from baton.entities import HIDE_SIG_MENTIONS
 from baton.ids import IdTable
 from baton.ingest import setup_graph
-from baton.learn import Learner
+from baton.learn import BATON_PARAMS, BATON_TECHNIQUES, Learner
 from baton.models import Issue
+from baton.passes import ReservePool
 
 LINES = {
     "frozen": COUNT_ONLY,
     "count_only": COUNT_ONLY,
     "reweight": Techniques(reweight=True, shortcuts=False, merging=False, splitting=False, gap_filling=False),
     "shortcuts": Techniques(reweight=False, shortcuts=True, merging=False, splitting=False, gap_filling=False),
-    "baton": Techniques(reweight=True, shortcuts=True, merging=False, splitting=False, gap_filling=False),
+    "merging": replace(COUNT_ONLY, merging=True),
+    "splitting": replace(COUNT_ONLY, splitting=True),
+    "gap_filling": replace(COUNT_ONLY, gap_filling=True),
+    "baton": BATON_TECHNIQUES,
 }
-DEFAULT_LINES = ("frozen", "count_only", "reweight", "shortcuts", "baton")
+LINE_PARAMS = {
+    "merging": replace(LearnParams(), merge_similarity=0.9, merge_min_hits=40),
+    "splitting": replace(LearnParams(), split_min_misses=5, split_dominance=0.6, split_min_support=2),
+    "gap_filling": replace(LearnParams(), gap_confidence=0.4, gap_min_known=12, gap_pull=10),
+    "baton": BATON_PARAMS,
+}
+DEFAULT_LINES = ("frozen", "count_only", "reweight", "shortcuts", "merging", "splitting", "gap_filling", "baton")
 SNAPSHOT_LINE = "baton"
 AS_OF_ZERO = "as_of=0 is the empty graph: teams and vocabulary only, no history and no links, so routing returns no teams"
 
@@ -41,21 +51,23 @@ def score(learner: Learner, test: list[Issue]) -> tuple[dict, list[float]]:
     return {"top1": round(top1 / len(test), 4), "top3": round(top3 / len(test), 4)}, latency
 
 
-def fresh_learner(table: IdTable, techniques: Techniques, params: LearnParams, live: bool) -> Learner:
-    """A learner on an empty graph (teams and vocabulary only)."""
+def fresh_learner(table: IdTable, techniques: Techniques, params: LearnParams, live: bool, reserve: ReservePool | None = None) -> Learner:
+    """A learner on an empty graph (teams and vocabulary only), with its own copy of the table to grow."""
+    table = IdTable(table.teams, table.entities)
     if live:
         setup_graph(table)
-    return Learner(table, techniques, params, live=live)
+    return Learner(table, techniques, params, live=live, reserve=reserve)
 
 
-def run_line(name: str, table: IdTable, learning: list[Issue], test: list[Issue], params: LearnParams, live: bool, save) -> dict:
+def run_line(name: str, table: IdTable, learning: list[Issue], test: list[Issue], live: bool, save, reserve: ReservePool | None = None) -> dict:
     """Run one line and return its points and meta; `save` is called after every point."""
-    learner = fresh_learner(table, LINES[name], params, live)
+    params = LINE_PARAMS.get(name, LearnParams())
+    learner = fresh_learner(table, LINES[name], params, live, reserve)
     stream = learning[:FROZEN_SIZE] if name == "frozen" else learning
     points: list[dict] = []
     latency: list[float] = []
     stream_hits: list[bool] = []
-    meta: dict = {"techniques": asdict(LINES[name]), "graph": {}}
+    meta: dict = {"techniques": asdict(LINES[name]), "params": asdict(params), "graph": {}}
 
     def checkpoint(issues: int) -> None:
         accuracy, timings = score(learner, test)
@@ -117,14 +129,15 @@ def main() -> None:
     curve = json.loads(out.read_text()) if out.exists() else {"lines": {}, "meta": {}}
     table = IdTable.load()
     learning, test = split()
-    params = LearnParams()
+    reserve = ReservePool.build(load_reserve())
     curve["meta"].update(
         mode="offline" if args.offline else "live",
         learning_issues=len(learning),
         test_issues=len(test),
         batch_size=BATCH_SIZE,
         hide_sig_mentions=HIDE_SIG_MENTIONS,
-        params=asdict(params),
+        params=asdict(LearnParams()),
+        params_note="values tuned on the learning stream only (eval/tune_stream.py, results/tuning.json); each line's own params are in meta.lines",
         top1="top-ranked team is one of the issue's sigs",
         top3="any of the top three teams is one of the issue's sigs",
         as_of_zero=AS_OF_ZERO,
@@ -137,7 +150,7 @@ def main() -> None:
             curve["meta"]["summary"] = summary(curve)
             write(out, curve)
 
-        run_line(name, table, learning, test, params, not args.offline, save)
+        run_line(name, table, learning, test, not args.offline, save, reserve)
     print(json.dumps(curve["meta"]["summary"]))
 
 

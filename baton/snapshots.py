@@ -8,7 +8,7 @@ from pathlib import Path
 from baton.config import SNAPSHOT_DIR
 
 Pair = tuple[str, str]
-COUNTER_NAMES = ("issues_learned", "links_reweighted", "shortcuts", "misroutes", "merges", "issues_pruned")
+COUNTER_NAMES = ("issues_learned", "links_reweighted", "shortcuts", "misroutes", "merges", "issues_pruned", "splits", "gap_issues")
 
 
 @dataclass
@@ -37,7 +37,7 @@ class PastIssue:
 
 @dataclass
 class GraphState:
-    """Every ROUTES_TO link, history issue and SAME_AS pair, plus the learner's running totals."""
+    """Every ROUTES_TO link, history issue and SAME_AS pair, entities added while learning, plus the learner's running totals."""
 
     routes: dict[Pair, Link] = field(default_factory=dict)
     history: dict[int, PastIssue] = field(default_factory=dict)
@@ -45,6 +45,8 @@ class GraphState:
     history_paths: dict[Pair, int] = field(default_factory=lambda: defaultdict(int))
     absorbed: dict[Pair, float] = field(default_factory=dict)
     entity_issues: dict[str, int] = field(default_factory=lambda: defaultdict(int))
+    entity_misses: dict[str, int] = field(default_factory=lambda: defaultdict(int))
+    added_entities: list[str] = field(default_factory=list)
     learned_order: list[int] = field(default_factory=list)
     counters: dict[str, int] = field(default_factory=lambda: dict.fromkeys(COUNTER_NAMES, 0))
 
@@ -83,6 +85,8 @@ class GraphState:
             "history_paths": [[e, t, n] for (e, t), n in sorted(self.history_paths.items())],
             "absorbed": [[e, t, n] for (e, t), n in sorted(self.absorbed.items())],
             "entity_issues": dict(sorted(self.entity_issues.items())),
+            "entity_misses": dict(sorted(self.entity_misses.items())),
+            "added_entities": self.added_entities,
             "learned_order": self.learned_order,
             "counters": self.counters,
         }
@@ -100,6 +104,8 @@ class GraphState:
         state.history_paths.update({(e, t): n for e, t, n in payload["history_paths"]})
         state.absorbed = {(e, t): n for e, t, n in payload["absorbed"]}
         state.entity_issues.update(payload["entity_issues"])
+        state.entity_misses.update(payload.get("entity_misses", {}))
+        state.added_entities = list(payload.get("added_entities", []))
         state.learned_order = list(payload["learned_order"])
         state.counters.update(payload["counters"])
         return state

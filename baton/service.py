@@ -7,24 +7,37 @@ from functools import cache
 from pathlib import Path
 
 from baton import db, snapshots
-from baton.config import CURVE_FILE, ISSUE_ID_BASE, RESULTS_DIR, SNAPSHOT_POINTS, LearnParams, Techniques
+from baton.config import CURVE_FILE, ISSUE_ID_BASE, RESULTS_DIR, SNAPSHOT_POINTS
 from baton.entities import KINDS_BY_PREFIX, display_name, kind_of
 from baton.ids import IdTable
-from baton.learn import Learner
+from baton.learn import BATON_PARAMS, BATON_TECHNIQUES, Learner
 from baton.models import Issue, RouteResult
 from baton.router import known_entities, route, route_state
 from baton.snapshots import GraphState
 
 LIVE_STATE_FILE = RESULTS_DIR / "live_state.json"
-LIVE_TECHNIQUES = Techniques(reweight=True, shortcuts=True, merging=False, splitting=False, gap_filling=False)
+LIVE_TECHNIQUES = BATON_TECHNIQUES
 GRAPH_ISSUES = 25
 learn_lock = threading.Lock()
 
 
 @cache
+def saved_state() -> GraphState:
+    """The last saved live state, else the final curve snapshot, else an empty graph."""
+    if LIVE_STATE_FILE.exists():
+        return GraphState.from_json(json.loads(LIVE_STATE_FILE.read_text()))
+    if snapshots.snapshot_path(SNAPSHOT_POINTS[-1]).exists():
+        return snapshots.load(SNAPSHOT_POINTS[-1])
+    return GraphState()
+
+
+@cache
 def table() -> IdTable:
-    """The name-to-ID table, loaded on first use."""
-    return IdTable.load()
+    """The name-to-ID table plus the entities the learner added, replayed in order so their IDs match the graph."""
+    ids = IdTable.load()
+    for name in saved_state().added_entities:
+        ids.add_entity(name)
+    return ids
 
 
 @cache
@@ -38,13 +51,7 @@ def snapshot(as_of: int) -> GraphState:
 @cache
 def learner() -> Learner:
     """The live learner, resumed from the last saved live state or the final curve snapshot."""
-    if LIVE_STATE_FILE.exists():
-        state = GraphState.from_json(json.loads(LIVE_STATE_FILE.read_text()))
-    elif snapshots.snapshot_path(SNAPSHOT_POINTS[-1]).exists():
-        state = snapshots.load(SNAPSHOT_POINTS[-1])
-    else:
-        state = GraphState()
-    return Learner(table(), LIVE_TECHNIQUES, LearnParams(), state)
+    return Learner(table(), LIVE_TECHNIQUES, BATON_PARAMS, saved_state())
 
 
 def resolve(entity: str) -> str | None:
