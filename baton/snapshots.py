@@ -43,7 +43,7 @@ class GraphState:
     history: dict[int, PastIssue] = field(default_factory=dict)
     same_as: set[Pair] = field(default_factory=set)
     history_paths: dict[Pair, int] = field(default_factory=lambda: defaultdict(int))
-    absorbed: dict[Pair, int] = field(default_factory=dict)
+    absorbed: dict[Pair, float] = field(default_factory=dict)
     entity_issues: dict[str, int] = field(default_factory=lambda: defaultdict(int))
     learned_order: list[int] = field(default_factory=list)
     counters: dict[str, int] = field(default_factory=lambda: dict.fromkeys(COUNTER_NAMES, 0))
