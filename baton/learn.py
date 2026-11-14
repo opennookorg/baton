@@ -1,23 +1,17 @@
-"""The learning loop: route, reveal, write the issue, reweight; every BATCH_SIZE issues add shortcuts and prune history."""
+"""The learning loop: route (gap filling first if unsure), reveal, write the issue, reweight; every BATCH_SIZE issues run shortcut, merge and split passes and prune history."""
 
-from dataclasses import dataclass, fields
+from dataclasses import dataclass
 
 from baton import db
 from baton.config import BATCH_SIZE, LearnParams, Techniques
+from baton.dataset import load_reserve
+from baton.entities import extract_issue, kind_of
 from baton.ids import IdTable
-from baton.ingest import issue_entities, issue_row, issue_teams
+from baton.ingest import issue_row, issue_teams
 from baton.models import Issue
-from baton.router import Routed, route_live, route_state
+from baton.passes import ReservePool, merge_pairs, needs_gap_fill, split_pass, with_compounds
+from baton.router import Routed, known_entities, route_live, route_state
 from baton.snapshots import GraphState, Link, Pair, PastIssue
-
-IMPLEMENTED_TECHNIQUES = ("reweight", "shortcuts")
-
-
-def check_techniques(techniques: Techniques) -> None:
-    """Refuse switches whose passes do not exist yet, so no line claims a technique it did not run."""
-    missing = [f.name for f in fields(techniques) if getattr(techniques, f.name) and f.name not in IMPLEMENTED_TECHNIQUES]
-    if missing:
-        raise ValueError(f"techniques not implemented yet: {', '.join(missing)}")
 
 
 def winning_pairs(routed: Routed, team: str | None) -> set[Pair]:
@@ -94,10 +88,12 @@ class Learner:
     params: LearnParams = LearnParams()
     state: GraphState | None = None
     live: bool = True
+    reserve: ReservePool | None = None
 
     def __post_init__(self) -> None:
-        check_techniques(self.techniques)
         self.state = self.state or GraphState()
+        if self.techniques.gap_filling and self.reserve is None:
+            self.reserve = ReservePool.build(load_reserve())
 
     def route(self, issue: Issue) -> Routed:
         """Route an issue against the current graph."""
@@ -106,11 +102,15 @@ class Learner:
         return route_state(self.state, issue.title, issue.body, issue.reporter, self.table, issue.number)
 
     def learn(self, issue: Issue, teams: list[str] | None = None) -> dict:
-        """Route, reveal the real teams, write the issue as history, reweight; run batch passes every BATCH_SIZE."""
+        """Route (after gap filling when unsure), reveal the real teams, write the issue as history, reweight; batch passes every BATCH_SIZE."""
         routed = self.route(issue)
+        pulled = 0
+        if self.techniques.gap_filling and needs_gap_fill(routed.result.confidence, routed.result.entities_found, self.params):
+            pulled = self.gap_fill(issue)
+            routed = self.route(issue) if pulled else routed
         predicted = routed.result.top_team
         teams = sorted(set(teams)) if teams else issue_teams(issue, self.table)
-        entities = issue_entities(issue, self.table)
+        entities, _ = known_entities(issue.title, issue.body, issue.reporter, self.table)
         self.write_history(issue, entities, teams)
         changed: dict[Pair, Link] = {}
         if self.techniques.reweight and teams:
@@ -122,6 +122,9 @@ class Learner:
         counters["issues_learned"] += 1
         counters["links_reweighted"] += len(changed)
         counters["misroutes"] += predicted not in teams
+        if predicted not in teams:
+            for entity in entities:
+                self.state.entity_misses[entity] += 1
         batch = self.end_batch() if counters["issues_learned"] % BATCH_SIZE == 0 else {}
         return {
             "issue": issue.number,
@@ -131,11 +134,12 @@ class Learner:
             "confidence": routed.result.confidence,
             "links_reweighted": len(changed),
             "shortcuts_created": batch.get("shortcuts_created", 0),
-            "merges": 0,
+            "merges": batch.get("merges", 0),
+            "gap_issues": pulled,
         }
 
-    def write_history(self, issue: Issue, entities: list[str], teams: list[str]) -> None:
-        """Write the Issue node, SEEN_IN from each known entity and OWNED_BY to every real team."""
+    def write_history(self, issue: Issue, entities: list[str], teams: list[str], learned: bool = True) -> None:
+        """Write the Issue node, SEEN_IN from each known entity and OWNED_BY to every real team; reserve issues are not `learned`."""
         if self.live:
             db.upsert_issues([issue_row(issue, self.table, entities, teams)])
         state = self.state
@@ -144,7 +148,8 @@ class Learner:
         if issue.number in state.learned_order:
             state.learned_order.remove(issue.number)
         state.add_issue(issue.number, PastIssue(issue.title, entities, teams))
-        state.learned_order.append(issue.number)
+        if learned:
+            state.learned_order.append(issue.number)
         for entity in entities:
             state.entity_issues[entity] += 1
             for team in teams:
@@ -180,19 +185,66 @@ class Learner:
         for pair, link in changed.items():
             self.state.set_link(pair, link)
 
+    def add_entities(self, names: list[str]) -> None:
+        """Give new entities (split compounds, gap-filled vocabulary) ids through the IdTable and Entity nodes."""
+        names = [name for name in names if self.table.entity_id(name) is None]
+        rows = [(self.table.add_entity(name), name, kind_of(name)) for name in names]
+        if self.live and rows:
+            db.upsert_entities(rows)
+        self.state.added_entities.extend(names)
+
+    def gap_fill(self, issue: Issue) -> int:
+        """Ingest up to gap_pull older reserve issues sharing the issue's unknown entities as history; return how many."""
+        unknown = [entity.name for entity in extract_issue(issue) if self.table.entity_id(entity.name) is None]
+        picks = self.reserve.pull(issue, unknown, self.state, self.params.gap_pull)
+        if not picks:
+            return 0
+        self.add_entities(self.reserve.vocabulary(picks, unknown))
+        for k in picks:
+            past, names = self.reserve.issues[k]
+            known = with_compounds([n for n in names if self.table.entity_id(n) is not None], self.table.entities)
+            self.write_history(past, known, issue_teams(past, self.table), learned=False)
+        self.state.counters["gap_issues"] += len(picks)
+        return len(picks)
+
+    def merge(self) -> int:
+        """Link near-identical entities with SAME_AS both ways; return how many pairs."""
+        pairs = merge_pairs(self.state, self.params)
+        if self.live and pairs:
+            db.upsert_same_as((self.table.entity_id(a), self.table.entity_id(b)) for a, b in pairs)
+        for a, b in pairs:
+            self.state.add_same_as(a, b)
+        self.state.counters["merges"] += len(pairs)
+        return len(pairs)
+
+    def split(self) -> int:
+        """Add compound entities for ambiguous entities, each with ROUTES_TO links; return how many."""
+        compounds = split_pass(self.state, set(self.state.added_entities), self.params)
+        self.add_entities(list(compounds))
+        self.write_links({(name, team): link for name, links in compounds.items() for team, link in links.items()})
+        self.state.counters["splits"] += len(compounds)
+        return len(compounds)
+
     def end_batch(self) -> dict:
-        """Run the shortcut pass and prune history covered by shortcuts; return what changed."""
-        if not self.techniques.shortcuts:
-            return {}
-        changed, absorbed = shortcut_pass(self.state, self.params)
-        created = sum(1 for pair in changed if not (pair in self.state.routes and self.state.routes[pair].shortcut))
-        self.write_links(changed)
-        self.state.absorbed.update(absorbed)
-        self.state.counters["shortcuts"] += created
-        pruned = prunable(self.state, self.params.history_keep)
-        if self.live and pruned:
-            db.delete_issues(self.table.issue_id(n) for n in pruned)
-        for number in pruned:
-            self.state.remove_issue(number)
-        self.state.counters["issues_pruned"] += len(pruned)
-        return {"shortcuts_created": created, "issues_pruned": len(pruned)}
+        """Run the shortcut, merge and split passes, then prune history covered by shortcuts; return what changed."""
+        result = {}
+        if self.techniques.shortcuts:
+            changed, absorbed = shortcut_pass(self.state, self.params)
+            created = sum(1 for pair in changed if not (pair in self.state.routes and self.state.routes[pair].shortcut))
+            self.write_links(changed)
+            self.state.absorbed.update(absorbed)
+            self.state.counters["shortcuts"] += created
+            result["shortcuts_created"] = created
+        if self.techniques.merging:
+            result["merges"] = self.merge()
+        if self.techniques.splitting:
+            result["splits"] = self.split()
+        if self.techniques.shortcuts:
+            pruned = prunable(self.state, self.params.history_keep)
+            if self.live and pruned:
+                db.delete_issues(self.table.issue_id(n) for n in pruned)
+            for number in pruned:
+                self.state.remove_issue(number)
+            self.state.counters["issues_pruned"] += len(pruned)
+            result["issues_pruned"] = len(pruned)
+        return result

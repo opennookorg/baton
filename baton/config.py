@@ -66,6 +66,7 @@ class LearnParams:
     merge_similarity: float = 0.9
     split_min_misses: int = 10
     split_dominance: float = 0.5
+    split_min_support: int = 3
     gap_confidence: float = 0.4
     gap_min_known: int = 2
     gap_pull: int = 20
