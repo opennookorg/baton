@@ -22,13 +22,13 @@ uv run uvicorn app.server:app --port 8000
 | 0:00 | Title card or the README top | Read the pitch line. |
 | 0:20 | Dashboard, "Try an issue" | Paste the demo title (below). Leave the body empty. |
 | 0:30 | Slider at **0** | Route. No teams: the graph is empty. |
-| 0:40 | Slider at **500** | Route. Top team **sig/apps** (wrong), path `delete -> sig/apps`. |
-| 0:55 | Slider at **1,700** | Route. Top team **sig/scheduling**, confidence 0.261, path `scheduler -> sig/scheduling`. Hold on the path. |
-| 1:10 | Curve card | Point at frozen (flat 0.517), count_only (0.580), baton (0.670). |
-| 1:50 | Curve card | Top-3 0.823. Mention sig labels hidden and tuning on the learning stream only. |
+| 0:40 | Slider at **500** | Route. Top team **sig/node** (wrong), path `event -> sig/node`. |
+| 0:55 | Slider at **1,700** | Route. Top team **sig/scheduling**, confidence 0.468, path `scheduler -> sig/scheduling`. Hold on the path. |
+| 1:10 | Curve card | Point at frozen (flat 0.543), count_only (0.593), baton (0.700), and the dotted naive Bayes line (0.703, no graph). |
+| 1:50 | Curve card | Top-3 0.860. Mention sig labels hidden and tuning on the learning stream only. |
 | 2:00 | Graph card | Type `scheduler`, press Show. |
 | 2:15 | Terminal or `results/loadtest.json` | 643 requests, 0 failures, 1.2 s median, about 10 routes/s while learning. |
-| 2:30 | Counters strip | 90 misroutes avoided. Optional: `docs/assets/recovery.png`. |
+| 2:30 | Counters strip | 107 misroutes avoided per 1,000. Optional: `docs/assets/recovery.png`. |
 | 2:50 | README | GPL-3.0 and `uv run python -m eval.run_curve`. |
 
 ### The demo issue
@@ -44,9 +44,9 @@ It is test-set issue #142930, labelled `sig/scheduling`, and the graph never lea
 | Slider | Top team | Confidence | Path |
 |---|---|---|---|
 | 0 | none (7 entities found, 4 unknown, no links yet) | | |
-| 500 | sig/apps | 0.157 | `delete -> sig/apps` |
-| 1,000 | sig/scheduling | 0.159 | |
-| 1,700 | sig/scheduling | 0.261 | `scheduler -> sig/scheduling` |
+| 500 | sig/node | 0.168 | `event -> sig/node` |
+| 1,000 | sig/scheduling | 0.175 | `scheduler -> sig/scheduling` |
+| 1,700 | sig/scheduling | 0.468 | `scheduler -> sig/scheduling` |
 
 The live graph (no slider) gives the same answer as 1,700. Top 3 at 1,700: sig/scheduling, sig/node, sig/apps.
 

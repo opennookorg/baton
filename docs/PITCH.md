@@ -60,7 +60,7 @@ Three minutes, in the order from `docs/SPEC.md`. Every number is from `results/`
 | Naive Bayes and lookup, no graph, test top-1 | 0.703, 0.603 | `results/no_graph.json` |
 | Stream top-1, baton / naive Bayes / lookup | 0.700 / 0.645 / 0.617 | `results/tuning.json`, `results/no_graph.json` |
 | Baton vs naive Bayes on the stream, paired | 175 vs 82 issues only one got right, McNemar z = 5.8 | `eval/no_graph.py` and the baton stream |
-| Demo issue #142930 at 0 / 500 / 1,700 | none / sig/apps / sig/scheduling (0.261) | `service.route_issue` with `as_of` |
+| Demo issue #142930 at 0 / 500 / 1,700 | none / sig/node / sig/scheduling (0.468) | `service.route_issue` with `as_of` |
 | Load test | 643 requests, 0 failures, 1,200 ms median, about 10 routes/s | `results/loadtest.json` |
 | Single route | 220 ms median | route profile in `results/loadtest.json` |
 | Reorg recovery | moved-team top-1 0.647 before, 0.196 at the reorg, 0.726 at issue 1,400 (naive Bayes 0.392) | `results/recovery.json`, `results/no_graph.json` |

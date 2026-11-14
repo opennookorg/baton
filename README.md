@@ -42,7 +42,7 @@ What that shows, honestly:
 
 Issue 0 is the empty graph, so nothing routes there. The graph lines are from the live run against HydraDB (`results/curve.json`). The no-graph lines are in `results/no_graph.json` (`uv run python -m eval.no_graph`).
 
-Route latency during the curve run, median / p95: baton 231 / 1,338 ms, count_only 137 / 414 ms, frozen 45 / 93 ms. Baton's graph is bigger (gap filling adds about 1,400 older issues), so its paths take longer.
+Route latency during the live curve run, median / p95: baton 179 / 549 ms, count_only 102 / 344 ms, frozen 41 / 90 ms. Baton's graph is bigger (gap filling adds about 900 older issues and 3,770 ROUTES_TO links), so its paths take longer.
 
 ### Reproduce it
 
