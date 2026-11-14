@@ -162,12 +162,12 @@ def curve() -> dict:
         "gap_filling": (0.06, 300),
     }
 
-    def point(n: int, top1: float) -> dict:
-        top3 = min(0.95, top1 + 0.18 + _saturate(n, 0.03, 800))
+    def point(n: int, top1: float, lift_at: int | None = None) -> dict:
+        top3 = min(0.95, top1 + 0.18 + _saturate(n if lift_at is None else lift_at, 0.03, 800))
         return {"issues": n, "top1": round(top1, 3), "top3": round(top3, 3)}
 
     lines = {
-        "frozen": [point(min(n, 200), count_only[min(n, 200)]) for n in points],
+        "frozen": [point(n, count_only[min(n, 200)], min(n, 200)) for n in points],
         "count_only": [point(n, count_only[n] + _wobble(n, 0.0)) for n in points],
         "baton": [point(n, base + _saturate(n, *gains["baton"]) + _wobble(n, 1.3)) for n in points],
     }
