@@ -1,0 +1,20 @@
+<section id="load" class="dark with-foot" style="gap: 56px;">
+<div class="head">
+<p class="eyebrow">Technical · under load</p>
+<h2>It routes while it learns</h2>
+</div>
+<div class="grid4" style="gap: 32px;">
+<div class="stat rise" style="--i:0"><p class="mid c-blue">643</p><p class="small muted">requests from 20 users in 60 seconds</p></div>
+<div class="stat rise" style="--i:1"><p class="mid">0</p><p class="small muted">failures, with learning writes running</p></div>
+<div class="stat rise" style="--i:2"><p class="mid">~10/s</p><p class="small muted">routes per second on one laptop</p></div>
+<div class="stat rise" style="--i:3"><p class="mid">220 ms</p><p class="small muted">median for a single route on its own</p></div>
+</div>
+<table class="fade" style="font-size: 28px; color: #EDEBE6; --i:3;">
+<tr><th style="width: 28%;">Endpoint</th><th style="width: 18%; text-align: right;">Requests</th><th style="width: 18%; text-align: right;">Failures</th><th style="width: 18%; text-align: right;">Median</th><th style="width: 18%; text-align: right;">p95</th></tr>
+<tr><td>POST /route</td><td style="text-align: right;">592</td><td style="text-align: right;">0</td><td style="text-align: right;">1,200 ms</td><td style="text-align: right;">2,700 ms</td></tr>
+<tr><td>POST /learn</td><td style="text-align: right;">51</td><td style="text-align: right;">0</td><td style="text-align: right;">1,400 ms</td><td style="text-align: right;">3,500 ms</td></tr>
+</table>
+<p class="small muted" style="width: 1500px;">Entity lookup takes 0.4 ms and scoring 0.1 ms; the rest of a route is the path query. 28 of the 51 learn calls added new issues mid-test.</p>
+<div class="foot"><p>Locust, 18 routing and 2 learning users, one uvicorn process · results/loadtest.json</p><div class="pg"></div></div>
+<aside>Locust load test: 18 users routing test issues and 2 users posting reserve issues to learn, at the same time, for a minute. 643 requests, zero failures, about 10 routes a second on one laptop, 1.2 seconds median under load. A single route alone takes about 220 milliseconds, and almost all of it is inside the HydraDB path query, so that is where scaling work would go.</aside>
+</section>

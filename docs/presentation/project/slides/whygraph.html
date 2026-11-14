@@ -1,0 +1,30 @@
+<section id="whygraph" class="dark with-foot" style="gap: 48px;">
+<div class="head">
+<p class="eyebrow">Technical · impact of HydraDB</p>
+<h2>Why this needs a graph</h2>
+</div>
+<div style="display: flex; gap: 72px; align-items: flex-start;">
+<div style="display: flex; flex-direction: column; gap: 32px; width: 820px;">
+<div class="rise" style="--i:0; display: flex; flex-direction: column; gap: 8px;"><h3>Answers are multi-hop</h3><p class="small muted">An issue reaches a team through past fixes: entity → issue → team. A lookup table sees one hop.</p></div>
+<div class="rise" style="--i:1; display: flex; flex-direction: column; gap: 8px;"><h3>Learning edits the graph</h3><p class="small muted">Reweighting changes one link’s cost. Shortcuts add entity → team links. Gap filling adds older issues as nodes.</p></div>
+<div class="rise" style="--i:2; display: flex; flex-direction: column; gap: 8px;"><h3>One query scores every team</h3><p class="small muted">One weighted algo.MSpaths call ranks all 22 teams and returns the cheapest path as the reason.</p></div>
+<div class="rise" style="--i:3; display: flex; flex-direction: column; gap: 8px;"><h3>The plain-store baseline is 58.0%</h3><p class="small muted">count_only is the same data kept as counts. The 9 extra points come from what the graph does with its links.</p></div>
+</div>
+<div class="code fade" style="--i:2; width: 772px; box-sizing: border-box;">
+<p><span class="kw">CALL</span> algo.MSpaths({</p>
+<p class="in">sourceLabel: <span class="str">'Entity'</span>,</p>
+<p class="in">sourceValues: [issue entities],</p>
+<p class="in">targetLabel: <span class="str">'Team'</span>,</p>
+<p class="in">targetValues: [all 22 teams],</p>
+<p class="in">relTypes: [<span class="str">'ROUTES_TO'</span>, <span class="str">'SEEN_IN'</span>,</p>
+<p class="in" style="padding-left: 88px;"><span class="str">'OWNED_BY'</span>, <span class="str">'SAME_AS'</span>],</p>
+<p class="in">relDirection: <span class="str">'outgoing'</span>,</p>
+<p class="in">maxLen: 3, pathCount: 3,</p>
+<p class="in">weightProp: <span class="str">'cost'</span></p>
+<p>}) <span class="kw">YIELD</span> path, pathWeight</p>
+<p style="padding-top: 24px; color: #AEB6C2;">score(team) = Σ 1 / pathWeight</p>
+</div>
+</div>
+<div class="foot"><p>From baton/db.py · learning writes go back as batched UNWIND … MERGE</p><div class="pg"></div></div>
+<aside>The judges asked whether the graph is doing real work, and whether this would fall apart on a plain store. Three reasons it would. Answers are multi-hop: entity to past issue to team. Learning is graph surgery: reweighting changes one link's cost, shortcuts add new links, gap filling adds nodes. And one weighted path query scores every team and gives the reason. The count_only line is the plain-store version of the same data, and it stops at 58 percent. Learning writes go back to HydraDB through batched UNWIND MERGE statements.</aside>
+</section>

@@ -206,7 +206,7 @@ baton/      config, models, db (HydraDB driver and MSpaths), entities, ids, data
             ingest, router, learn, passes (merging, splitting, gap filling), snapshots,
             service (the one interface the API and MCP server call)
 data/       fetch_issues.py, issues.jsonl, reserve.jsonl, entity_ids.json
-docs/       SPEC.md, HYDRADB_NOTES.md, PITCH.md, DEMO.md, assets/
+docs/       SPEC.md, HYDRADB_NOTES.md, PITCH.md, DEMO.md, presentation/ (pitch deck), assets/
 eval/       run_curve, tune_stream, loadtest, restore_graph, recovery, charts
 results/    curve.json, tuning.json, loadtest.json, recovery.json, snapshots/
 scripts/    start_hydradb.sh

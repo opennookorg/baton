@@ -1,0 +1,14 @@
+<section id="story" class="dark with-foot" style="gap: 56px;">
+<div class="head">
+<p class="eyebrow">One real issue it never learns from</p>
+<h2 style="font-size: 44px; line-height: 1.25; width: 1500px; font-weight: 500;">“kube-scheduler: PodGroup update event handlers don’t distinguish a real update from a coalesced delete+create”</h2>
+<p class="small muted">kubernetes/kubernetes #142930, from the test set. Fixed by sig/scheduling.</p>
+</div>
+<div class="grid3">
+<div class="card rise" style="--i:0"><p class="num">AT ISSUE 0</p><p class="verdict">No route</p><p class="pill pill-none">Empty graph</p><p class="small muted">Baton knows the words but has seen no fixes, so it names no team. That is the honest start.</p></div>
+<div class="card rise" style="--i:1"><p class="num">AT ISSUE 500</p><p class="verdict">sig/apps</p><p class="pill pill-wrong">Wrong</p><p class="small muted">Through the word “delete”: a generic word with lots of history wins. Counting goes wrong this way.</p></div>
+<div class="card rise" style="--i:2"><p class="num">AT ISSUE 1,700</p><p class="verdict">sig/scheduling</p><p class="pill pill-right">Right · 0.261 share</p><p class="small muted">Through “scheduler”. Nobody wrote that scheduler belongs to sig/scheduling. Baton learned it.</p></div>
+</div>
+<div class="foot"><p>Routed against the graph as it was at each point (the dashboard’s as-of slider)</p><div class="pg"></div></div>
+<aside>This is a real Kubernetes issue from the test set, one Baton never learns from. The slider routes it against the graph as it was at different points. At issue 0 the graph is empty and Baton routes nothing. At issue 500 it guesses sig/apps through the word delete. Wrong, and that is how count-based routing goes wrong. At issue 1,700 it says sig/scheduling through scheduler, with the path on screen. The 0.261 is the top team's share of the score, so it is the top pick but not a confident one; under 0.6 the agent checks the other tools.</aside>
+</section>

@@ -1,0 +1,37 @@
+<section id="graph" class="light with-foot" style="gap: 56px;">
+<div class="head">
+<p class="eyebrow">The graph in HydraDB</p>
+<h2>Ownership is a path, not a row</h2>
+</div>
+<div style="display: flex; gap: 96px; align-items: flex-start;">
+<div class="fade" style="position: relative; width: 980px; height: 520px;">
+<x-connector class="edge-soft" x1="130" y1="120" x2="130" y2="200" head="end"></x-connector>
+<x-connector class="edge" x1="130" y1="320" x2="380" y2="440" route="vh" head="end"></x-connector>
+<x-connector class="edge" x1="640" y1="440" x2="850" y2="320" route="hv" head="end"></x-connector>
+<x-connector class="edge-strong" x1="260" y1="260" x2="720" y2="260" head="end"></x-connector>
+<div class="node node-entity" style="left: 0; top: 0;"><p class="kind">Entity</p><p class="name">kube-scheduler</p></div>
+<div class="node node-entity" style="left: 0; top: 200px;"><p class="kind">Entity</p><p class="name">scheduler</p></div>
+<div class="node node-issue" style="left: 380px; top: 380px;"><p class="kind">Issue</p><p class="name">a fixed issue</p></div>
+<div class="node node-team" style="left: 720px; top: 200px;"><p class="kind">Team</p><p class="name">sig/scheduling</p></div>
+<p class="edge-label" style="left: 150px; top: 140px; width: 200px;">SAME_AS</p>
+<p class="edge-label" style="left: 150px; top: 452px; width: 200px;">SEEN_IN</p>
+<p class="edge-label" style="left: 680px; top: 452px; width: 200px;">OWNED_BY</p>
+<p class="edge-label edge-label-strong" style="left: 300px; top: 206px; width: 400px;">ROUTES_TO, learned</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 20px; width: 588px;">
+<p class="small muted">The baton graph after 1,700 issues</p>
+<table class="data" style="font-size: 28px;">
+<tr><th style="width: 60%;">Kind</th><th style="width: 40%; text-align: right;">Count</th></tr>
+<tr><td>Teams</td><td style="text-align: right;">22</td></tr>
+<tr><td>Entities</td><td style="text-align: right;">1,225</td></tr>
+<tr><td>Issues</td><td style="text-align: right;">2,286</td></tr>
+<tr><td>ROUTES_TO</td><td style="text-align: right;">3,692</td></tr>
+<tr><td>SEEN_IN</td><td style="text-align: right;">18,032</td></tr>
+<tr><td>OWNED_BY</td><td style="text-align: right;">2,767</td></tr>
+</table>
+<p class="small muted">Every link points from entities toward teams, so one outgoing search finds every route. Link cost = 1 / strength.</p>
+</div>
+</div>
+<div class="foot"><p>Baton</p><div class="pg"></div></div>
+<aside>The data model. Entities like scheduler point into the past issues they were seen in, and those issues point to the team that fixed them. That is a two-hop path. Learning adds direct ROUTES_TO links from an entity to a team, with a cost of one over strength, and SAME_AS links between names that always agree. All links point toward teams, so one outgoing path search from the issue's entities finds every route. The numbers on the right are the live graph after 1,700 learned issues; the issue count is higher because gap filling pulled in older reserve issues.</aside>
+</section>
