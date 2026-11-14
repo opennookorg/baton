@@ -1,0 +1,256 @@
+{
+ "meta": {
+  "mode": "offline (simulated reorganisation)",
+  "note": "simulated: the real labels never changed. From learning issue 900 on, every sig/scheduling label is rewritten to sig/apps in the learning stream and in the test set used for scoring; run offline on the in-memory mirror, not HydraDB; reserve issues pulled by gap filling keep their old labels, like real history would",
+  "reorg_at": 900,
+  "from_team": "sig/scheduling",
+  "to_team": "sig/apps",
+  "moved_learning_issues": 129,
+  "moved_test_issues": 51,
+  "moved_top1": "top-1 on the test issues labelled sig/scheduling (scored as sig/apps once the reorg starts)"
+ },
+ "lines": {
+  "count_only": [
+   {
+    "issues": 100,
+    "top1": 0.4933,
+    "top3": 0.69,
+    "moved_top1": 0.3333,
+    "reorg": false
+   },
+   {
+    "issues": 200,
+    "top1": 0.5167,
+    "top3": 0.6967,
+    "moved_top1": 0.3922,
+    "reorg": false
+   },
+   {
+    "issues": 300,
+    "top1": 0.5333,
+    "top3": 0.7333,
+    "moved_top1": 0.3725,
+    "reorg": false
+   },
+   {
+    "issues": 400,
+    "top1": 0.5367,
+    "top3": 0.7233,
+    "moved_top1": 0.3922,
+    "reorg": false
+   },
+   {
+    "issues": 500,
+    "top1": 0.5567,
+    "top3": 0.74,
+    "moved_top1": 0.4314,
+    "reorg": false
+   },
+   {
+    "issues": 600,
+    "top1": 0.5467,
+    "top3": 0.7333,
+    "moved_top1": 0.3922,
+    "reorg": false
+   },
+   {
+    "issues": 700,
+    "top1": 0.5567,
+    "top3": 0.74,
+    "moved_top1": 0.4314,
+    "reorg": false
+   },
+   {
+    "issues": 800,
+    "top1": 0.56,
+    "top3": 0.7467,
+    "moved_top1": 0.4314,
+    "reorg": false
+   },
+   {
+    "issues": 900,
+    "top1": 0.51,
+    "top3": 0.6533,
+    "moved_top1": 0.1961,
+    "reorg": true
+   },
+   {
+    "issues": 1000,
+    "top1": 0.51,
+    "top3": 0.6833,
+    "moved_top1": 0.1961,
+    "reorg": true
+   },
+   {
+    "issues": 1100,
+    "top1": 0.5067,
+    "top3": 0.7233,
+    "moved_top1": 0.1961,
+    "reorg": true
+   },
+   {
+    "issues": 1200,
+    "top1": 0.5,
+    "top3": 0.74,
+    "moved_top1": 0.2157,
+    "reorg": true
+   },
+   {
+    "issues": 1300,
+    "top1": 0.4967,
+    "top3": 0.77,
+    "moved_top1": 0.2549,
+    "reorg": true
+   },
+   {
+    "issues": 1400,
+    "top1": 0.5367,
+    "top3": 0.7667,
+    "moved_top1": 0.3725,
+    "reorg": true
+   },
+   {
+    "issues": 1500,
+    "top1": 0.5567,
+    "top3": 0.78,
+    "moved_top1": 0.4902,
+    "reorg": true
+   },
+   {
+    "issues": 1600,
+    "top1": 0.57,
+    "top3": 0.8,
+    "moved_top1": 0.6078,
+    "reorg": true
+   },
+   {
+    "issues": 1700,
+    "top1": 0.58,
+    "top3": 0.8067,
+    "moved_top1": 0.6471,
+    "reorg": true
+   }
+  ],
+  "baton": [
+   {
+    "issues": 100,
+    "top1": 0.52,
+    "top3": 0.73,
+    "moved_top1": 0.3922,
+    "reorg": false
+   },
+   {
+    "issues": 200,
+    "top1": 0.5467,
+    "top3": 0.7333,
+    "moved_top1": 0.3922,
+    "reorg": false
+   },
+   {
+    "issues": 300,
+    "top1": 0.5333,
+    "top3": 0.73,
+    "moved_top1": 0.3725,
+    "reorg": false
+   },
+   {
+    "issues": 400,
+    "top1": 0.5633,
+    "top3": 0.7667,
+    "moved_top1": 0.451,
+    "reorg": false
+   },
+   {
+    "issues": 500,
+    "top1": 0.6,
+    "top3": 0.7767,
+    "moved_top1": 0.6078,
+    "reorg": false
+   },
+   {
+    "issues": 600,
+    "top1": 0.6,
+    "top3": 0.7867,
+    "moved_top1": 0.5882,
+    "reorg": false
+   },
+   {
+    "issues": 700,
+    "top1": 0.6233,
+    "top3": 0.7833,
+    "moved_top1": 0.7059,
+    "reorg": false
+   },
+   {
+    "issues": 800,
+    "top1": 0.6333,
+    "top3": 0.7967,
+    "moved_top1": 0.7451,
+    "reorg": false
+   },
+   {
+    "issues": 900,
+    "top1": 0.5233,
+    "top3": 0.6933,
+    "moved_top1": 0.1765,
+    "reorg": true
+   },
+   {
+    "issues": 1000,
+    "top1": 0.5567,
+    "top3": 0.74,
+    "moved_top1": 0.2745,
+    "reorg": true
+   },
+   {
+    "issues": 1100,
+    "top1": 0.5667,
+    "top3": 0.7633,
+    "moved_top1": 0.3333,
+    "reorg": true
+   },
+   {
+    "issues": 1200,
+    "top1": 0.5467,
+    "top3": 0.77,
+    "moved_top1": 0.2745,
+    "reorg": true
+   },
+   {
+    "issues": 1300,
+    "top1": 0.5933,
+    "top3": 0.79,
+    "moved_top1": 0.3922,
+    "reorg": true
+   },
+   {
+    "issues": 1400,
+    "top1": 0.68,
+    "top3": 0.85,
+    "moved_top1": 0.8039,
+    "reorg": true
+   },
+   {
+    "issues": 1500,
+    "top1": 0.6633,
+    "top3": 0.8267,
+    "moved_top1": 0.8824,
+    "reorg": true
+   },
+   {
+    "issues": 1600,
+    "top1": 0.65,
+    "top3": 0.8467,
+    "moved_top1": 0.9216,
+    "reorg": true
+   },
+   {
+    "issues": 1700,
+    "top1": 0.6567,
+    "top3": 0.8367,
+    "moved_top1": 0.8039,
+    "reorg": true
+   }
+  ]
+ }
+}
