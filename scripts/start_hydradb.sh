@@ -99,10 +99,10 @@ fi
 cd "$HYDRADB_HOME"
 
 if [[ "$background" == false ]]; then
-  exec "$CARGO" run --locked --features server-runtime --bin graph-node
+  exec "$CARGO" run --release --locked --features server-runtime --bin graph-node
 fi
 
-nohup "$CARGO" run --locked --features server-runtime --bin graph-node >>"$LOG_FILE" 2>&1 &
+nohup "$CARGO" run --release --locked --features server-runtime --bin graph-node >>"$LOG_FILE" 2>&1 &
 echo $! > "$PID_FILE"
 echo "hydradb: started pid $(cat "$PID_FILE"), log $LOG_FILE"
 

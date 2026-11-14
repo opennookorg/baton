@@ -60,6 +60,7 @@ class LearnParams:
     penalty: float = 0.8
     floor: float = 0.05
     shortcut_min_paths: int = 3
+    shortcut_scale: float = 2.0
     history_keep: int = 500
     merge_min_hits: int = 10
     merge_similarity: float = 0.9

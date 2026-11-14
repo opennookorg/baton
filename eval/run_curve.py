@@ -13,7 +13,7 @@ from baton.dataset import split
 from baton.entities import HIDE_SIG_MENTIONS
 from baton.ids import IdTable
 from baton.ingest import setup_graph
-from baton.learn import SHORTCUT_SCALE, Learner
+from baton.learn import Learner
 from baton.models import Issue
 
 LINES = {
@@ -125,7 +125,6 @@ def main() -> None:
         batch_size=BATCH_SIZE,
         hide_sig_mentions=HIDE_SIG_MENTIONS,
         params=asdict(params),
-        shortcut_scale=SHORTCUT_SCALE,
         top1="top-ranked team is one of the issue's sigs",
         top3="any of the top three teams is one of the issue's sigs",
         as_of_zero=AS_OF_ZERO,

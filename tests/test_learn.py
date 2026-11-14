@@ -2,7 +2,7 @@ import pytest
 
 from baton import db
 from baton.config import BATON, COUNT_ONLY, LearnParams, Techniques
-from baton.learn import SHORTCUT_SCALE, Learner, check_techniques, prunable, reweight, shortcut_pass
+from baton.learn import Learner, check_techniques, prunable, reweight, shortcut_pass
 from baton.snapshots import GraphState, Link, PastIssue
 from tests.test_router import ISSUES, NET, NODE, live_graph, small_table
 
@@ -32,7 +32,7 @@ def test_shortcut_strength_is_the_scaled_team_share_and_updates_by_difference():
     state.history_paths.update({("a", "t1"): 3, ("a", "t2"): 1})
     state.entity_issues["a"] = 4
     changed, absorbed = shortcut_pass(state, PARAMS)
-    assert changed == {("a", "t1"): Link(SHORTCUT_SCALE * 3 / 4, shortcut=True)}
+    assert changed == {("a", "t1"): Link(LearnParams().shortcut_scale * 3 / 4, shortcut=True)}
     for pair, link in changed.items():
         state.set_link(pair, link)
     state.absorbed.update(absorbed)
@@ -41,7 +41,7 @@ def test_shortcut_strength_is_the_scaled_team_share_and_updates_by_difference():
     state.history_paths[("a", "t1")] = 4
     state.entity_issues["a"] = 5
     changed, _ = shortcut_pass(state, PARAMS)
-    assert changed[("a", "t1")].strength == pytest.approx(1.0 + SHORTCUT_SCALE * 4 / 5)
+    assert changed[("a", "t1")].strength == pytest.approx(1.0 + LearnParams().shortcut_scale * 4 / 5)
     assert changed[("a", "t1")].hits == 1
 
 
