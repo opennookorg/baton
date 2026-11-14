@@ -139,7 +139,7 @@ STOP_WORDS = frozenset(
     failed failing fails failure fix fixed fixes following happen happens incorrect incorrectly instead issue issues
     k8s keep kubernetes make makes many missing new non one ones possible properly really related remove removed request
     required return returns right set should show shows something sometimes specific support supported take two unable
-    unexpected via want way well wrong yaml
+    unexpected via want way well wrong yaml error errors bug
     """.split()
 )
 
@@ -153,6 +153,8 @@ ERROR_AFTER = re.compile(r"\berr(?:or)?\s*[:=]\s*\"?([^\n\"]{3,300})", re.IGNORE
 WORD = re.compile(r"[a-z][a-z0-9_\-]*[a-z0-9]")
 PHRASE_TOKEN = re.compile(r"[a-z][a-z0-9]*")
 ERROR_WORDS = 6
+VAGUE_PHRASES = frozenset("true false nil null none name kind value values error err failed status running master main yes no".split())
+WORD_SYNONYMS = {"flaky": "flake", "flaking": "flake", "flakes": "flake", "flakiness": "flake"}
 
 
 def strip_noise(body: str) -> str:
@@ -184,7 +186,7 @@ def normalise_path(raw: str) -> str | None:
         if "." in segment and segment != "k8s.io":
             break
         directories.append(segment)
-    directories = directories[:PATH_DEPTH]
+    directories = directories[: PATH_DEPTH + (directories[:1] == ["k8s.io"] and directories[2:3] == ["pkg"])]
     if len(directories) < 2 or directories[0] not in PATH_ROOTS or directories[0] in ("staging", "vendor"):
         return None
     return "/".join(directories)
@@ -197,9 +199,10 @@ def paths(text: str) -> set[str]:
 
 def phrase(raw: str) -> str | None:
     """Normalise an error phrase to at most ERROR_WORDS lowercase word tokens."""
-    tokens = PHRASE_TOKEN.findall(raw.lower())[:ERROR_WORDS]
-    text = " ".join(tokens)
-    return text if len(text) >= 3 else None
+    if "/" in raw:
+        return None
+    text = " ".join(PHRASE_TOKEN.findall(raw.lower())[:ERROR_WORDS])
+    return text if len(text) >= 3 and text not in VAGUE_PHRASES and text not in STOP_WORDS else None
 
 
 def errors(full_text: str, prose_text: str) -> set[str]:
@@ -221,8 +224,9 @@ def singular(word: str) -> str:
 def title_words(title: str) -> set[str]:
     """Lowercased title words minus stop words, numbers and words already captured as components."""
     words = set()
-    for raw in WORD.findall(title.lower()):
-        word = singular(raw.strip("-_"))
+    title_without_paths = " ".join(token for token in title.lower().split() if "/" not in token)
+    for raw in WORD.findall(title_without_paths):
+        word = WORD_SYNONYMS.get(raw) or singular(raw.strip("-_"))
         if len(word) < 3 or word in STOP_WORDS or raw in STOP_WORDS:
             continue
         if SEPARATORS.sub("", raw) in COMPONENT_BY_SQUASHED or SEPARATORS.sub("", word) in COMPONENT_BY_SQUASHED:
