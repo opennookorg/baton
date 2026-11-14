@@ -1,4 +1,4 @@
-"""Route an issue: its known entities, one weighted algo.MSpaths call to every team, teams scored by 1 / pathWeight."""
+"""Route an issue: its known entities, one weighted algo.MSpaths call to every team, teams scored by 1 / pathWeight, discounted for generic entities."""
 
 from collections import defaultdict
 from collections.abc import Iterable
@@ -53,12 +53,15 @@ def cheapest_per_pair(paths: Iterable[dict], path_count: int = PATH_COUNT, exclu
 
 
 def rank(paths: list[dict], found: int, unknown: int, top: int = TOP_TEAMS) -> Routed:
-    """Score each team by the sum of 1 / pathWeight over its paths and return the top teams with shares."""
+    """Score each team by the sum of 1 / pathWeight over its paths, each source entity's part divided by how many teams it reaches."""
     scores: dict[str, float] = defaultdict(float)
+    teams_reached: dict[str, set[str]] = defaultdict(set)
     best: dict[str, dict] = {}
     for path in paths:
+        teams_reached[path["nodes"][0]].add(path["nodes"][-1])
+    for path in paths:
         team = path["nodes"][-1]
-        scores[team] += 1.0 / max(path["weight"], MIN_WEIGHT)
+        scores[team] += 1.0 / max(path["weight"], MIN_WEIGHT) / len(teams_reached[path["nodes"][0]])
         if team not in best or (path["weight"], path["nodes"]) < (best[team]["weight"], best[team]["nodes"]):
             best[team] = path
     total = sum(scores.values())
