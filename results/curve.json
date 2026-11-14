@@ -3,93 +3,93 @@
   "frozen": [
    {
     "issues": 0,
-    "top1": 0.5167,
-    "top3": 0.6967
+    "top1": 0.5433,
+    "top3": 0.7433
    },
    {
     "issues": 100,
-    "top1": 0.5167,
-    "top3": 0.6967
+    "top1": 0.5433,
+    "top3": 0.7433
    },
    {
     "issues": 200,
-    "top1": 0.5167,
-    "top3": 0.6967
+    "top1": 0.5433,
+    "top3": 0.7433
    },
    {
     "issues": 300,
-    "top1": 0.5167,
-    "top3": 0.6967
+    "top1": 0.5433,
+    "top3": 0.7433
    },
    {
     "issues": 400,
-    "top1": 0.5167,
-    "top3": 0.6967
+    "top1": 0.5433,
+    "top3": 0.7433
    },
    {
     "issues": 500,
-    "top1": 0.5167,
-    "top3": 0.6967
+    "top1": 0.5433,
+    "top3": 0.7433
    },
    {
     "issues": 600,
-    "top1": 0.5167,
-    "top3": 0.6967
+    "top1": 0.5433,
+    "top3": 0.7433
    },
    {
     "issues": 700,
-    "top1": 0.5167,
-    "top3": 0.6967
+    "top1": 0.5433,
+    "top3": 0.7433
    },
    {
     "issues": 800,
-    "top1": 0.5167,
-    "top3": 0.6967
+    "top1": 0.5433,
+    "top3": 0.7433
    },
    {
     "issues": 900,
-    "top1": 0.5167,
-    "top3": 0.6967
+    "top1": 0.5433,
+    "top3": 0.7433
    },
    {
     "issues": 1000,
-    "top1": 0.5167,
-    "top3": 0.6967
+    "top1": 0.5433,
+    "top3": 0.7433
    },
    {
     "issues": 1100,
-    "top1": 0.5167,
-    "top3": 0.6967
+    "top1": 0.5433,
+    "top3": 0.7433
    },
    {
     "issues": 1200,
-    "top1": 0.5167,
-    "top3": 0.6967
+    "top1": 0.5433,
+    "top3": 0.7433
    },
    {
     "issues": 1300,
-    "top1": 0.5167,
-    "top3": 0.6967
+    "top1": 0.5433,
+    "top3": 0.7433
    },
    {
     "issues": 1400,
-    "top1": 0.5167,
-    "top3": 0.6967
+    "top1": 0.5433,
+    "top3": 0.7433
    },
    {
     "issues": 1500,
-    "top1": 0.5167,
-    "top3": 0.6967
+    "top1": 0.5433,
+    "top3": 0.7433
    },
    {
     "issues": 1600,
-    "top1": 0.5167,
-    "top3": 0.6967
+    "top1": 0.5433,
+    "top3": 0.7433
    },
    {
     "issues": 1700,
-    "top1": 0.5167,
-    "top3": 0.6967
+    "top1": 0.5433,
+    "top3": 0.7433
    }
   ],
   "count_only": [
@@ -100,88 +100,88 @@
    },
    {
     "issues": 100,
-    "top1": 0.4933,
-    "top3": 0.69
+    "top1": 0.5367,
+    "top3": 0.7333
    },
    {
     "issues": 200,
-    "top1": 0.5167,
-    "top3": 0.6967
+    "top1": 0.5433,
+    "top3": 0.7433
    },
    {
     "issues": 300,
-    "top1": 0.5333,
-    "top3": 0.7333
+    "top1": 0.5467,
+    "top3": 0.78
    },
    {
     "issues": 400,
-    "top1": 0.5367,
-    "top3": 0.7233
+    "top1": 0.5633,
+    "top3": 0.79
    },
    {
     "issues": 500,
-    "top1": 0.5567,
-    "top3": 0.74
-   },
-   {
-    "issues": 600,
-    "top1": 0.5467,
-    "top3": 0.7333
-   },
-   {
-    "issues": 700,
-    "top1": 0.5567,
-    "top3": 0.74
-   },
-   {
-    "issues": 800,
-    "top1": 0.56,
-    "top3": 0.7467
-   },
-   {
-    "issues": 900,
-    "top1": 0.5433,
-    "top3": 0.7533
-   },
-   {
-    "issues": 1000,
-    "top1": 0.55,
-    "top3": 0.76
-   },
-   {
-    "issues": 1100,
-    "top1": 0.5467,
-    "top3": 0.76
-   },
-   {
-    "issues": 1200,
-    "top1": 0.5333,
-    "top3": 0.7567
-   },
-   {
-    "issues": 1300,
-    "top1": 0.5267,
-    "top3": 0.7733
-   },
-   {
-    "issues": 1400,
-    "top1": 0.5467,
-    "top3": 0.7767
-   },
-   {
-    "issues": 1500,
-    "top1": 0.5533,
+    "top1": 0.5633,
     "top3": 0.7833
    },
    {
-    "issues": 1600,
+    "issues": 600,
+    "top1": 0.5533,
+    "top3": 0.7667
+   },
+   {
+    "issues": 700,
+    "top1": 0.5533,
+    "top3": 0.7733
+   },
+   {
+    "issues": 800,
+    "top1": 0.5567,
+    "top3": 0.76
+   },
+   {
+    "issues": 900,
+    "top1": 0.5567,
+    "top3": 0.7667
+   },
+   {
+    "issues": 1000,
+    "top1": 0.5533,
+    "top3": 0.7733
+   },
+   {
+    "issues": 1100,
+    "top1": 0.55,
+    "top3": 0.79
+   },
+   {
+    "issues": 1200,
+    "top1": 0.55,
+    "top3": 0.7833
+   },
+   {
+    "issues": 1300,
+    "top1": 0.5633,
+    "top3": 0.77
+   },
+   {
+    "issues": 1400,
+    "top1": 0.5667,
+    "top3": 0.76
+   },
+   {
+    "issues": 1500,
     "top1": 0.56,
-    "top3": 0.7867
+    "top3": 0.78
+   },
+   {
+    "issues": 1600,
+    "top1": 0.58,
+    "top3": 0.77
    },
    {
     "issues": 1700,
-    "top1": 0.58,
-    "top3": 0.7733
+    "top1": 0.5933,
+    "top3": 0.7833
    }
   ],
   "reweight": [
@@ -192,88 +192,88 @@
    },
    {
     "issues": 100,
-    "top1": 0.46,
-    "top3": 0.68
+    "top1": 0.5267,
+    "top3": 0.73
    },
    {
     "issues": 200,
-    "top1": 0.5167,
-    "top3": 0.7133
+    "top1": 0.5533,
+    "top3": 0.76
    },
    {
     "issues": 300,
-    "top1": 0.5333,
-    "top3": 0.7267
+    "top1": 0.56,
+    "top3": 0.7667
    },
    {
     "issues": 400,
-    "top1": 0.5567,
-    "top3": 0.7667
+    "top1": 0.6133,
+    "top3": 0.79
    },
    {
     "issues": 500,
-    "top1": 0.5767,
-    "top3": 0.7667
+    "top1": 0.6133,
+    "top3": 0.7967
    },
    {
     "issues": 600,
-    "top1": 0.5767,
-    "top3": 0.7767
+    "top1": 0.61,
+    "top3": 0.7867
    },
    {
     "issues": 700,
     "top1": 0.6233,
-    "top3": 0.7733
+    "top3": 0.7967
    },
    {
     "issues": 800,
-    "top1": 0.57,
-    "top3": 0.7667
+    "top1": 0.6233,
+    "top3": 0.7967
    },
    {
     "issues": 900,
-    "top1": 0.6033,
-    "top3": 0.77
+    "top1": 0.6367,
+    "top3": 0.7967
    },
    {
     "issues": 1000,
-    "top1": 0.6167,
-    "top3": 0.8033
+    "top1": 0.63,
+    "top3": 0.8167
    },
    {
     "issues": 1100,
-    "top1": 0.6167,
-    "top3": 0.78
+    "top1": 0.64,
+    "top3": 0.8267
    },
    {
     "issues": 1200,
-    "top1": 0.5833,
-    "top3": 0.7733
+    "top1": 0.6233,
+    "top3": 0.82
    },
    {
     "issues": 1300,
-    "top1": 0.6,
-    "top3": 0.7833
+    "top1": 0.64,
+    "top3": 0.82
    },
    {
     "issues": 1400,
-    "top1": 0.6267,
-    "top3": 0.81
+    "top1": 0.68,
+    "top3": 0.83
    },
    {
     "issues": 1500,
-    "top1": 0.6333,
-    "top3": 0.8
+    "top1": 0.6667,
+    "top3": 0.82
    },
    {
     "issues": 1600,
-    "top1": 0.6233,
-    "top3": 0.8133
+    "top1": 0.6533,
+    "top3": 0.8233
    },
    {
     "issues": 1700,
-    "top1": 0.6467,
-    "top3": 0.82
+    "top1": 0.6833,
+    "top3": 0.8267
    }
   ],
   "shortcuts": [
@@ -284,88 +284,88 @@
    },
    {
     "issues": 100,
-    "top1": 0.4933,
-    "top3": 0.71
+    "top1": 0.5333,
+    "top3": 0.7367
    },
    {
     "issues": 200,
     "top1": 0.5367,
-    "top3": 0.71
+    "top3": 0.74
    },
    {
     "issues": 300,
-    "top1": 0.5667,
-    "top3": 0.7433
+    "top1": 0.58,
+    "top3": 0.78
    },
    {
     "issues": 400,
-    "top1": 0.5567,
-    "top3": 0.7333
+    "top1": 0.6,
+    "top3": 0.79
    },
    {
     "issues": 500,
     "top1": 0.5833,
-    "top3": 0.7633
-   },
-   {
-    "issues": 600,
-    "top1": 0.59,
-    "top3": 0.7667
-   },
-   {
-    "issues": 700,
-    "top1": 0.5733,
-    "top3": 0.7667
-   },
-   {
-    "issues": 800,
-    "top1": 0.6033,
-    "top3": 0.7733
-   },
-   {
-    "issues": 900,
-    "top1": 0.5733,
-    "top3": 0.7733
-   },
-   {
-    "issues": 1000,
-    "top1": 0.58,
     "top3": 0.7833
    },
    {
-    "issues": 1100,
-    "top1": 0.5967,
-    "top3": 0.7767
-   },
-   {
-    "issues": 1200,
-    "top1": 0.5833,
-    "top3": 0.77
-   },
-   {
-    "issues": 1300,
+    "issues": 600,
     "top1": 0.5967,
     "top3": 0.78
    },
    {
+    "issues": 700,
+    "top1": 0.59,
+    "top3": 0.7833
+   },
+   {
+    "issues": 800,
+    "top1": 0.6,
+    "top3": 0.78
+   },
+   {
+    "issues": 900,
+    "top1": 0.5833,
+    "top3": 0.78
+   },
+   {
+    "issues": 1000,
+    "top1": 0.5833,
+    "top3": 0.78
+   },
+   {
+    "issues": 1100,
+    "top1": 0.57,
+    "top3": 0.8033
+   },
+   {
+    "issues": 1200,
+    "top1": 0.5767,
+    "top3": 0.8067
+   },
+   {
+    "issues": 1300,
+    "top1": 0.5933,
+    "top3": 0.8067
+   },
+   {
     "issues": 1400,
-    "top1": 0.61,
-    "top3": 0.7967
+    "top1": 0.6,
+    "top3": 0.8
    },
    {
     "issues": 1500,
-    "top1": 0.6,
-    "top3": 0.81
+    "top1": 0.59,
+    "top3": 0.8167
    },
    {
     "issues": 1600,
-    "top1": 0.6067,
-    "top3": 0.8133
+    "top1": 0.61,
+    "top3": 0.8167
    },
    {
     "issues": 1700,
-    "top1": 0.6133,
-    "top3": 0.8
+    "top1": 0.63,
+    "top3": 0.8067
    }
   ],
   "baton": [
@@ -376,88 +376,88 @@
    },
    {
     "issues": 100,
-    "top1": 0.52,
-    "top3": 0.73
+    "top1": 0.5933,
+    "top3": 0.7567
    },
    {
     "issues": 200,
-    "top1": 0.5467,
-    "top3": 0.7333
+    "top1": 0.58,
+    "top3": 0.7733
    },
    {
     "issues": 300,
-    "top1": 0.5333,
-    "top3": 0.73
+    "top1": 0.6,
+    "top3": 0.78
    },
    {
     "issues": 400,
-    "top1": 0.5633,
-    "top3": 0.7667
-   },
-   {
-    "issues": 500,
-    "top1": 0.6,
-    "top3": 0.7767
-   },
-   {
-    "issues": 600,
-    "top1": 0.6,
-    "top3": 0.7867
-   },
-   {
-    "issues": 700,
-    "top1": 0.6233,
-    "top3": 0.7833
-   },
-   {
-    "issues": 800,
-    "top1": 0.6333,
+    "top1": 0.61,
     "top3": 0.7967
    },
    {
+    "issues": 500,
+    "top1": 0.6333,
+    "top3": 0.8033
+   },
+   {
+    "issues": 600,
+    "top1": 0.6333,
+    "top3": 0.8133
+   },
+   {
+    "issues": 700,
+    "top1": 0.66,
+    "top3": 0.81
+   },
+   {
+    "issues": 800,
+    "top1": 0.65,
+    "top3": 0.8267
+   },
+   {
     "issues": 900,
-    "top1": 0.6167,
-    "top3": 0.79
+    "top1": 0.6433,
+    "top3": 0.83
    },
    {
     "issues": 1000,
-    "top1": 0.6267,
-    "top3": 0.8
+    "top1": 0.6633,
+    "top3": 0.83
    },
    {
     "issues": 1100,
-    "top1": 0.6233,
-    "top3": 0.8067
-   },
-   {
-    "issues": 1200,
-    "top1": 0.5967,
-    "top3": 0.7933
-   },
-   {
-    "issues": 1300,
-    "top1": 0.6267,
-    "top3": 0.8
-   },
-   {
-    "issues": 1400,
-    "top1": 0.6833,
+    "top1": 0.6733,
     "top3": 0.8467
    },
    {
-    "issues": 1500,
+    "issues": 1200,
+    "top1": 0.66,
+    "top3": 0.84
+   },
+   {
+    "issues": 1300,
     "top1": 0.6633,
-    "top3": 0.8233
+    "top3": 0.84
+   },
+   {
+    "issues": 1400,
+    "top1": 0.69,
+    "top3": 0.8733
+   },
+   {
+    "issues": 1500,
+    "top1": 0.7033,
+    "top3": 0.8567
    },
    {
     "issues": 1600,
-    "top1": 0.6533,
-    "top3": 0.8333
+    "top1": 0.7033,
+    "top3": 0.86
    },
    {
     "issues": 1700,
-    "top1": 0.67,
-    "top3": 0.8233
+    "top1": 0.7,
+    "top3": 0.86
    }
   ],
   "merging": [
@@ -468,88 +468,88 @@
    },
    {
     "issues": 100,
-    "top1": 0.4933,
-    "top3": 0.69
-   },
-   {
-    "issues": 200,
-    "top1": 0.5167,
-    "top3": 0.6967
-   },
-   {
-    "issues": 300,
-    "top1": 0.5333,
+    "top1": 0.5367,
     "top3": 0.7333
    },
    {
+    "issues": 200,
+    "top1": 0.5433,
+    "top3": 0.7433
+   },
+   {
+    "issues": 300,
+    "top1": 0.5467,
+    "top3": 0.78
+   },
+   {
     "issues": 400,
-    "top1": 0.5367,
-    "top3": 0.7167
+    "top1": 0.5633,
+    "top3": 0.79
    },
    {
     "issues": 500,
-    "top1": 0.5567,
-    "top3": 0.7567
+    "top1": 0.56,
+    "top3": 0.7833
    },
    {
     "issues": 600,
-    "top1": 0.5467,
-    "top3": 0.7567
+    "top1": 0.55,
+    "top3": 0.7667
    },
    {
     "issues": 700,
     "top1": 0.55,
-    "top3": 0.7367
+    "top3": 0.7733
    },
    {
     "issues": 800,
-    "top1": 0.56,
-    "top3": 0.7467
+    "top1": 0.5567,
+    "top3": 0.76
    },
    {
     "issues": 900,
-    "top1": 0.55,
-    "top3": 0.75
+    "top1": 0.5567,
+    "top3": 0.77
    },
    {
     "issues": 1000,
-    "top1": 0.5567,
-    "top3": 0.7533
+    "top1": 0.5533,
+    "top3": 0.7767
    },
    {
     "issues": 1100,
     "top1": 0.55,
-    "top3": 0.77
+    "top3": 0.7967
    },
    {
     "issues": 1200,
-    "top1": 0.5367,
-    "top3": 0.77
+    "top1": 0.55,
+    "top3": 0.79
    },
    {
     "issues": 1300,
-    "top1": 0.5333,
-    "top3": 0.7667
+    "top1": 0.56,
+    "top3": 0.77
    },
    {
     "issues": 1400,
-    "top1": 0.55,
-    "top3": 0.7667
+    "top1": 0.5633,
+    "top3": 0.76
    },
    {
     "issues": 1500,
-    "top1": 0.5567,
-    "top3": 0.78
+    "top1": 0.5633,
+    "top3": 0.7867
    },
    {
     "issues": 1600,
-    "top1": 0.5633,
-    "top3": 0.7833
+    "top1": 0.58,
+    "top3": 0.7767
    },
    {
     "issues": 1700,
-    "top1": 0.5833,
-    "top3": 0.7733
+    "top1": 0.5933,
+    "top3": 0.7867
    }
   ],
   "splitting": [
@@ -560,88 +560,88 @@
    },
    {
     "issues": 100,
-    "top1": 0.5,
-    "top3": 0.69
+    "top1": 0.54,
+    "top3": 0.74
    },
    {
     "issues": 200,
-    "top1": 0.5133,
-    "top3": 0.7
-   },
-   {
-    "issues": 300,
-    "top1": 0.5333,
+    "top1": 0.56,
     "top3": 0.7333
    },
    {
+    "issues": 300,
+    "top1": 0.5633,
+    "top3": 0.78
+   },
+   {
     "issues": 400,
-    "top1": 0.5367,
-    "top3": 0.73
+    "top1": 0.5967,
+    "top3": 0.79
    },
    {
     "issues": 500,
-    "top1": 0.5467,
-    "top3": 0.75
+    "top1": 0.5833,
+    "top3": 0.7833
    },
    {
     "issues": 600,
-    "top1": 0.55,
-    "top3": 0.7533
+    "top1": 0.5933,
+    "top3": 0.7767
    },
    {
     "issues": 700,
-    "top1": 0.57,
-    "top3": 0.76
+    "top1": 0.5733,
+    "top3": 0.7967
    },
    {
     "issues": 800,
-    "top1": 0.5767,
-    "top3": 0.7667
+    "top1": 0.58,
+    "top3": 0.7867
    },
    {
     "issues": 900,
     "top1": 0.58,
-    "top3": 0.78
+    "top3": 0.79
    },
    {
     "issues": 1000,
-    "top1": 0.5633,
+    "top1": 0.6067,
     "top3": 0.7933
    },
    {
     "issues": 1100,
-    "top1": 0.56,
-    "top3": 0.7967
+    "top1": 0.5933,
+    "top3": 0.8167
    },
    {
     "issues": 1200,
-    "top1": 0.5567,
-    "top3": 0.79
+    "top1": 0.5967,
+    "top3": 0.8133
    },
    {
     "issues": 1300,
-    "top1": 0.5733,
-    "top3": 0.8033
+    "top1": 0.61,
+    "top3": 0.8133
    },
    {
     "issues": 1400,
-    "top1": 0.5933,
-    "top3": 0.81
+    "top1": 0.62,
+    "top3": 0.8133
    },
    {
     "issues": 1500,
-    "top1": 0.59,
-    "top3": 0.8367
+    "top1": 0.62,
+    "top3": 0.8333
    },
    {
     "issues": 1600,
-    "top1": 0.6,
-    "top3": 0.8367
+    "top1": 0.6333,
+    "top3": 0.8267
    },
    {
     "issues": 1700,
-    "top1": 0.6133,
-    "top3": 0.8433
+    "top1": 0.6433,
+    "top3": 0.8533
    }
   ],
   "gap_filling": [
@@ -652,88 +652,88 @@
    },
    {
     "issues": 100,
-    "top1": 0.5067,
-    "top3": 0.7467
+    "top1": 0.5433,
+    "top3": 0.7867
    },
    {
     "issues": 200,
     "top1": 0.53,
-    "top3": 0.7033
-   },
-   {
-    "issues": 300,
-    "top1": 0.5267,
-    "top3": 0.7167
-   },
-   {
-    "issues": 400,
-    "top1": 0.5167,
-    "top3": 0.7233
-   },
-   {
-    "issues": 500,
-    "top1": 0.51,
-    "top3": 0.7367
-   },
-   {
-    "issues": 600,
-    "top1": 0.5333,
-    "top3": 0.7533
-   },
-   {
-    "issues": 700,
-    "top1": 0.5433,
-    "top3": 0.7533
-   },
-   {
-    "issues": 800,
-    "top1": 0.53,
-    "top3": 0.7567
-   },
-   {
-    "issues": 900,
-    "top1": 0.5433,
-    "top3": 0.75
-   },
-   {
-    "issues": 1000,
-    "top1": 0.5533,
-    "top3": 0.7567
-   },
-   {
-    "issues": 1100,
-    "top1": 0.5733,
     "top3": 0.7467
    },
    {
-    "issues": 1200,
-    "top1": 0.5667,
-    "top3": 0.75
+    "issues": 300,
+    "top1": 0.5433,
+    "top3": 0.76
    },
    {
-    "issues": 1300,
-    "top1": 0.5733,
+    "issues": 400,
+    "top1": 0.5567,
+    "top3": 0.7533
+   },
+   {
+    "issues": 500,
+    "top1": 0.5667,
     "top3": 0.7667
    },
    {
+    "issues": 600,
+    "top1": 0.56,
+    "top3": 0.7767
+   },
+   {
+    "issues": 700,
+    "top1": 0.56,
+    "top3": 0.7767
+   },
+   {
+    "issues": 800,
+    "top1": 0.5667,
+    "top3": 0.79
+   },
+   {
+    "issues": 900,
+    "top1": 0.5733,
+    "top3": 0.77
+   },
+   {
+    "issues": 1000,
+    "top1": 0.58,
+    "top3": 0.7733
+   },
+   {
+    "issues": 1100,
+    "top1": 0.5833,
+    "top3": 0.7867
+   },
+   {
+    "issues": 1200,
+    "top1": 0.5867,
+    "top3": 0.8
+   },
+   {
+    "issues": 1300,
+    "top1": 0.5867,
+    "top3": 0.8
+   },
+   {
     "issues": 1400,
-    "top1": 0.57,
-    "top3": 0.78
+    "top1": 0.5867,
+    "top3": 0.8033
    },
    {
     "issues": 1500,
-    "top1": 0.5767,
-    "top3": 0.79
+    "top1": 0.5867,
+    "top3": 0.8067
    },
    {
     "issues": 1600,
-    "top1": 0.59,
-    "top3": 0.7933
+    "top1": 0.6033,
+    "top3": 0.81
    },
    {
     "issues": 1700,
-    "top1": 0.6133,
-    "top3": 0.79
+    "top1": 0.6067,
+    "top3": 0.8067
    }
   ]
  },
@@ -807,16 +807,16 @@
      "issues_learned": 200,
      "links_reweighted": 0,
      "shortcuts": 0,
-     "misroutes": 99,
+     "misroutes": 96,
      "merges": 0,
      "issues_pruned": 0,
      "splits": 0,
      "gap_issues": 0
     },
-    "stream_top1": 0.505,
+    "stream_top1": 0.52,
     "latency_ms": {
-     "median": 44.79,
-     "p95": 92.89
+     "median": 40.58,
+     "p95": 89.89
     },
     "note": "graph built once from the first 200 learning issues and never updated; the same score at every x"
    },
@@ -1084,16 +1084,16 @@
      "issues_learned": 1700,
      "links_reweighted": 0,
      "shortcuts": 0,
-     "misroutes": 699,
+     "misroutes": 655,
      "merges": 0,
      "issues_pruned": 0,
      "splits": 0,
      "gap_issues": 0
     },
-    "stream_top1": 0.5888,
+    "stream_top1": 0.6147,
     "latency_ms": {
-     "median": 136.62,
-     "p95": 414.25
+     "median": 101.98,
+     "p95": 344.4
     }
    },
    "reweight": {
@@ -1141,7 +1141,7 @@
        "Issue": 100
       },
       "links": {
-       "ROUTES_TO": 404,
+       "ROUTES_TO": 407,
        "SEEN_IN": 713,
        "OWNED_BY": 113,
        "SAME_AS": 0
@@ -1154,7 +1154,7 @@
        "Issue": 200
       },
       "links": {
-       "ROUTES_TO": 637,
+       "ROUTES_TO": 644,
        "SEEN_IN": 1464,
        "OWNED_BY": 231,
        "SAME_AS": 0
@@ -1167,7 +1167,7 @@
        "Issue": 300
       },
       "links": {
-       "ROUTES_TO": 894,
+       "ROUTES_TO": 885,
        "SEEN_IN": 2222,
        "OWNED_BY": 355,
        "SAME_AS": 0
@@ -1180,7 +1180,7 @@
        "Issue": 400
       },
       "links": {
-       "ROUTES_TO": 1079,
+       "ROUTES_TO": 1110,
        "SEEN_IN": 3002,
        "OWNED_BY": 473,
        "SAME_AS": 0
@@ -1193,7 +1193,7 @@
        "Issue": 500
       },
       "links": {
-       "ROUTES_TO": 1222,
+       "ROUTES_TO": 1219,
        "SEEN_IN": 3713,
        "OWNED_BY": 581,
        "SAME_AS": 0
@@ -1206,7 +1206,7 @@
        "Issue": 600
       },
       "links": {
-       "ROUTES_TO": 1364,
+       "ROUTES_TO": 1358,
        "SEEN_IN": 4417,
        "OWNED_BY": 693,
        "SAME_AS": 0
@@ -1219,7 +1219,7 @@
        "Issue": 700
       },
       "links": {
-       "ROUTES_TO": 1513,
+       "ROUTES_TO": 1538,
        "SEEN_IN": 5173,
        "OWNED_BY": 816,
        "SAME_AS": 0
@@ -1232,7 +1232,7 @@
        "Issue": 800
       },
       "links": {
-       "ROUTES_TO": 1682,
+       "ROUTES_TO": 1701,
        "SEEN_IN": 5886,
        "OWNED_BY": 936,
        "SAME_AS": 0
@@ -1245,7 +1245,7 @@
        "Issue": 900
       },
       "links": {
-       "ROUTES_TO": 1868,
+       "ROUTES_TO": 1880,
        "SEEN_IN": 6698,
        "OWNED_BY": 1049,
        "SAME_AS": 0
@@ -1258,7 +1258,7 @@
        "Issue": 1000
       },
       "links": {
-       "ROUTES_TO": 2039,
+       "ROUTES_TO": 2025,
        "SEEN_IN": 7418,
        "OWNED_BY": 1165,
        "SAME_AS": 0
@@ -1271,7 +1271,7 @@
        "Issue": 1100
       },
       "links": {
-       "ROUTES_TO": 2150,
+       "ROUTES_TO": 2128,
        "SEEN_IN": 8242,
        "OWNED_BY": 1280,
        "SAME_AS": 0
@@ -1284,7 +1284,7 @@
        "Issue": 1200
       },
       "links": {
-       "ROUTES_TO": 2260,
+       "ROUTES_TO": 2229,
        "SEEN_IN": 9039,
        "OWNED_BY": 1399,
        "SAME_AS": 0
@@ -1297,7 +1297,7 @@
        "Issue": 1300
       },
       "links": {
-       "ROUTES_TO": 2366,
+       "ROUTES_TO": 2333,
        "SEEN_IN": 9882,
        "OWNED_BY": 1517,
        "SAME_AS": 0
@@ -1310,7 +1310,7 @@
        "Issue": 1400
       },
       "links": {
-       "ROUTES_TO": 2475,
+       "ROUTES_TO": 2445,
        "SEEN_IN": 10588,
        "OWNED_BY": 1637,
        "SAME_AS": 0
@@ -1323,7 +1323,7 @@
        "Issue": 1500
       },
       "links": {
-       "ROUTES_TO": 2556,
+       "ROUTES_TO": 2523,
        "SEEN_IN": 11494,
        "OWNED_BY": 1748,
        "SAME_AS": 0
@@ -1336,7 +1336,7 @@
        "Issue": 1600
       },
       "links": {
-       "ROUTES_TO": 2647,
+       "ROUTES_TO": 2609,
        "SEEN_IN": 12287,
        "OWNED_BY": 1867,
        "SAME_AS": 0
@@ -1349,7 +1349,7 @@
        "Issue": 1700
       },
       "links": {
-       "ROUTES_TO": 2758,
+       "ROUTES_TO": 2708,
        "SEEN_IN": 13176,
        "OWNED_BY": 1980,
        "SAME_AS": 0
@@ -1358,18 +1358,18 @@
     },
     "counters": {
      "issues_learned": 1700,
-     "links_reweighted": 11797,
+     "links_reweighted": 11426,
      "shortcuts": 0,
-     "misroutes": 625,
+     "misroutes": 585,
      "merges": 0,
      "issues_pruned": 0,
      "splits": 0,
      "gap_issues": 0
     },
-    "stream_top1": 0.6324,
+    "stream_top1": 0.6559,
     "latency_ms": {
-     "median": 112.56,
-     "p95": 290.12
+     "median": 117.06,
+     "p95": 384.63
     }
    },
    "shortcuts": {
@@ -1636,16 +1636,16 @@
      "issues_learned": 1700,
      "links_reweighted": 0,
      "shortcuts": 1369,
-     "misroutes": 637,
+     "misroutes": 616,
      "merges": 0,
      "issues_pruned": 318,
      "splits": 0,
      "gap_issues": 0
     },
-    "stream_top1": 0.6253,
+    "stream_top1": 0.6376,
     "latency_ms": {
-     "median": 93.63,
-     "p95": 263.03
+     "median": 107.46,
+     "p95": 321.63
     }
    },
    "baton": {
@@ -1668,8 +1668,8 @@
      "split_min_misses": 10,
      "split_dominance": 0.5,
      "split_min_support": 3,
-     "gap_confidence": 0.4,
-     "gap_min_known": 8,
+     "gap_confidence": 0.5,
+     "gap_min_known": 12,
      "gap_pull": 20
     },
     "graph": {
@@ -1689,239 +1689,239 @@
      "100": {
       "nodes": {
        "Team": 22,
-       "Entity": 1067,
-       "Issue": 263
+       "Entity": 1072,
+       "Issue": 302
       },
       "links": {
-       "ROUTES_TO": 469,
-       "SEEN_IN": 1897,
-       "OWNED_BY": 305,
+       "ROUTES_TO": 475,
+       "SEEN_IN": 2172,
+       "OWNED_BY": 346,
        "SAME_AS": 0
       }
      },
      "200": {
       "nodes": {
        "Team": 22,
-       "Entity": 1087,
-       "Issue": 508
+       "Entity": 1096,
+       "Issue": 581
       },
       "links": {
-       "ROUTES_TO": 821,
-       "SEEN_IN": 3804,
-       "OWNED_BY": 603,
+       "ROUTES_TO": 850,
+       "SEEN_IN": 4292,
+       "OWNED_BY": 683,
        "SAME_AS": 0
       }
      },
      "300": {
       "nodes": {
        "Team": 22,
-       "Entity": 1103,
-       "Issue": 725
+       "Entity": 1122,
+       "Issue": 870
       },
       "links": {
-       "ROUTES_TO": 1135,
-       "SEEN_IN": 5445,
-       "OWNED_BY": 870,
+       "ROUTES_TO": 1226,
+       "SEEN_IN": 6570,
+       "OWNED_BY": 1033,
        "SAME_AS": 0
       }
      },
      "400": {
       "nodes": {
        "Team": 22,
-       "Entity": 1116,
-       "Issue": 913
+       "Entity": 1137,
+       "Issue": 1083
       },
       "links": {
-       "ROUTES_TO": 1393,
-       "SEEN_IN": 6904,
-       "OWNED_BY": 1104,
+       "ROUTES_TO": 1493,
+       "SEEN_IN": 8224,
+       "OWNED_BY": 1293,
        "SAME_AS": 0
       }
      },
      "500": {
       "nodes": {
        "Team": 22,
-       "Entity": 1123,
-       "Issue": 1105
+       "Entity": 1144,
+       "Issue": 1286
       },
       "links": {
-       "ROUTES_TO": 1590,
-       "SEEN_IN": 8267,
-       "OWNED_BY": 1318,
+       "ROUTES_TO": 1679,
+       "SEEN_IN": 9677,
+       "OWNED_BY": 1520,
        "SAME_AS": 0
       }
      },
      "600": {
       "nodes": {
        "Team": 22,
-       "Entity": 1138,
-       "Issue": 1261
+       "Entity": 1158,
+       "Issue": 1442
       },
       "links": {
-       "ROUTES_TO": 1794,
-       "SEEN_IN": 9396,
-       "OWNED_BY": 1497,
+       "ROUTES_TO": 1871,
+       "SEEN_IN": 10857,
+       "OWNED_BY": 1700,
        "SAME_AS": 0
       }
      },
      "700": {
       "nodes": {
        "Team": 22,
-       "Entity": 1153,
-       "Issue": 1395
+       "Entity": 1179,
+       "Issue": 1617
       },
       "links": {
-       "ROUTES_TO": 2023,
-       "SEEN_IN": 10478,
-       "OWNED_BY": 1659,
+       "ROUTES_TO": 2133,
+       "SEEN_IN": 12195,
+       "OWNED_BY": 1914,
        "SAME_AS": 0
       }
      },
      "800": {
       "nodes": {
        "Team": 22,
-       "Entity": 1165,
-       "Issue": 1526
+       "Entity": 1199,
+       "Issue": 1787
       },
       "links": {
-       "ROUTES_TO": 2244,
-       "SEEN_IN": 11520,
-       "OWNED_BY": 1816,
+       "ROUTES_TO": 2360,
+       "SEEN_IN": 13555,
+       "OWNED_BY": 2110,
        "SAME_AS": 0
       }
      },
      "900": {
       "nodes": {
        "Team": 22,
-       "Entity": 1177,
-       "Issue": 1639
+       "Entity": 1211,
+       "Issue": 1926
       },
       "links": {
-       "ROUTES_TO": 2475,
-       "SEEN_IN": 12463,
-       "OWNED_BY": 1943,
+       "ROUTES_TO": 2566,
+       "SEEN_IN": 14685,
+       "OWNED_BY": 2268,
        "SAME_AS": 0
       }
      },
      "1000": {
       "nodes": {
        "Team": 22,
-       "Entity": 1189,
-       "Issue": 1761
+       "Entity": 1222,
+       "Issue": 2041
       },
       "links": {
-       "ROUTES_TO": 2657,
-       "SEEN_IN": 13468,
-       "OWNED_BY": 2094,
+       "ROUTES_TO": 2762,
+       "SEEN_IN": 15660,
+       "OWNED_BY": 2419,
        "SAME_AS": 0
       }
      },
      "1100": {
       "nodes": {
        "Team": 22,
-       "Entity": 1197,
-       "Issue": 1866
+       "Entity": 1229,
+       "Issue": 2153
       },
       "links": {
-       "ROUTES_TO": 2833,
-       "SEEN_IN": 14366,
-       "OWNED_BY": 2225,
+       "ROUTES_TO": 2925,
+       "SEEN_IN": 16582,
+       "OWNED_BY": 2564,
        "SAME_AS": 0
       }
      },
      "1200": {
       "nodes": {
        "Team": 22,
-       "Entity": 1204,
-       "Issue": 1949
+       "Entity": 1236,
+       "Issue": 2247
       },
       "links": {
-       "ROUTES_TO": 2996,
-       "SEEN_IN": 15035,
-       "OWNED_BY": 2337,
+       "ROUTES_TO": 3079,
+       "SEEN_IN": 17324,
+       "OWNED_BY": 2680,
        "SAME_AS": 0
       }
      },
      "1300": {
       "nodes": {
        "Team": 22,
-       "Entity": 1211,
-       "Issue": 2028
+       "Entity": 1243,
+       "Issue": 2332
       },
       "links": {
-       "ROUTES_TO": 3162,
-       "SEEN_IN": 15778,
-       "OWNED_BY": 2436,
+       "ROUTES_TO": 3231,
+       "SEEN_IN": 18080,
+       "OWNED_BY": 2786,
        "SAME_AS": 0
       }
      },
      "1400": {
       "nodes": {
        "Team": 22,
-       "Entity": 1212,
-       "Issue": 2092
+       "Entity": 1246,
+       "Issue": 2402
       },
       "links": {
-       "ROUTES_TO": 3271,
-       "SEEN_IN": 16170,
-       "OWNED_BY": 2517,
+       "ROUTES_TO": 3351,
+       "SEEN_IN": 18529,
+       "OWNED_BY": 2876,
        "SAME_AS": 0
       }
      },
      "1500": {
       "nodes": {
        "Team": 22,
-       "Entity": 1213,
-       "Issue": 2143
+       "Entity": 1248,
+       "Issue": 2470
       },
       "links": {
-       "ROUTES_TO": 3410,
-       "SEEN_IN": 16756,
-       "OWNED_BY": 2578,
+       "ROUTES_TO": 3494,
+       "SEEN_IN": 19219,
+       "OWNED_BY": 2962,
        "SAME_AS": 0
       }
      },
      "1600": {
       "nodes": {
        "Team": 22,
-       "Entity": 1217,
-       "Issue": 2212
+       "Entity": 1254,
+       "Issue": 2555
       },
       "links": {
-       "ROUTES_TO": 3536,
-       "SEEN_IN": 17352,
-       "OWNED_BY": 2674,
+       "ROUTES_TO": 3630,
+       "SEEN_IN": 19910,
+       "OWNED_BY": 3078,
        "SAME_AS": 0
       }
      },
      "1700": {
       "nodes": {
        "Team": 22,
-       "Entity": 1225,
-       "Issue": 2286
+       "Entity": 1257,
+       "Issue": 2618
       },
       "links": {
-       "ROUTES_TO": 3692,
-       "SEEN_IN": 18032,
-       "OWNED_BY": 2767,
+       "ROUTES_TO": 3770,
+       "SEEN_IN": 20496,
+       "OWNED_BY": 3157,
        "SAME_AS": 0
       }
      }
     },
     "counters": {
      "issues_learned": 1700,
-     "links_reweighted": 13621,
-     "shortcuts": 2260,
-     "misroutes": 583,
+     "links_reweighted": 13035,
+     "shortcuts": 2446,
+     "misroutes": 510,
      "merges": 0,
      "issues_pruned": 799,
      "splits": 0,
-     "gap_issues": 1385
+     "gap_issues": 1717
     },
-    "stream_top1": 0.6571,
+    "stream_top1": 0.7,
     "latency_ms": {
-     "median": 231.19,
-     "p95": 1338.41
+     "median": 179.19,
+     "p95": 549.39
     }
    },
    "merging": {
@@ -1940,7 +1940,7 @@
      "shortcut_scale": 2.0,
      "history_keep": 500,
      "merge_min_hits": 40,
-     "merge_similarity": 0.9,
+     "merge_similarity": 0.98,
      "split_min_misses": 10,
      "split_dominance": 0.5,
      "split_min_support": 3,
@@ -1998,7 +1998,7 @@
        "ROUTES_TO": 0,
        "SEEN_IN": 2222,
        "OWNED_BY": 355,
-       "SAME_AS": 2
+       "SAME_AS": 0
       }
      },
      "400": {
@@ -2011,7 +2011,7 @@
        "ROUTES_TO": 0,
        "SEEN_IN": 3002,
        "OWNED_BY": 473,
-       "SAME_AS": 14
+       "SAME_AS": 2
       }
      },
      "500": {
@@ -2024,7 +2024,7 @@
        "ROUTES_TO": 0,
        "SEEN_IN": 3713,
        "OWNED_BY": 581,
-       "SAME_AS": 30
+       "SAME_AS": 4
       }
      },
      "600": {
@@ -2037,7 +2037,7 @@
        "ROUTES_TO": 0,
        "SEEN_IN": 4417,
        "OWNED_BY": 693,
-       "SAME_AS": 34
+       "SAME_AS": 6
       }
      },
      "700": {
@@ -2050,7 +2050,7 @@
        "ROUTES_TO": 0,
        "SEEN_IN": 5173,
        "OWNED_BY": 816,
-       "SAME_AS": 50
+       "SAME_AS": 6
       }
      },
      "800": {
@@ -2063,7 +2063,7 @@
        "ROUTES_TO": 0,
        "SEEN_IN": 5886,
        "OWNED_BY": 936,
-       "SAME_AS": 70
+       "SAME_AS": 6
       }
      },
      "900": {
@@ -2076,7 +2076,7 @@
        "ROUTES_TO": 0,
        "SEEN_IN": 6698,
        "OWNED_BY": 1049,
-       "SAME_AS": 98
+       "SAME_AS": 10
       }
      },
      "1000": {
@@ -2089,7 +2089,7 @@
        "ROUTES_TO": 0,
        "SEEN_IN": 7418,
        "OWNED_BY": 1165,
-       "SAME_AS": 100
+       "SAME_AS": 12
       }
      },
      "1100": {
@@ -2102,7 +2102,7 @@
        "ROUTES_TO": 0,
        "SEEN_IN": 8242,
        "OWNED_BY": 1280,
-       "SAME_AS": 106
+       "SAME_AS": 12
       }
      },
      "1200": {
@@ -2115,7 +2115,7 @@
        "ROUTES_TO": 0,
        "SEEN_IN": 9039,
        "OWNED_BY": 1399,
-       "SAME_AS": 118
+       "SAME_AS": 14
       }
      },
      "1300": {
@@ -2128,7 +2128,7 @@
        "ROUTES_TO": 0,
        "SEEN_IN": 9882,
        "OWNED_BY": 1517,
-       "SAME_AS": 122
+       "SAME_AS": 20
       }
      },
      "1400": {
@@ -2141,7 +2141,7 @@
        "ROUTES_TO": 0,
        "SEEN_IN": 10588,
        "OWNED_BY": 1637,
-       "SAME_AS": 126
+       "SAME_AS": 20
       }
      },
      "1500": {
@@ -2154,7 +2154,7 @@
        "ROUTES_TO": 0,
        "SEEN_IN": 11494,
        "OWNED_BY": 1748,
-       "SAME_AS": 148
+       "SAME_AS": 30
       }
      },
      "1600": {
@@ -2167,7 +2167,7 @@
        "ROUTES_TO": 0,
        "SEEN_IN": 12287,
        "OWNED_BY": 1867,
-       "SAME_AS": 154
+       "SAME_AS": 30
       }
      },
      "1700": {
@@ -2180,7 +2180,7 @@
        "ROUTES_TO": 0,
        "SEEN_IN": 13176,
        "OWNED_BY": 1980,
-       "SAME_AS": 180
+       "SAME_AS": 40
       }
      }
     },
@@ -2188,16 +2188,16 @@
      "issues_learned": 1700,
      "links_reweighted": 0,
      "shortcuts": 0,
-     "misroutes": 694,
-     "merges": 90,
+     "misroutes": 653,
+     "merges": 20,
      "issues_pruned": 0,
      "splits": 0,
      "gap_issues": 0
     },
-    "stream_top1": 0.5918,
+    "stream_top1": 0.6159,
     "latency_ms": {
-     "median": 161.95,
-     "p95": 476.38
+     "median": 112.53,
+     "p95": 356.51
     }
    },
    "splitting": {
@@ -2241,11 +2241,11 @@
      "100": {
       "nodes": {
        "Team": 22,
-       "Entity": 1055,
+       "Entity": 1054,
        "Issue": 100
       },
       "links": {
-       "ROUTES_TO": 22,
+       "ROUTES_TO": 21,
        "SEEN_IN": 713,
        "OWNED_BY": 113,
        "SAME_AS": 0
@@ -2254,11 +2254,11 @@
      "200": {
       "nodes": {
        "Team": 22,
-       "Entity": 1074,
+       "Entity": 1072,
        "Issue": 200
       },
       "links": {
-       "ROUTES_TO": 53,
+       "ROUTES_TO": 50,
        "SEEN_IN": 1493,
        "OWNED_BY": 231,
        "SAME_AS": 0
@@ -2271,8 +2271,8 @@
        "Issue": 300
       },
       "links": {
-       "ROUTES_TO": 107,
-       "SEEN_IN": 2311,
+       "ROUTES_TO": 106,
+       "SEEN_IN": 2310,
        "OWNED_BY": 355,
        "SAME_AS": 0
       }
@@ -2280,12 +2280,12 @@
      "400": {
       "nodes": {
        "Team": 22,
-       "Entity": 1131,
+       "Entity": 1130,
        "Issue": 400
       },
       "links": {
-       "ROUTES_TO": 205,
-       "SEEN_IN": 3206,
+       "ROUTES_TO": 203,
+       "SEEN_IN": 3212,
        "OWNED_BY": 473,
        "SAME_AS": 0
       }
@@ -2293,12 +2293,12 @@
      "500": {
       "nodes": {
        "Team": 22,
-       "Entity": 1180,
+       "Entity": 1176,
        "Issue": 500
       },
       "links": {
-       "ROUTES_TO": 328,
-       "SEEN_IN": 4013,
+       "ROUTES_TO": 315,
+       "SEEN_IN": 4023,
        "OWNED_BY": 581,
        "SAME_AS": 0
       }
@@ -2306,12 +2306,12 @@
      "600": {
       "nodes": {
        "Team": 22,
-       "Entity": 1240,
+       "Entity": 1232,
        "Issue": 600
       },
       "links": {
-       "ROUTES_TO": 453,
-       "SEEN_IN": 4815,
+       "ROUTES_TO": 440,
+       "SEEN_IN": 4825,
        "OWNED_BY": 693,
        "SAME_AS": 0
       }
@@ -2319,12 +2319,12 @@
      "700": {
       "nodes": {
        "Team": 22,
-       "Entity": 1310,
+       "Entity": 1295,
        "Issue": 700
       },
       "links": {
-       "ROUTES_TO": 601,
-       "SEEN_IN": 5740,
+       "ROUTES_TO": 579,
+       "SEEN_IN": 5747,
        "OWNED_BY": 816,
        "SAME_AS": 0
       }
@@ -2332,12 +2332,12 @@
      "800": {
       "nodes": {
        "Team": 22,
-       "Entity": 1395,
+       "Entity": 1375,
        "Issue": 800
       },
       "links": {
-       "ROUTES_TO": 789,
-       "SEEN_IN": 6618,
+       "ROUTES_TO": 753,
+       "SEEN_IN": 6628,
        "OWNED_BY": 936,
        "SAME_AS": 0
       }
@@ -2345,12 +2345,12 @@
      "900": {
       "nodes": {
        "Team": 22,
-       "Entity": 1493,
+       "Entity": 1464,
        "Issue": 900
       },
       "links": {
-       "ROUTES_TO": 1019,
-       "SEEN_IN": 7648,
+       "ROUTES_TO": 968,
+       "SEEN_IN": 7644,
        "OWNED_BY": 1049,
        "SAME_AS": 0
       }
@@ -2358,12 +2358,12 @@
      "1000": {
       "nodes": {
        "Team": 22,
-       "Entity": 1603,
+       "Entity": 1566,
        "Issue": 1000
       },
       "links": {
-       "ROUTES_TO": 1266,
-       "SEEN_IN": 8614,
+       "ROUTES_TO": 1195,
+       "SEEN_IN": 8607,
        "OWNED_BY": 1165,
        "SAME_AS": 0
       }
@@ -2371,12 +2371,12 @@
      "1100": {
       "nodes": {
        "Team": 22,
-       "Entity": 1715,
+       "Entity": 1668,
        "Issue": 1100
       },
       "links": {
-       "ROUTES_TO": 1512,
-       "SEEN_IN": 9812,
+       "ROUTES_TO": 1449,
+       "SEEN_IN": 9792,
        "OWNED_BY": 1280,
        "SAME_AS": 0
       }
@@ -2384,12 +2384,12 @@
      "1200": {
       "nodes": {
        "Team": 22,
-       "Entity": 1831,
+       "Entity": 1775,
        "Issue": 1200
       },
       "links": {
-       "ROUTES_TO": 1800,
-       "SEEN_IN": 10970,
+       "ROUTES_TO": 1714,
+       "SEEN_IN": 10928,
        "OWNED_BY": 1399,
        "SAME_AS": 0
       }
@@ -2397,12 +2397,12 @@
      "1300": {
       "nodes": {
        "Team": 22,
-       "Entity": 1958,
+       "Entity": 1893,
        "Issue": 1300
       },
       "links": {
-       "ROUTES_TO": 2080,
-       "SEEN_IN": 12269,
+       "ROUTES_TO": 1965,
+       "SEEN_IN": 12209,
        "OWNED_BY": 1517,
        "SAME_AS": 0
       }
@@ -2410,12 +2410,12 @@
      "1400": {
       "nodes": {
        "Team": 22,
-       "Entity": 2097,
+       "Entity": 2018,
        "Issue": 1400
       },
       "links": {
-       "ROUTES_TO": 2370,
-       "SEEN_IN": 13306,
+       "ROUTES_TO": 2227,
+       "SEEN_IN": 13225,
        "OWNED_BY": 1637,
        "SAME_AS": 0
       }
@@ -2423,12 +2423,12 @@
      "1500": {
       "nodes": {
        "Team": 22,
-       "Entity": 2236,
+       "Entity": 2150,
        "Issue": 1500
       },
       "links": {
-       "ROUTES_TO": 2655,
-       "SEEN_IN": 14671,
+       "ROUTES_TO": 2527,
+       "SEEN_IN": 14581,
        "OWNED_BY": 1748,
        "SAME_AS": 0
       }
@@ -2436,12 +2436,12 @@
      "1600": {
       "nodes": {
        "Team": 22,
-       "Entity": 2381,
+       "Entity": 2288,
        "Issue": 1600
       },
       "links": {
-       "ROUTES_TO": 3003,
-       "SEEN_IN": 15905,
+       "ROUTES_TO": 2843,
+       "SEEN_IN": 15805,
        "OWNED_BY": 1867,
        "SAME_AS": 0
       }
@@ -2449,12 +2449,12 @@
      "1700": {
       "nodes": {
        "Team": 22,
-       "Entity": 2524,
+       "Entity": 2427,
        "Issue": 1700
       },
       "links": {
-       "ROUTES_TO": 3329,
-       "SEEN_IN": 17358,
+       "ROUTES_TO": 3181,
+       "SEEN_IN": 17247,
        "OWNED_BY": 1980,
        "SAME_AS": 0
       }
@@ -2464,16 +2464,16 @@
      "issues_learned": 1700,
      "links_reweighted": 0,
      "shortcuts": 0,
-     "misroutes": 669,
+     "misroutes": 621,
      "merges": 0,
      "issues_pruned": 0,
-     "splits": 1479,
+     "splits": 1382,
      "gap_issues": 0
     },
-    "stream_top1": 0.6065,
+    "stream_top1": 0.6347,
     "latency_ms": {
-     "median": 112.0,
-     "p95": 340.88
+     "median": 108.66,
+     "p95": 317.63
     }
    },
    "gap_filling": {
@@ -2496,7 +2496,7 @@
      "split_min_misses": 10,
      "split_dominance": 0.5,
      "split_min_support": 3,
-     "gap_confidence": 0.4,
+     "gap_confidence": 0.5,
      "gap_min_known": 12,
      "gap_pull": 10
     },
@@ -2517,221 +2517,221 @@
      "100": {
       "nodes": {
        "Team": 22,
-       "Entity": 1079,
-       "Issue": 314
+       "Entity": 1074,
+       "Issue": 290
       },
       "links": {
        "ROUTES_TO": 0,
-       "SEEN_IN": 2291,
-       "OWNED_BY": 361,
+       "SEEN_IN": 2077,
+       "OWNED_BY": 332,
        "SAME_AS": 0
       }
      },
      "200": {
       "nodes": {
        "Team": 22,
-       "Entity": 1105,
-       "Issue": 593
+       "Entity": 1101,
+       "Issue": 565
       },
       "links": {
        "ROUTES_TO": 0,
-       "SEEN_IN": 4430,
-       "OWNED_BY": 699,
+       "SEEN_IN": 4190,
+       "OWNED_BY": 666,
        "SAME_AS": 0
       }
      },
      "300": {
       "nodes": {
        "Team": 22,
-       "Entity": 1136,
-       "Issue": 900
+       "Entity": 1126,
+       "Issue": 847
       },
       "links": {
        "ROUTES_TO": 0,
-       "SEEN_IN": 6810,
-       "OWNED_BY": 1071,
+       "SEEN_IN": 6353,
+       "OWNED_BY": 1006,
        "SAME_AS": 0
       }
      },
      "400": {
       "nodes": {
        "Team": 22,
-       "Entity": 1154,
-       "Issue": 1116
+       "Entity": 1144,
+       "Issue": 1064
       },
       "links": {
        "ROUTES_TO": 0,
-       "SEEN_IN": 8490,
-       "OWNED_BY": 1337,
+       "SEEN_IN": 8040,
+       "OWNED_BY": 1271,
        "SAME_AS": 0
       }
      },
      "500": {
       "nodes": {
        "Team": 22,
-       "Entity": 1165,
-       "Issue": 1326
+       "Entity": 1155,
+       "Issue": 1274
       },
       "links": {
        "ROUTES_TO": 0,
-       "SEEN_IN": 10011,
-       "OWNED_BY": 1571,
+       "SEEN_IN": 9557,
+       "OWNED_BY": 1504,
        "SAME_AS": 0
       }
      },
      "600": {
       "nodes": {
        "Team": 22,
-       "Entity": 1183,
-       "Issue": 1567
+       "Entity": 1171,
+       "Issue": 1508
       },
       "links": {
        "ROUTES_TO": 0,
-       "SEEN_IN": 11770,
-       "OWNED_BY": 1849,
+       "SEEN_IN": 11284,
+       "OWNED_BY": 1771,
        "SAME_AS": 0
       }
      },
      "700": {
       "nodes": {
        "Team": 22,
-       "Entity": 1203,
-       "Issue": 1803
+       "Entity": 1193,
+       "Issue": 1748
       },
       "links": {
        "ROUTES_TO": 0,
-       "SEEN_IN": 13567,
-       "OWNED_BY": 2132,
+       "SEEN_IN": 13147,
+       "OWNED_BY": 2058,
        "SAME_AS": 0
       }
      },
      "800": {
       "nodes": {
        "Team": 22,
-       "Entity": 1221,
-       "Issue": 2021
+       "Entity": 1211,
+       "Issue": 1968
       },
       "links": {
        "ROUTES_TO": 0,
-       "SEEN_IN": 15282,
-       "OWNED_BY": 2388,
+       "SEEN_IN": 14890,
+       "OWNED_BY": 2316,
        "SAME_AS": 0
       }
      },
      "900": {
       "nodes": {
        "Team": 22,
-       "Entity": 1233,
-       "Issue": 2220
+       "Entity": 1223,
+       "Issue": 2170
       },
       "links": {
        "ROUTES_TO": 0,
-       "SEEN_IN": 16846,
-       "OWNED_BY": 2615,
+       "SEEN_IN": 16480,
+       "OWNED_BY": 2548,
        "SAME_AS": 0
       }
      },
      "1000": {
       "nodes": {
        "Team": 22,
-       "Entity": 1246,
-       "Issue": 2411
+       "Entity": 1235,
+       "Issue": 2361
       },
       "links": {
        "ROUTES_TO": 0,
-       "SEEN_IN": 18304,
-       "OWNED_BY": 2840,
+       "SEEN_IN": 17953,
+       "OWNED_BY": 2775,
        "SAME_AS": 0
       }
      },
      "1100": {
       "nodes": {
        "Team": 22,
-       "Entity": 1253,
-       "Issue": 2588
+       "Entity": 1242,
+       "Issue": 2541
       },
       "links": {
        "ROUTES_TO": 0,
-       "SEEN_IN": 19647,
-       "OWNED_BY": 3055,
+       "SEEN_IN": 19310,
+       "OWNED_BY": 2992,
        "SAME_AS": 0
       }
      },
      "1200": {
       "nodes": {
        "Team": 22,
-       "Entity": 1260,
-       "Issue": 2758
+       "Entity": 1250,
+       "Issue": 2714
       },
       "links": {
        "ROUTES_TO": 0,
-       "SEEN_IN": 20959,
-       "OWNED_BY": 3257,
+       "SEEN_IN": 20651,
+       "OWNED_BY": 3199,
        "SAME_AS": 0
       }
      },
      "1300": {
       "nodes": {
        "Team": 22,
-       "Entity": 1265,
-       "Issue": 2902
+       "Entity": 1256,
+       "Issue": 2862
       },
       "links": {
        "ROUTES_TO": 0,
-       "SEEN_IN": 22104,
-       "OWNED_BY": 3427,
+       "SEEN_IN": 21815,
+       "OWNED_BY": 3376,
        "SAME_AS": 0
       }
      },
      "1400": {
       "nodes": {
        "Team": 22,
-       "Entity": 1267,
-       "Issue": 3035
+       "Entity": 1259,
+       "Issue": 2993
       },
       "links": {
        "ROUTES_TO": 0,
-       "SEEN_IN": 23044,
-       "OWNED_BY": 3585,
+       "SEEN_IN": 22744,
+       "OWNED_BY": 3533,
        "SAME_AS": 0
       }
      },
      "1500": {
       "nodes": {
        "Team": 22,
-       "Entity": 1269,
-       "Issue": 3172
+       "Entity": 1261,
+       "Issue": 3130
       },
       "links": {
        "ROUTES_TO": 0,
-       "SEEN_IN": 24244,
-       "OWNED_BY": 3743,
+       "SEEN_IN": 23947,
+       "OWNED_BY": 3691,
        "SAME_AS": 0
       }
      },
      "1600": {
       "nodes": {
        "Team": 22,
-       "Entity": 1274,
-       "Issue": 3329
+       "Entity": 1266,
+       "Issue": 3288
       },
       "links": {
        "ROUTES_TO": 0,
-       "SEEN_IN": 25496,
-       "OWNED_BY": 3936,
+       "SEEN_IN": 25204,
+       "OWNED_BY": 3887,
        "SAME_AS": 0
       }
      },
      "1700": {
       "nodes": {
        "Team": 22,
-       "Entity": 1277,
-       "Issue": 3457
+       "Entity": 1269,
+       "Issue": 3418
       },
       "links": {
        "ROUTES_TO": 0,
-       "SEEN_IN": 26593,
-       "OWNED_BY": 4086,
+       "SEEN_IN": 26309,
+       "OWNED_BY": 4036,
        "SAME_AS": 0
       }
      }
@@ -2740,23 +2740,23 @@
      "issues_learned": 1700,
      "links_reweighted": 0,
      "shortcuts": 0,
-     "misroutes": 645,
+     "misroutes": 605,
      "merges": 0,
      "issues_pruned": 0,
      "splits": 0,
-     "gap_issues": 1757
+     "gap_issues": 1718
     },
-    "stream_top1": 0.6206,
+    "stream_top1": 0.6441,
     "latency_ms": {
-     "median": 279.07,
-     "p95": 875.9
+     "median": 243.97,
+     "p95": 770.99
     }
    }
   },
   "summary": {
-   "top1_gap": 0.09,
-   "top3_gap": 0.05,
-   "misroutes_avoided_per_1000": 90
+   "top1_gap": 0.1067,
+   "top3_gap": 0.0767,
+   "misroutes_avoided_per_1000": 107
   },
   "params_note": "values tuned on the learning stream only (eval/tune_stream.py, results/tuning.json); each line's own params are in meta.lines"
  }

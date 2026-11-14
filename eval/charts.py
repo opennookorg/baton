@@ -60,7 +60,7 @@ def line_chart(title: str, subtitle: str, series: list[dict], x_max: int, y_max:
         while any(abs(label_y - other) < 30 for other in label_ys):
             label_y += 4
         label_ys.append(label_y)
-        parts.append(f'<text x="{sx(end_x) + 10:.1f}" y="{label_y:.1f}" font-size="13" font-weight="600" fill="{INK}">{escape(line["name"])}</text>')
+        parts.append(f'<text x="{sx(end_x) + 10:.1f}" y="{label_y:.1f}" font-size="13" font-weight="600" fill="{line["color"]}">{escape(line["name"])}</text>')
         parts.append(f'<text x="{sx(end_x) + 10:.1f}" y="{label_y + 15:.1f}" font-size="12" fill="{INK_2}">{escape(line["label"])}</text>')
     parts.append("</svg>")
     return "\n".join(parts)
