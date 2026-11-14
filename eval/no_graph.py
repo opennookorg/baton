@@ -27,7 +27,7 @@ class Lookup:
 
     def rank(self, entities: list[str]) -> list[str]:
         scores: Counter = Counter()
-        for entity in set(entities):
+        for entity in sorted(set(entities)):
             seen = self.counts.get(entity)
             if seen:
                 total = sum(seen.values())
@@ -51,7 +51,7 @@ class NaiveBayes:
         self.vocabulary |= set(entities)
 
     def rank(self, entities: list[str]) -> list[str]:
-        known = [e for e in set(entities) if e in self.vocabulary]
+        known = sorted(e for e in set(entities) if e in self.vocabulary)
         if not known:
             return []
         issues = sum(self.team_issues.values())
