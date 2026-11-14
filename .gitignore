@@ -5,3 +5,6 @@ __pycache__/
 .hydradb/
 .env
 .DS_Store
+results/curve_offline.json
+results/live_state.json
+results/*.tmp

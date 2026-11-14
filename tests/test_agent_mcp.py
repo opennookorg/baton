@@ -92,7 +92,11 @@ def test_record_outcome_rejects_blank_team(fake_service):
     assert result.is_error and "team" in result.content[0].text
 
 
-def test_not_implemented_becomes_readable_error():
+def test_not_implemented_becomes_readable_error(monkeypatch):
+    def not_ready(title, body):
+        raise NotImplementedError
+
+    monkeypatch.setattr(service, "route_issue", not_ready)
     result = call("route_issue", {"title": "a", "body": "b"})
     assert result.is_error
     assert "not ready yet" in result.content[0].text

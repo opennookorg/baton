@@ -28,7 +28,7 @@ UPSERT_OWNED_BY = (
 UPSERT_ROUTES = (
     "UNWIND $rows AS row MATCH (e:Entity {id: row.entity}), (t:Team {id: row.team}) "
     "MERGE (e)-[r:ROUTES_TO {id: row.rid}]->(t) "
-    "SET r.strength = row.strength, r.cost = row.cost, r.hits = row.hits, r.misses = row.misses"
+    "SET r.strength = row.strength, r.cost = row.cost, r.hits = row.hits, r.misses = row.misses, r.shortcut = row.shortcut"
 )
 UPSERT_SAME_AS = (
     "UNWIND $rows AS row MATCH (a:Entity {id: row.a}), (b:Entity {id: row.b}) "
@@ -36,7 +36,8 @@ UPSERT_SAME_AS = (
 )
 DELETE_BY_ID = "UNWIND $rows AS row MATCH (n {id: row.id}) DETACH DELETE n"
 ROUTE_COLUMNS = (
-    "e.id AS entity, t.id AS team, r.strength AS strength, r.cost AS cost, r.hits AS hits, r.misses AS misses"
+    "e.id AS entity, t.id AS team, r.strength AS strength, r.cost AS cost, r.hits AS hits, r.misses AS misses, "
+    "r.shortcut AS shortcut"
 )
 
 
@@ -98,19 +99,19 @@ def upsert_entities(entities: Iterable[tuple[int, str, str]]) -> int:
 
 
 def upsert_issues(issues: Iterable[dict]) -> int:
-    """MERGE Issue nodes from {id, number, title, team, entities}, with SEEN_IN and OWNED_BY links."""
+    """MERGE Issue nodes from {id, number, title, team or teams, entities}, with SEEN_IN and OWNED_BY links."""
     issues = list(issues)
     write_rows(UPSERT_ISSUE_NODES, ({"id": i["id"], "number": i["number"], "title": i["title"]} for i in issues))
     seen_in = ({"entity": e, "issue": i["id"], "cost": HISTORY_COST} for i in issues for e in i["entities"])
     write_links(UPSERT_SEEN_IN, "SEEN_IN", seen_in, "entity", "issue")
-    owned_by = ({"issue": i["id"], "team": i["team"], "cost": HISTORY_COST} for i in issues)
+    owned_by = ({"issue": i["id"], "team": t, "cost": HISTORY_COST} for i in issues for t in i.get("teams") or [i["team"]])
     write_links(UPSERT_OWNED_BY, "OWNED_BY", owned_by, "issue", "team")
     return len(issues)
 
 
 def upsert_routes(routes: Iterable[dict]) -> int:
-    """MERGE ROUTES_TO links from {entity, team, strength, cost, hits, misses}."""
-    return write_links(UPSERT_ROUTES, "ROUTES_TO", routes, "entity", "team")
+    """MERGE ROUTES_TO links from {entity, team, strength, cost, hits, misses, shortcut (default False)}."""
+    return write_links(UPSERT_ROUTES, "ROUTES_TO", ({"shortcut": False, **row} for row in routes), "entity", "team")
 
 
 def upsert_same_as(pairs: Iterable[tuple[int, int]]) -> int:
