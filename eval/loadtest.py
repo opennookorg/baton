@@ -57,7 +57,7 @@ class LearnUser(HttpUser):
     @task
     def learn(self):
         issue = next(LEARNING_STREAM)
-        self.client.post("/learn", json={"issue": issue, "team": issue["sigs"][0]}, name="/learn")
+        self.client.post("/learn", json={**issue, "team": issue["sigs"][0]}, name="/learn")
 
 
 def summarize(stats) -> dict:

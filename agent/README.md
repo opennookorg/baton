@@ -51,7 +51,7 @@ uv run pytest tests/test_agent_mcp.py
 
 ## Load test
 
-`eval/loadtest.py` (Locust) measures `/route` while `/learn` writes. `RouteUser` posts test-split issues (newest 300 of `data/issues.jsonl` by `created_at`, or a built-in sample when the file is missing) to `POST /route`. `LearnUser` (2 users) posts learning-stream issues in date order to `POST /learn` as `{"issue": <issues.jsonl row>, "team": sigs[0]}`.
+`eval/loadtest.py` (Locust) measures `/route` while `/learn` writes. `RouteUser` posts test-split issues (newest 300 of `data/issues.jsonl` by `created_at`, or a built-in sample when the file is missing) to `POST /route`. `LearnUser` (2 users) posts learning-stream issues in date order to `POST /learn` as the flat `issues.jsonl` row plus `"team": sigs[0]`.
 
 With the API running (`uv run uvicorn app.server:app --port 8000`):
 
