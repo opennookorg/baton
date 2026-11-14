@@ -155,6 +155,20 @@ PHRASE_TOKEN = re.compile(r"[a-z][a-z0-9]*")
 ERROR_WORDS = 6
 VAGUE_PHRASES = frozenset("true false nil null none name kind value values error err failed status running master main yes no".split())
 WORD_SYNONYMS = {"flaky": "flake", "flaking": "flake", "flakes": "flake", "flakiness": "flake"}
+HIDE_SIG_MENTIONS = True
+SIG_NAMES = (
+    "api-machinery apps architecture auth autoscaling cli cloud-provider cluster-lifecycle contributor-experience docs "
+    "etcd instrumentation k8s-infra network node release scalability scheduling security storage testing windows"
+).split()
+SIG_MENTION = re.compile(
+    r"(?<![a-z0-9])sig(?:[\s\-/_]+(?:" + "|".join(re.escape(n) for n in sorted(SIG_NAMES, key=len, reverse=True)) + r")s?)?(?![a-z0-9])",
+    re.IGNORECASE,
+)
+
+
+def hide_sig_mentions(text: str) -> str:
+    """Blank out sig names written in the text (`[sig-node]`, `/sig node`), which would give the answer away."""
+    return SIG_MENTION.sub(" ", text)
 
 
 def strip_noise(body: str) -> str:
@@ -237,8 +251,10 @@ def title_words(title: str) -> set[str]:
     return words
 
 
-def extract(title: str, body: str, reporter: str) -> list[Entity]:
-    """Extract the distinct entities of one issue, sorted by name."""
+def extract(title: str, body: str, reporter: str, hide_sigs: bool = HIDE_SIG_MENTIONS) -> list[Entity]:
+    """Extract the distinct entities of one issue, sorted by name; `hide_sigs` drops sig mentions first."""
+    if hide_sigs:
+        title, body = hide_sig_mentions(title), hide_sig_mentions(body or "")
     title_text = title.lower()
     full_text = strip_noise(body or "").lower()
     prose_text = prose(full_text)
@@ -252,9 +268,9 @@ def extract(title: str, body: str, reporter: str) -> list[Entity]:
     return [Entity(name, kind_of(name)) for name in sorted(names)]
 
 
-def extract_issue(issue: Issue) -> list[Entity]:
+def extract_issue(issue: Issue, hide_sigs: bool = HIDE_SIG_MENTIONS) -> list[Entity]:
     """Extract entities from an Issue."""
-    return extract(issue.title, issue.body, issue.reporter)
+    return extract(issue.title, issue.body, issue.reporter, hide_sigs)
 
 
 def kind_of(name: str) -> EntityKind:
@@ -267,7 +283,9 @@ def display_name(name: str) -> str:
     return name.split(":", 1)[1]
 
 
-def build_vocabulary(issues: Iterable[Issue], min_issues: int = 3) -> dict[str, EntityKind]:
+def build_vocabulary(
+    issues: Iterable[Issue], min_issues: int = 3, hide_sigs: bool = HIDE_SIG_MENTIONS
+) -> dict[str, EntityKind]:
     """Map each entity name seen in at least `min_issues` issues to its kind, counting once per issue."""
-    counts = Counter(entity.name for issue in issues for entity in set(extract_issue(issue)))
+    counts = Counter(entity.name for issue in issues for entity in set(extract_issue(issue, hide_sigs)))
     return {name: kind_of(name) for name, count in sorted(counts.items()) if count >= min_issues}

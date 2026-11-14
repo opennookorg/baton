@@ -77,3 +77,11 @@ def test_build_vocabulary_counts_once_per_issue():
     issues = [issue(1, "kubelet kubelet", "a"), issue(2, "kubelet", "a"), issue(3, "etcd", "b"), issue(4, "kubelet etcd", "c")]
     vocabulary = build_vocabulary(issues, min_issues=3)
     assert vocabulary == {"comp:kubelet": "component"}
+
+
+def test_sig_mentions_are_hidden_by_default():
+    title = "[Failing test] [sig-node] Kubernetes e2e suite.[It] [sig-network] `sig network` pod restarts"
+    found = names(title, "/sig node\nsig/storage owns this")
+    assert not {name for name in found if "sig" in name}
+    assert "comp:pod" in found
+    assert "word:sig-node" in {entity.name for entity in extract(title, "", "", hide_sigs=False)}
