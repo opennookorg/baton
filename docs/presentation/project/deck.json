@@ -1,0 +1,67 @@
+{
+  "v": 5,
+  "createdOnFiles": {
+    "v": 1,
+    "at": "2026-11-14T16:10:27Z"
+  },
+  "lists": "css",
+  "format": {
+    "v": 1,
+    "shared": [
+      "project/deck.css"
+    ]
+  },
+  "title": "Baton: HydraDB Hackathon",
+  "cover": "cover",
+  "order": [
+    "cover",
+    "problem",
+    "how",
+    "graph",
+    "story",
+    "metrics",
+    "curve",
+    "misroutes",
+    "ablation",
+    "whygraph",
+    "recovery",
+    "load",
+    "buyer",
+    "product",
+    "launch",
+    "close"
+  ],
+  "sections": {
+    "s1": {
+      "description": "What Baton is, how it routes and learns, and one real issue over time.",
+      "start": "cover"
+    },
+    "s2": {
+      "description": "Technical implementation: the metrics, the learning curve against baselines, the ablations, why the graph matters, recovery and load.",
+      "start": "metrics"
+    },
+    "s3": {
+      "description": "Go-to-market: who it is for, the product and pricing, and the launch plan.",
+      "start": "buyer"
+    },
+    "s4": {
+      "description": "Where to try it.",
+      "start": "close"
+    }
+  },
+  "faces": {
+    "space-grotesk": {
+      "family": "Space Grotesk",
+      "href": "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400..700&display=swap"
+    },
+    "inter": {
+      "family": "Inter",
+      "href": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+    },
+    "jetbrains-mono": {
+      "family": "JetBrains Mono",
+      "href": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap"
+    }
+  },
+  "designSystems": []
+}

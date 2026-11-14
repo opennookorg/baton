@@ -1,0 +1,20 @@
+<section id="ablation" class="light with-foot" style="gap: 40px;">
+<div class="head">
+<p class="eyebrow">Technical · ablations</p>
+<h2>Every technique has its own line</h2>
+</div>
+<table class="fade" style="font-size: 26px; color: #14181F;">
+<tr><th style="width: 17%;">Line</th><th style="width: 47%;">What it does</th><th style="width: 11%; text-align: right;">Top-1</th><th style="width: 11%; text-align: right;">Top-3</th><th style="width: 14%; text-align: right;">In baton</th></tr>
+<tr><td>frozen</td><td>graph built once from 200 issues, never updated</td><td style="text-align: right;">51.7%</td><td style="text-align: right;">69.7%</td><td style="text-align: right;">baseline</td></tr>
+<tr><td>count_only</td><td>every issue added, links weighted by raw counts</td><td style="text-align: right;">58.0%</td><td style="text-align: right;">77.3%</td><td style="text-align: right;">baseline</td></tr>
+<tr><td>reweight</td><td>reward and penalise links by outcome</td><td style="text-align: right;">64.7%</td><td style="text-align: right;">82.0%</td><td style="text-align: right;">yes</td></tr>
+<tr><td>shortcuts</td><td>direct entity-to-team links for strong patterns</td><td style="text-align: right;">61.3%</td><td style="text-align: right;">80.0%</td><td style="text-align: right;">yes</td></tr>
+<tr><td>gap_filling</td><td>pull older issues where the graph knows little</td><td style="text-align: right;">61.3%</td><td style="text-align: right;">79.0%</td><td style="text-align: right;">yes</td></tr>
+<tr><td>merging</td><td>SAME_AS links between entities that agree</td><td style="text-align: right;">58.3%</td><td style="text-align: right;">77.3%</td><td style="text-align: right;">no</td></tr>
+<tr><td>splitting</td><td>split an entity whose misses cluster by context</td><td style="text-align: right;">61.3%</td><td style="text-align: right;">84.3%</td><td style="text-align: right;">no</td></tr>
+<tr class="band"><td>baton</td><td>reweight + shortcuts + gap filling</td><td style="text-align: right;">67.0%</td><td style="text-align: right;">82.3%</td><td style="text-align: right;">all three</td></tr>
+</table>
+<p class="small muted" style="width: 1500px;">Picked by forward selection on learning-stream accuracy, needing +0.003 to join. Splitting has the best test top-3 and is still left out: choosing by test score would be cheating.</p>
+<div class="foot"><p>Test scores at 1,700 issues learned, live on HydraDB · results/curve.json</p><div class="pg"></div></div>
+<aside>Each technique was built and measured on its own, against the same held-out set. Reweighting does most of the work. Baton is reweight plus shortcuts plus gap filling, chosen by forward selection on the learning stream, where a technique had to add at least 0.003 of stream accuracy to join. Merging and splitting did not clear that bar, so they are out, even though splitting has the best test top-3. Choosing by test score would be overfitting to the test set.</aside>
+</section>
