@@ -75,11 +75,13 @@ def record_outcome(issue: Issue, team: str) -> dict:
         raise ValueError(f"unknown team {team!r}")
     with learn_lock:
         live = learner()
+        if issue.number in live.state.history or issue.number in live.state.learned_order:
+            return {"team": team, "issue": issue.number, "already_learned": True}
         outcome = live.learn(issue, [team])
         LIVE_STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
         LIVE_STATE_FILE.write_text(json.dumps(live.state.to_json(), separators=(",", ":")) + "\n")
     keys = ("issue", "predicted", "correct", "links_reweighted", "shortcuts_created", "merges")
-    return {"team": team, **{key: outcome[key] for key in keys}}
+    return {"team": team, "already_learned": False, **{key: outcome[key] for key in keys}}
 
 
 def curve() -> dict:

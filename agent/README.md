@@ -51,7 +51,7 @@ uv run pytest tests/test_agent_mcp.py
 
 ## Load test
 
-`eval/loadtest.py` (Locust) measures `/route` while `/learn` writes. `RouteUser` posts test-split issues (newest 300 of `data/issues.jsonl` by `created_at`, or a built-in sample when the file is missing) to `POST /route`. `LearnUser` (2 users) posts learning-stream issues in date order to `POST /learn` as the flat `issues.jsonl` row plus `"team": sigs[0]`.
+`eval/loadtest.py` (Locust) measures `/route` while `/learn` writes. `RouteUser` posts test-split issues (newest 300 of `data/issues.jsonl` by `created_at`, or a built-in sample when the file is missing) to `POST /route`. `LearnUser` (2 users) posts reserve-pool issues (`data/reserve.jsonl`, newest first) to `POST /learn` as the flat row plus `"team": sigs[0]`. Issues the graph already holds are a no-op, the rest are real learning writes.
 
 With the API running (`uv run uvicorn app.server:app --port 8000`):
 
@@ -61,4 +61,4 @@ uv run python -m eval.loadtest
 
 That runs headless with 20 users (18 routing, 2 learning), spawn rate 5, for 60 s against http://localhost:8000, and writes median and p95 response times per endpoint to `results/loadtest.json`. Extra Locust flags override the defaults, for example `uv run python -m eval.loadtest -t 120s -H http://127.0.0.1:9000`.
 
-`/learn` changes the graph, so run it against a graph you can rebuild.
+`/learn` changes the graph. Afterwards stop the API and run `uv run python -m eval.restore_graph` to put back the 1,700-issue snapshot.

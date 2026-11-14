@@ -1,4 +1,5 @@
 import json
+from dataclasses import replace
 
 import pytest
 
@@ -46,14 +47,22 @@ def test_lookup_tools_read_the_learned_graph(offline):
 
 def test_record_outcome_learns_and_saves_state(offline):
     before = offline.state.counters["issues_learned"]
-    issue = ISSUES[0]
+    issue = replace(ISSUES[0], number=ISSUES[0].number + 10_000)
     result = service.record_outcome(issue, NODE)
-    assert set(result) == {"issue", "team", "predicted", "correct", "links_reweighted", "shortcuts_created", "merges"}
-    assert result["team"] == NODE and result["issue"] == issue.number
+    assert set(result) == {"issue", "team", "already_learned", "predicted", "correct", "links_reweighted", "shortcuts_created", "merges"}
+    assert result["team"] == NODE and result["issue"] == issue.number and not result["already_learned"]
     assert offline.state.counters["issues_learned"] == before + 1
     assert service.LIVE_STATE_FILE.exists()
     with pytest.raises(ValueError):
         service.record_outcome(issue, "sig/not-a-team")
+
+
+def test_record_outcome_on_a_learned_issue_changes_nothing(offline):
+    saved = json.dumps(offline.state.to_json(), sort_keys=True)
+    for issue in ISSUES:
+        assert service.record_outcome(issue, NODE) == {"team": NODE, "issue": issue.number, "already_learned": True}
+    assert json.dumps(offline.state.to_json(), sort_keys=True) == saved
+    assert not service.LIVE_STATE_FILE.exists()
 
 
 def test_route_as_of_scores_against_a_snapshot(offline, monkeypatch):
