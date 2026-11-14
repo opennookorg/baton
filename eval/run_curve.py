@@ -28,9 +28,9 @@ LINES = {
     "baton": BATON_TECHNIQUES,
 }
 LINE_PARAMS = {
-    "merging": replace(LearnParams(), merge_similarity=0.9, merge_min_hits=40),
+    "merging": replace(LearnParams(), merge_similarity=0.98, merge_min_hits=40),
     "splitting": replace(LearnParams(), split_min_misses=5, split_dominance=0.6, split_min_support=2),
-    "gap_filling": replace(LearnParams(), gap_confidence=0.4, gap_min_known=12, gap_pull=10),
+    "gap_filling": replace(LearnParams(), gap_confidence=0.5, gap_min_known=12, gap_pull=10),
     "baton": BATON_PARAMS,
 }
 DEFAULT_LINES = ("frozen", "count_only", "reweight", "shortcuts", "merging", "splitting", "gap_filling", "baton")

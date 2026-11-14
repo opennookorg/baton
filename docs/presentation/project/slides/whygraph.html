@@ -8,7 +8,7 @@
 <div class="rise" style="--i:0; display: flex; flex-direction: column; gap: 8px;"><h3>Answers are multi-hop</h3><p class="small muted">An issue reaches a team through past fixes: entity → issue → team. A lookup table sees one hop.</p></div>
 <div class="rise" style="--i:1; display: flex; flex-direction: column; gap: 8px;"><h3>Learning edits the graph</h3><p class="small muted">Reweighting changes one link’s cost. Shortcuts add entity → team links. Gap filling adds older issues as nodes.</p></div>
 <div class="rise" style="--i:2; display: flex; flex-direction: column; gap: 8px;"><h3>One query scores every team</h3><p class="small muted">One weighted algo.MSpaths call ranks all 22 teams and returns the cheapest path as the reason.</p></div>
-<div class="rise" style="--i:3; display: flex; flex-direction: column; gap: 8px;"><h3>The plain-store baseline is 58.0%</h3><p class="small muted">count_only is the same data kept as counts. The 9 extra points come from what the graph does with its links.</p></div>
+<div class="rise" style="--i:3; display: flex; flex-direction: column; gap: 8px;"><h3>Against a plain store, measured</h3><p class="small muted">Naive Bayes with no graph ties Baton on the fixed test set (70.3% vs 70.0%). Routing live, Baton wins 70.0% to 64.5% (McNemar z = 5.8) and relearns a reorg faster.</p></div>
 </div>
 <div class="code fade" style="--i:2; width: 772px; box-sizing: border-box;">
 <p><span class="kw">CALL</span> algo.MSpaths({</p>
@@ -23,8 +23,9 @@
 <p class="in">weightProp: <span class="str">'cost'</span></p>
 <p>}) <span class="kw">YIELD</span> path, pathWeight</p>
 <p style="padding-top: 24px; color: #AEB6C2;">score(team) = Σ 1 / pathWeight</p>
+<p style="color: #AEB6C2;">  ÷ teams the path's entity reaches</p>
 </div>
 </div>
 <div class="foot"><p>From baton/db.py · learning writes go back as batched UNWIND … MERGE</p><div class="pg"></div></div>
-<aside>The judges asked whether the graph is doing real work, and whether this would fall apart on a plain store. Three reasons it would. Answers are multi-hop: entity to past issue to team. Learning is graph surgery: reweighting changes one link's cost, shortcuts add new links, gap filling adds nodes. And one weighted path query scores every team and gives the reason. The count_only line is the plain-store version of the same data, and it stops at 58 percent. Learning writes go back to HydraDB through batched UNWIND MERGE statements.</aside>
+<aside>The judges asked whether the graph is doing real work, and whether this would fall apart on a plain store. Three reasons it would. Answers are multi-hop: entity to past issue to team. Learning is graph surgery: reweighting changes one link's cost, shortcuts add new links, gap filling adds nodes. And one weighted path query scores every team and gives the reason. We also measured it. Naive Bayes on the same words with no graph ties Baton on the fixed test set, 70.3 against 70.0, which is within noise. Routing live, each issue before its answer is known, Baton wins 70 to 64.5 over 1,700 issues, far outside chance, and after a reorg it is at 73 percent on the moved team when naive Bayes is at 39. And it gives the path as the reason. Learning writes go back to HydraDB through batched UNWIND MERGE statements.</aside>
 </section>

@@ -1,0 +1,404 @@
+{
+ "lines": {
+  "lookup": {
+   "issues": 1700,
+   "top1": 0.6033,
+   "top3": 0.83,
+   "stream_top1": 0.6171,
+   "points": [
+    {
+     "issues": 100,
+     "top1": 0.5433,
+     "top3": 0.7333
+    },
+    {
+     "issues": 200,
+     "top1": 0.57,
+     "top3": 0.74
+    },
+    {
+     "issues": 300,
+     "top1": 0.5567,
+     "top3": 0.7667
+    },
+    {
+     "issues": 400,
+     "top1": 0.5767,
+     "top3": 0.78
+    },
+    {
+     "issues": 500,
+     "top1": 0.5533,
+     "top3": 0.7867
+    },
+    {
+     "issues": 600,
+     "top1": 0.5633,
+     "top3": 0.7633
+    },
+    {
+     "issues": 700,
+     "top1": 0.57,
+     "top3": 0.78
+    },
+    {
+     "issues": 800,
+     "top1": 0.55,
+     "top3": 0.78
+    },
+    {
+     "issues": 900,
+     "top1": 0.5567,
+     "top3": 0.79
+    },
+    {
+     "issues": 1000,
+     "top1": 0.5533,
+     "top3": 0.79
+    },
+    {
+     "issues": 1100,
+     "top1": 0.5667,
+     "top3": 0.8
+    },
+    {
+     "issues": 1200,
+     "top1": 0.5767,
+     "top3": 0.81
+    },
+    {
+     "issues": 1300,
+     "top1": 0.58,
+     "top3": 0.8167
+    },
+    {
+     "issues": 1400,
+     "top1": 0.59,
+     "top3": 0.82
+    },
+    {
+     "issues": 1500,
+     "top1": 0.5767,
+     "top3": 0.8267
+    },
+    {
+     "issues": 1600,
+     "top1": 0.59,
+     "top3": 0.83
+    },
+    {
+     "issues": 1700,
+     "top1": 0.6033,
+     "top3": 0.83
+    }
+   ],
+   "recovery": [
+    {
+     "issues": 100,
+     "top1": 0.5433,
+     "top3": 0.7333,
+     "moved_top1": 0.4314
+    },
+    {
+     "issues": 200,
+     "top1": 0.57,
+     "top3": 0.74,
+     "moved_top1": 0.5294
+    },
+    {
+     "issues": 300,
+     "top1": 0.5567,
+     "top3": 0.7667,
+     "moved_top1": 0.5098
+    },
+    {
+     "issues": 400,
+     "top1": 0.5767,
+     "top3": 0.78,
+     "moved_top1": 0.5098
+    },
+    {
+     "issues": 500,
+     "top1": 0.5533,
+     "top3": 0.7867,
+     "moved_top1": 0.4706
+    },
+    {
+     "issues": 600,
+     "top1": 0.5633,
+     "top3": 0.7633,
+     "moved_top1": 0.4706
+    },
+    {
+     "issues": 700,
+     "top1": 0.57,
+     "top3": 0.78,
+     "moved_top1": 0.4706
+    },
+    {
+     "issues": 800,
+     "top1": 0.55,
+     "top3": 0.78,
+     "moved_top1": 0.4314
+    },
+    {
+     "issues": 900,
+     "top1": 0.52,
+     "top3": 0.68,
+     "moved_top1": 0.2157
+    },
+    {
+     "issues": 1000,
+     "top1": 0.5167,
+     "top3": 0.6933,
+     "moved_top1": 0.2157
+    },
+    {
+     "issues": 1100,
+     "top1": 0.5267,
+     "top3": 0.71,
+     "moved_top1": 0.2157
+    },
+    {
+     "issues": 1200,
+     "top1": 0.5367,
+     "top3": 0.74,
+     "moved_top1": 0.2157
+    },
+    {
+     "issues": 1300,
+     "top1": 0.54,
+     "top3": 0.7633,
+     "moved_top1": 0.2549
+    },
+    {
+     "issues": 1400,
+     "top1": 0.55,
+     "top3": 0.8,
+     "moved_top1": 0.2745
+    },
+    {
+     "issues": 1500,
+     "top1": 0.5567,
+     "top3": 0.8333,
+     "moved_top1": 0.3725
+    },
+    {
+     "issues": 1600,
+     "top1": 0.5767,
+     "top3": 0.8433,
+     "moved_top1": 0.5098
+    },
+    {
+     "issues": 1700,
+     "top1": 0.59,
+     "top3": 0.8433,
+     "moved_top1": 0.549
+    }
+   ]
+  },
+  "naive_bayes": {
+   "issues": 1700,
+   "top1": 0.7033,
+   "top3": 0.8667,
+   "stream_top1": 0.6453,
+   "points": [
+    {
+     "issues": 100,
+     "top1": 0.4867,
+     "top3": 0.6833
+    },
+    {
+     "issues": 200,
+     "top1": 0.54,
+     "top3": 0.7233
+    },
+    {
+     "issues": 300,
+     "top1": 0.5633,
+     "top3": 0.75
+    },
+    {
+     "issues": 400,
+     "top1": 0.5833,
+     "top3": 0.7667
+    },
+    {
+     "issues": 500,
+     "top1": 0.58,
+     "top3": 0.7867
+    },
+    {
+     "issues": 600,
+     "top1": 0.5967,
+     "top3": 0.7933
+    },
+    {
+     "issues": 700,
+     "top1": 0.6133,
+     "top3": 0.7933
+    },
+    {
+     "issues": 800,
+     "top1": 0.6133,
+     "top3": 0.8067
+    },
+    {
+     "issues": 900,
+     "top1": 0.62,
+     "top3": 0.8067
+    },
+    {
+     "issues": 1000,
+     "top1": 0.6367,
+     "top3": 0.83
+    },
+    {
+     "issues": 1100,
+     "top1": 0.6433,
+     "top3": 0.82
+    },
+    {
+     "issues": 1200,
+     "top1": 0.6567,
+     "top3": 0.8167
+    },
+    {
+     "issues": 1300,
+     "top1": 0.6633,
+     "top3": 0.8267
+    },
+    {
+     "issues": 1400,
+     "top1": 0.6633,
+     "top3": 0.8267
+    },
+    {
+     "issues": 1500,
+     "top1": 0.6633,
+     "top3": 0.8433
+    },
+    {
+     "issues": 1600,
+     "top1": 0.67,
+     "top3": 0.8433
+    },
+    {
+     "issues": 1700,
+     "top1": 0.7033,
+     "top3": 0.8667
+    }
+   ],
+   "recovery": [
+    {
+     "issues": 100,
+     "top1": 0.4867,
+     "top3": 0.6833,
+     "moved_top1": 0.3137
+    },
+    {
+     "issues": 200,
+     "top1": 0.54,
+     "top3": 0.7233,
+     "moved_top1": 0.451
+    },
+    {
+     "issues": 300,
+     "top1": 0.5633,
+     "top3": 0.75,
+     "moved_top1": 0.451
+    },
+    {
+     "issues": 400,
+     "top1": 0.5833,
+     "top3": 0.7667,
+     "moved_top1": 0.4902
+    },
+    {
+     "issues": 500,
+     "top1": 0.58,
+     "top3": 0.7867,
+     "moved_top1": 0.4902
+    },
+    {
+     "issues": 600,
+     "top1": 0.5967,
+     "top3": 0.7933,
+     "moved_top1": 0.5294
+    },
+    {
+     "issues": 700,
+     "top1": 0.6133,
+     "top3": 0.7933,
+     "moved_top1": 0.5686
+    },
+    {
+     "issues": 800,
+     "top1": 0.6133,
+     "top3": 0.8067,
+     "moved_top1": 0.5686
+    },
+    {
+     "issues": 900,
+     "top1": 0.5567,
+     "top3": 0.6967,
+     "moved_top1": 0.1961
+    },
+    {
+     "issues": 1000,
+     "top1": 0.57,
+     "top3": 0.7333,
+     "moved_top1": 0.1961
+    },
+    {
+     "issues": 1100,
+     "top1": 0.58,
+     "top3": 0.7567,
+     "moved_top1": 0.2353
+    },
+    {
+     "issues": 1200,
+     "top1": 0.5933,
+     "top3": 0.7533,
+     "moved_top1": 0.2353
+    },
+    {
+     "issues": 1300,
+     "top1": 0.6133,
+     "top3": 0.78,
+     "moved_top1": 0.3333
+    },
+    {
+     "issues": 1400,
+     "top1": 0.62,
+     "top3": 0.8067,
+     "moved_top1": 0.3922
+    },
+    {
+     "issues": 1500,
+     "top1": 0.6433,
+     "top3": 0.8267,
+     "moved_top1": 0.5294
+    },
+    {
+     "issues": 1600,
+     "top1": 0.67,
+     "top3": 0.8333,
+     "moved_top1": 0.6863
+    },
+    {
+     "issues": 1700,
+     "top1": 0.7167,
+     "top3": 0.86,
+     "moved_top1": 0.8235
+    }
+   ]
+  }
+ },
+ "meta": {
+  "learning_issues": 1700,
+  "test_issues": 300,
+  "note": "same time split and same extracted entities as the graph lines; learned one issue at a time with no graph, no paths and no learning passes; stream_top1 scores each learning issue before it is learned",
+  "recovery_note": "after issue 900, sig/scheduling is relabelled sig/apps in the stream; points from 900 on are scored on the relabelled test set (eval/recovery.py)"
+ }
+}

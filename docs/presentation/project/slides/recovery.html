@@ -5,7 +5,7 @@
 </div>
 <div class="chart-row">
 <div class="chart fade" style="height: 520px;">
-<svg aria-label="Top-1 on the 51 moved test issues against issues learned. Both lines collapse at the simulated reorg at issue 900. Baton climbs back to 80 percent by issue 1,400; count_only reaches 65 percent only at 1,700." width="1040" height="460" viewBox="0 0 1040 460" style="position: absolute; left: 80px; top: 0;">
+<svg aria-label="Top-1 on the 51 moved test issues against issues learned. Every line collapses at the simulated reorg at issue 900. Baton climbs back to 73 percent by issue 1,400; naive Bayes with no graph is at 39 percent then and catches up by 1,700; count_only reaches 71 percent at 1,700." width="1040" height="460" viewBox="0 0 1040 460" style="position: absolute; left: 80px; top: 0;">
 <g stroke="#D9D5CC" stroke-width="2">
 <line x1="0" y1="0" x2="1040" y2="0"/>
 <line x1="0" y1="115" x2="1040" y2="115"/>
@@ -14,11 +14,12 @@
 </g>
 <line x1="0" y1="459" x2="1040" y2="459" stroke="#8A8F98" stroke-width="2"/>
 <line x1="520" y1="0" x2="520" y2="460" stroke="#14181F" stroke-width="3" stroke-dasharray="8 8"/>
-<polyline points="0,307 65,280 130,289 195,280 260,262 325,280 390,262 455,262 520,370 585,370 650,370 715,361 780,343 845,289 910,235 975,180 1040,162" fill="none" stroke="#C8601C" stroke-width="5" stroke-linejoin="round"/>
-<polyline points="0,280 65,280 130,289 195,253 260,180 325,189 390,135 455,117 520,379 585,334 650,307 715,334 780,280 845,90 910,54 975,36 1040,90" fill="none" stroke="#2357C9" stroke-width="7" stroke-linejoin="round"/>
-<circle cx="455" cy="117" r="9" fill="#2357C9"/>
-<circle cx="520" cy="379" r="9" fill="#2357C9"/>
-<circle cx="845" cy="90" r="9" fill="#2357C9"/>
+<polyline points="0,271 65,225 130,198 195,225 260,216 325,253 390,225 455,244 520,361 585,361 650,352 715,334 780,316 845,289 910,207 975,144 1040,135" fill="none" stroke="#C8601C" stroke-width="5" stroke-linejoin="round"/>
+<polyline points="0,316 65,253 130,253 195,235 260,235 325,216 390,198 455,198 520,370 585,370 650,352 715,352 780,307 845,280 910,216 975,144 1040,81" fill="none" stroke="#1F8A5B" stroke-width="5" stroke-dasharray="14 10" stroke-linejoin="round"/>
+<polyline points="0,216 65,225 130,198 195,180 260,171 325,171 390,135 455,162 520,370 585,343 650,334 715,352 780,289 845,126 910,81 975,45 1040,90" fill="none" stroke="#2357C9" stroke-width="7" stroke-linejoin="round"/>
+<circle cx="455" cy="162" r="9" fill="#2357C9"/>
+<circle cx="520" cy="370" r="9" fill="#2357C9"/>
+<circle cx="845" cy="126" r="9" fill="#2357C9"/>
 </svg>
 <p class="tick" style="left: 0; top: -17px;">100%</p>
 <p class="tick" style="left: 0; top: 98px;">75%</p>
@@ -33,11 +34,12 @@
 <p class="small" style="position: absolute; left: 616px; top: 4px; width: 300px; font-weight: 600;">Reorg at issue 900</p>
 </div>
 <div class="legend">
-<div class="key rise" style="--i:2"><div class="swatch" style="background: #2357C9;"></div><p class="small"><b>baton</b></p><p class="small">74.5% before, 17.6% at the reorg, <b>80.4% by issue 1,400</b></p></div>
-<div class="key rise" style="--i:3"><div class="swatch" style="background: #C8601C;"></div><p class="small"><b>count_only</b></p><p class="small">43.1% before, 19.6% at the reorg, 64.7% by issue 1,700</p></div>
+<div class="key rise" style="--i:2"><div class="swatch" style="background: #2357C9;"></div><p class="small"><b>baton</b></p><p class="small">64.7% before, 19.6% at the reorg, <b>72.5% by issue 1,400</b></p></div>
+<div class="key rise" style="--i:3"><div class="swatch" style="background: #1F8A5B;"></div><p class="small"><b>naive Bayes, no graph</b>, dashed</p><p class="small">56.9% before, 39.2% by 1,400, 82.3% by 1,700</p></div>
+<div class="key rise" style="--i:3"><div class="swatch" style="background: #C8601C;"></div><p class="small"><b>count_only</b></p><p class="small">47.1% before, 37.2% by 1,400, 70.6% by 1,700</p></div>
 <p class="small muted rise" style="--i:4">From issue 900 every sig/scheduling fix is relabelled sig/apps. Scored on the 51 test issues that move.</p>
 </div>
 </div>
-<div class="foot"><p>Simulated on the in-memory mirror: the real labels never changed · results/recovery.json</p><div class="pg"></div></div>
-<aside>Ownership changes, so we simulated a reorg. From learning issue 900, every sig/scheduling issue is fixed by sig/apps instead, and we score the 51 test issues that move. This is a simulation, on the in-memory mirror, not HydraDB, and the real labels never changed. Both lines collapse at the reorg. Baton's penalties push the old links down, and by issue 1,400, 500 issues later, it is back above where it was. Count-only has to outvote its old counts and ends 16 points lower. Nobody had to update a list.</aside>
+<div class="foot"><p>Simulated on the in-memory mirror: the real labels never changed · results/recovery.json, results/no_graph.json</p><div class="pg"></div></div>
+<aside>Ownership changes, so we simulated a reorg. From learning issue 900, every sig/scheduling issue is fixed by sig/apps instead, and we score the 51 test issues that move. This is a simulation, on the in-memory mirror, not HydraDB, and the real labels never changed. Every line collapses at the reorg. Baton's penalties push the old links down, and by issue 1,400, 500 issues later, it is back above where it was, at 73 percent. Naive Bayes with no graph is still at 39 percent then; it catches up by 1,700 once the new counts outweigh the old. Nobody had to update a list.</aside>
 </section>

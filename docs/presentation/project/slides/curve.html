@@ -5,38 +5,43 @@
 </div>
 <div class="chart-row">
 <div class="chart fade" style="height: 580px;">
-<svg aria-label="Top-1 accuracy on 300 held-out issues against issues learned, from 100 to 1,700. Baton rises from 52 to 67 percent, count_only from 49 to 58 percent, frozen stays flat at 51.7 percent." width="1040" height="520" viewBox="0 0 1040 520" style="position: absolute; left: 80px; top: 0;">
+<svg aria-label="Top-1 accuracy on 300 held-out issues against issues learned, from 100 to 1,700. Baton ends at 70.0%, naive Bayes with no graph at 70.3%, count_only at 59.3%, frozen flat at 54.3%." width="1040" height="520" viewBox="0 0 1040 520" style="position: absolute; left: 80px; top: 0;">
 <g stroke="#D9D5CC" stroke-width="2">
 <line x1="0" y1="0" x2="1040" y2="0"/>
-<line x1="0" y1="104" x2="1040" y2="104"/>
-<line x1="0" y1="208" x2="1040" y2="208"/>
-<line x1="0" y1="312" x2="1040" y2="312"/>
-<line x1="0" y1="416" x2="1040" y2="416"/>
+<line x1="0" y1="87" x2="1040" y2="87"/>
+<line x1="0" y1="173" x2="1040" y2="173"/>
+<line x1="0" y1="260" x2="1040" y2="260"/>
+<line x1="0" y1="347" x2="1040" y2="347"/>
+<line x1="0" y1="433" x2="1040" y2="433"/>
 </g>
 <line x1="0" y1="519" x2="1040" y2="519" stroke="#8A8F98" stroke-width="2"/>
-<polyline points="0,381 65,381 130,381 195,381 260,381 325,381 390,381 455,381 520,381 585,381 650,381 715,381 780,381 845,381 910,381 975,381 1040,381" fill="none" stroke="#8A8F98" stroke-width="4" stroke-dasharray="14 10"/>
-<polyline points="0,430 65,381 130,347 195,340 260,298 325,319 390,298 455,291 520,326 585,312 650,319 715,347 780,360 845,319 910,305 975,291 1040,250" fill="none" stroke="#C8601C" stroke-width="5" stroke-linejoin="round"/>
-<polyline points="0,374 65,319 130,347 195,284 260,208 325,208 390,160 455,139 520,173 585,152 650,160 715,215 780,152 845,35 910,76 975,97 1040,62" fill="none" stroke="#2357C9" stroke-width="7" stroke-linejoin="round"/>
-<circle cx="1040" cy="62" r="10" fill="#2357C9"/>
-<circle cx="1040" cy="250" r="9" fill="#C8601C"/>
-<circle cx="1040" cy="381" r="9" fill="#8A8F98"/>
+<polyline points="0,358 65,358 130,358 195,358 260,358 325,358 390,358 455,358 520,358 585,358 650,358 715,358 780,358 845,358 910,358 975,358 1040,358" fill="none" stroke="#8A8F98" stroke-width="4" stroke-dasharray="14 10"/>
+<polyline points="0,456 65,364 130,324 195,289 260,295 325,266 390,237 455,237 520,225 585,196 650,185 715,162 780,150 845,150 910,150 975,139 1040,81" fill="none" stroke="#1F8A5B" stroke-width="4" stroke-dasharray="4 10" stroke-linecap="round"/>
+<polyline points="0,370 65,358 130,352 195,324 260,324 325,341 390,341 455,335 520,335 585,341 650,347 715,347 780,324 845,318 910,329 975,295 1040,272" fill="none" stroke="#C8601C" stroke-width="5" stroke-linejoin="round"/>
+<polyline points="0,272 65,295 130,260 195,243 260,202 325,202 390,156 455,173 520,185 585,150 650,133 715,156 780,150 845,104 910,81 975,81 1040,87" fill="none" stroke="#2357C9" stroke-width="7" stroke-linejoin="round"/>
+<circle cx="1040" cy="87" r="10" fill="#2357C9"/>
+<circle cx="1040" cy="272" r="9" fill="#C8601C"/>
+<circle cx="1040" cy="358" r="9" fill="#8A8F98"/>
 </svg>
-<p class="tick" style="left: 0; top: -17px;">70%</p>
-<p class="tick" style="left: 0; top: 87px;">65%</p>
-<p class="tick" style="left: 0; top: 191px;">60%</p>
-<p class="tick" style="left: 0; top: 295px;">55%</p>
-<p class="tick" style="left: 0; top: 399px;">50%</p>
+<p class="tick" style="left: 0; top: -17px;">75%</p>
+<p class="tick" style="left: 0; top: 70px;">70%</p>
+<p class="tick" style="left: 0; top: 156px;">65%</p>
+<p class="tick" style="left: 0; top: 243px;">60%</p>
+<p class="tick" style="left: 0; top: 330px;">55%</p>
+<p class="tick" style="left: 0; top: 416px;">50%</p>
+<p class="tick" style="left: 0; top: 503px;">45%</p>
 <p class="xtick" style="left: 0; top: 536px;">100</p>
 <p class="xtick" style="left: 260px; top: 536px;">500</p>
 <p class="xtick" style="left: 585px; top: 536px;">1,000</p>
 <p class="xtick" style="left: 1040px; top: 536px;">1,700</p>
 </div>
 <div class="legend">
-<div class="key rise" style="--i:2"><div class="swatch" style="background: #2357C9;"></div><p class="mid c-blue">67.0%</p><p class="small"><b>baton</b> · top-3 82.3%</p></div>
-<div class="key rise" style="--i:3"><div class="swatch" style="background: #C8601C;"></div><p class="mid c-orange">58.0%</p><p class="small"><b>count_only</b> · top-3 77.3%</p></div>
-<div class="key rise" style="--i:4"><div class="swatch" style="background: #8A8F98;"></div><p class="mid c-grey">51.7%</p><p class="small"><b>frozen</b>, dashed · top-3 69.7%</p></div>
+<div class="key rise" style="--i:2"><div class="swatch" style="background: #2357C9;"></div><p class="mid c-blue">70.0%</p><p class="small"><b>baton</b> · top-3 86.0%</p></div>
+<div class="key rise" style="--i:3"><div class="swatch" style="background: #1F8A5B;"></div><p class="mid" style="color: #1F8A5B;">70.3%</p><p class="small"><b>naive Bayes</b>, no graph, dotted · top-3 86.7%</p></div>
+<div class="key rise" style="--i:4"><div class="swatch" style="background: #C8601C;"></div><p class="mid c-orange">59.3%</p><p class="small"><b>count_only</b>, no learning · top-3 78.3%</p></div>
+<div class="key rise" style="--i:5"><div class="swatch" style="background: #8A8F98;"></div><p class="small"><b>frozen</b>, dashed · 54.3%, top-3 74.3%</p></div>
 </div>
 </div>
 <div class="foot"><p>Top-1 on 300 held-out issues, scored after every 100 learned. Issue 0 is the empty graph.</p><div class="pg"></div></div>
-<aside>This is the whole test set, the newest 300 issues, scored after every batch of 100 learned. Grey dashed is a graph built once and never updated: 51.7 percent, flat forever. That is your ownership list. Orange adds every fixed issue but only counts: 58 percent. Blue is Baton: it rewards links that predicted right, penalises the rest, adds shortcuts and pulls in older issues where it knows too little. It ends at 67 percent top-1 and 82 percent top-3. The improvement is continuous, not a one-off: it is measured at 17 checkpoints on the same held-out set.</aside>
+<aside>This is the whole test set, the newest 300 issues, scored after every batch of 100 learned. Grey dashed is a graph built once and never updated: 54 percent, flat forever. That is your ownership list. Orange adds every fixed issue to the same graph but only counts: 59 percent. Blue is Baton: it rewards links that predicted right, penalises the rest, adds shortcuts and pulls in older issues where it knows too little. It ends at 70 percent top-1 and 86 percent top-3. The green dotted line is naive Bayes with no graph at all: it ends level with Baton on this fixed set, but it climbs more slowly, and on the live stream Baton is 5.5 points ahead.</aside>
 </section>

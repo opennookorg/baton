@@ -45,14 +45,21 @@ def path(nodes: list[str], weight: float) -> dict:
     return {"nodes": nodes, "rels": ["ROUTES_TO"] * (len(nodes) - 1), "weight": weight}
 
 
-def test_rank_sums_inverse_weights_and_reports_cheapest_path():
+def test_rank_sums_inverse_weights_split_across_the_teams_each_entity_reaches():
     routed = rank([path(["word:a", "t1"], 0.5), path(["word:b", "t1"], 2.0), path(["word:a", "t2"], 1.0)], 2, 1)
     result = routed.result
     assert [t.team for t in result.teams] == ["t1", "t2"]
-    assert result.teams[0].share == round(2.5 / 3.5, 3)
+    assert result.teams[0].share == round((2 / 2 + 0.5) / (2 / 2 + 0.5 + 1 / 2), 3)
     assert result.teams[0].path == ["a", "t1"]
     assert result.confidence == result.teams[0].share
     assert (result.entities_found, result.entities_unknown) == (2, 1)
+
+
+def test_rank_discounts_an_entity_that_reaches_every_team():
+    generic = [path(["word:pod", team], 0.5) for team in ("t1", "t2", "t3", "t4")]
+    routed = rank(generic + [path(["word:scheduler", "t2"], 1.0)], 2, 0)
+    assert routed.result.top_team == "t2"
+    assert routed.result.teams[0].share == round(1.5 / 3.0, 3)
 
 
 def test_rank_with_no_paths_returns_no_teams():
