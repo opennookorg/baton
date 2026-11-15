@@ -4,6 +4,7 @@ export const appName = 'Baton';
 export const docsRoute = '/docs';
 export const dashboardUrl = 'https://baton-134858271117.us-central1.run.app';
 export const docsImageRoute = '/og/docs';
+export const launchVideoId = 'kw4NBc0R2EY';
 
 export const gitConfig = {
   user: 'opennookorg',
