@@ -9,13 +9,18 @@ MCP (Model Context Protocol) is the standard way AI agents call outside tools. B
 
 | Tool | What it gives the agent |
 |---|---|
+| `list_repos` | The repos Baton has learned, and how it reads ownership in each. |
 | `route_issue` | The top 3 teams for an issue, with confidence and the path. |
 | `similar_past_issues` | Past issues that share the most with this one, and who fixed them. |
 | `reporter_history` | Which teams fixed this person's earlier issues. |
 | `team_profile` | The words and names most strongly tied to a team. |
 | `record_outcome` | Tells Baton who really fixed an issue, so it learns. Local only. |
 
-The live server gives the first four. `record_outcome` changes the graph, so it is only on a copy you run yourself.
+The live server gives the first five. `record_outcome` changes the graph, so it is only on a copy you run yourself.
+
+<Callout title="Only learned repos answer">
+  Every tool takes an optional `repo`, such as `rust-lang/rust`. Leave it out and you get `kubernetes/kubernetes`. Baton routes the six repos `list_repos` returns; any other repo gets an "unknown repo" error, because connecting the server does not build a graph. See [Supported repos](/docs/repos).
+</Callout>
 
 ## Claude Code
 

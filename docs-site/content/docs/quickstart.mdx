@@ -3,10 +3,14 @@ title: Quickstart
 description: Three ways to try Baton, from no setup at all to your own copy.
 ---
 
+<Callout title="Six repos, Kubernetes on the dashboard">
+  Baton routes six GitHub repos today. The dashboard shows `kubernetes/kubernetes` only; the MCP tools and the API reach all six with `repo`. Any other repo returns "unknown repo". See [Supported repos](/docs/repos).
+</Callout>
+
 ## 1. In your browser (no setup)
 
 1. Open the live dashboard: [baton-134858271117.us-central1.run.app](https://baton-134858271117.us-central1.run.app/try).
-2. Go to **Try an issue** and click one of the examples, or paste your own issue title.
+2. Go to **Try an issue** and click one of the examples, or paste the title of a Kubernetes issue.
 3. Click **Route issue**. You get the top teams, a confidence score and the path Baton followed.
 
 <Callout title="First visit may be slow">
@@ -21,7 +25,7 @@ Add Baton to Claude Code with one command:
 claude mcp add --transport http --scope user baton https://baton-134858271117.us-central1.run.app/mcp
 ```
 
-Then ask: *"Which team should own this issue: kubelet OOM kills pods even when cgroup memory is under the limit?"* See [Connect your AI agent](/docs/agents) for ChatGPT, Codex, Cursor and others.
+Then ask: *"Which team should own this issue: kubelet OOM kills pods even when cgroup memory is under the limit?"* See [Connect your AI agent](/docs/agents) for ChatGPT, Codex, Cursor and others. For another learned repo, name it in the question, for example *"route this rust-lang/rust issue"*.
 
 ## 3. From code
 
@@ -33,7 +37,7 @@ curl -X POST https://baton-134858271117.us-central1.run.app/route \
   -d '{"title": "kube-apiserver drops watch events under load"}'
 ```
 
-The answer lists the top teams, each with its share and the path. See the [API reference](/docs/api).
+Add `"repo": "rust-lang/rust"` (or another [supported repo](/docs/repos)) to route for a repo other than Kubernetes. The answer lists the top teams, each with its share and the path. See the [API reference](/docs/api).
 
 ## 4. On your own machine
 

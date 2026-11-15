@@ -18,6 +18,8 @@ Baton routes a new GitHub issue to the team that owns it. It keeps a graph of pa
 
 **Docs:** https://baton-docs-134858271117.us-central1.run.app (plain-language guide to the product, dashboard, agents and results).
 
+**Supported repos:** Baton routes six GitHub repos today: `kubernetes/kubernetes`, `rust-lang/rust`, `react/react`, `NousResearch/hermes-agent`, `earendil-works/pi` and `openclaw/openclaw`. The dashboard shows Kubernetes only; the API and MCP tools reach all six with `repo`. Any other repo returns "unknown repo" until it is onboarded (see [Use Baton on your repo](#use-baton-on-your-repo)).
+
 There is no AI model in the router. Entity extraction and routing are plain code. An AI agent can sit on top through MCP (see [the agent](#triage-agent-over-mcp)), but the curve below is the plain router.
 
 ## The curve
@@ -143,7 +145,7 @@ The API behind it: `POST /route`, `POST /learn`, `GET /curve`, `GET /graph?entit
 
 ## Use Baton on your repo
 
-Kubernetes is one case study. Baton routes any GitHub repo whose closed issues say who owned them, and [`docs/CASE_STUDIES.md`](docs/CASE_STUDIES.md) has the results on five more. One command onboards a repo end to end:
+Kubernetes is one case study. Baton can learn any GitHub repo whose closed issues say who owned them, but only after it is onboarded: connecting the MCP server or calling the API does not build a graph. The live server has six onboarded repos, and [`docs/CASE_STUDIES.md`](docs/CASE_STUDIES.md) has the results on five more. One command onboards a repo end to end:
 
 ```sh
 gh auth login

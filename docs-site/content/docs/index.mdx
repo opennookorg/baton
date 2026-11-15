@@ -20,12 +20,17 @@ Baton reads a new issue and tells you which team should own it. It does not use 
 - **It follows change.** When a team hands work to another team, Baton notices from the fixes and moves its answers over, with nobody editing a list.
 - **It has no AI model inside.** Routing is plain code and a graph query. It is fast, cheap and gives the same answer every time.
 
+## Which repos it works on
+
+Baton routes six GitHub repos today: `kubernetes/kubernetes`, `rust-lang/rust`, `react/react`, `NousResearch/hermes-agent`, `earendil-works/pi` and `openclaw/openclaw`. The dashboard shows Kubernetes; the MCP tools and the API reach all six. It cannot route a repo it has not learned, so any other repo returns "unknown repo" until someone onboards it. See [Supported repos](/docs/repos).
+
 ![The Baton dashboard routing an issue](/images/page-try.png)
 
 ## Where to go next
 
 <Cards>
   <Card title="Quickstart" href="/docs/quickstart" description="Route your first issue in under a minute." />
+  <Card title="Supported repos" href="/docs/repos" description="The six repos Baton routes, and how to add another." />
   <Card title="Use the dashboard" href="/docs/dashboard" description="A tour of every page in the dashboard." />
   <Card title="Connect your AI agent" href="/docs/agents" description="Give Claude, ChatGPT, Cursor and others Baton's tools." />
   <Card title="How it works" href="/docs/how-it-works" description="The graph, routing and learning, in plain words." />

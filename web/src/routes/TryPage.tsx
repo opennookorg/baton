@@ -159,7 +159,7 @@ export function TryPage({ stage, onStage }: { stage: Stage; onStage: (stage: Sta
           <CardTitle>
             <h2 id="try-title">Try an issue</h2>
           </CardTitle>
-          <CardDescription>Paste a bug report. Baton names the owning team and shows the path it followed through the graph.</CardDescription>
+          <CardDescription>Paste a kubernetes/kubernetes bug report. Baton names the owning SIG and shows the path it followed through the graph.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-2">

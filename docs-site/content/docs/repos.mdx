@@ -1,0 +1,43 @@
+---
+title: Supported repos
+description: Baton routes six GitHub repos today. Any other repo returns "unknown repo" until it is onboarded.
+---
+
+Baton learns who owns what from a repo's own fixed issues. It has no general model, so it can only route a repo it has already learned. Connecting the MCP server or calling the API does not build a graph for a new repo.
+
+## The six repos it routes
+
+| Repo | Who counts as the owner | Owners | Right owner first, on unseen issues |
+|---|---|---|---|
+| `kubernetes/kubernetes` | the `sig/` label | 22 | 70% |
+| `rust-lang/rust` | the `T-` label | 21 | 77% |
+| `NousResearch/hermes-agent` | the `comp/` label | 12 | 53% |
+| `react/react` | the `Component: ` label | 20 | 47% |
+| `earendil-works/pi` | the assignee | 11 | 41% |
+| `openclaw/openclaw` | the author of the PR that fixed it | 438 | 37% |
+
+The live list is always at `GET /repos`, or the `list_repos` MCP tool.
+
+## Where each one works
+
+- **The dashboard shows `kubernetes/kubernetes` only.** The learning curve, the issue finder and the ownership graph all use the Kubernetes graph.
+- **The MCP tools and the API work for all six.** Pass `repo` with the repo name. Leave it out and you get Kubernetes.
+
+```sh
+curl -X POST https://baton-134858271117.us-central1.run.app/route \
+  -H 'Content-Type: application/json' \
+  -d '{"title": "Borrow checker error E0502 in closure capturing mutable reference", "repo": "rust-lang/rust"}'
+```
+
+## Any other repo
+
+Any other repo gets a `404` with `unknown repo` and the list of repos that do work. Over MCP the tool returns the same message as an error.
+
+To add a repo, run your own copy of Baton ([Run it yourself](/docs/self-host)) and onboard it:
+
+```sh
+uv run python -m eval.onboard doctor owner/name
+uv run python -m eval.onboard onboard owner/name
+```
+
+`doctor` checks whether the repo's closed issues say who owned them, through a label family, the PR author who fixed it, or the assignee. It refuses a repo with one owner or fewer than about 300 owned issues. `onboard` fetches the issues and learns the graph, which takes tens of minutes for one repo. It needs a GitHub token from `GITHUB_TOKEN` or the `gh` CLI. The full results for each repo are in [the case studies](https://github.com/opennookorg/baton/blob/main/docs/CASE_STUDIES.md).

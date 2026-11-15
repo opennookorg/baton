@@ -1,6 +1,6 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { createRootRoute, createRoute, createRouter, Link, Outlet, RouterProvider, useRouterState } from "@tanstack/react-router";
-import { ArrowRight, BookOpen, ChartLine, FlaskConical, Monitor, Moon, Plug, Route as RouteIcon, Sun, Waypoints } from "lucide-react";
+import { ArrowRight, BookOpen, Info, ChartLine, FlaskConical, Monitor, Moon, Plug, Route as RouteIcon, Sun, Waypoints } from "lucide-react";
 import { lazy, StrictMode, Suspense, useEffect, useLayoutEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { api, onServiceUnavailable, STAGES, type Metric, type Stage } from "./api";
@@ -66,6 +66,34 @@ const NAV = [
 ] as const;
 const GROUPS = ["Dashboard", "Integrations"] as const;
 const DOCS_URL = "https://baton-docs-134858271117.us-central1.run.app/docs";
+const DASHBOARD_REPO = "kubernetes/kubernetes";
+
+function RepoNotice() {
+  const { data } = useQuery({ queryKey: ["repos"], queryFn: api.repos });
+  const others = (data?.repos ?? []).map((row) => row.repo).filter((repo) => repo !== DASHBOARD_REPO);
+  return (
+    <Alert className="max-w-3xl" role="note">
+      <Info aria-hidden="true" />
+      <AlertTitle>
+        This dashboard shows {DASHBOARD_REPO} only{data ? `, one of the ${data.repos.length} repos Baton has learned` : ""}.
+      </AlertTitle>
+      <AlertDescription className="text-muted-foreground">
+        <p>
+          {others.length > 0 && (
+            <>
+              The others ({others.join(", ")}) answer through the <Link to="/connect" className="underline underline-offset-2">MCP tools</Link> and the API when you pass{" "}
+              <code>repo</code>.{" "}
+            </>
+          )}
+          Baton does not route other repos yet: they return "unknown repo" until someone onboards them.{" "}
+          <a href={`${DOCS_URL}/repos`} target="_blank" rel="noreferrer" className="underline underline-offset-2">
+            Which repos work
+          </a>
+        </p>
+      </AlertDescription>
+    </Alert>
+  );
+}
 
 function AppSidebar({ pathname }: { pathname: string }) {
   const { setOpenMobile } = useSidebar();
@@ -208,6 +236,7 @@ function Layout() {
                 </Alert>
               )}
               <p className="max-w-2xl text-balance text-muted-foreground">{page.about}</p>
+              <RepoNotice />
               {page.stats && <Counters />}
               <Suspense>
                 <Outlet />
@@ -283,6 +312,7 @@ declare module "@tanstack/react-router" {
 const queryClient = new QueryClient({ defaultOptions: { queries: { staleTime: 5 * 60_000, refetchOnWindowFocus: false, retry: 1 } } });
 queryClient.prefetchQuery({ queryKey: ["stats"], queryFn: api.stats });
 queryClient.prefetchQuery({ queryKey: ["curve"], queryFn: api.curve });
+queryClient.prefetchQuery({ queryKey: ["repos"], queryFn: api.repos });
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

@@ -147,6 +147,7 @@ const CLIENTS: Client[] = [
 ];
 
 const TOOLS = [
+  { name: "list_repos", about: "The repos Baton has learned. Pass one as repo to any other tool; Kubernetes is the default.", writes: false },
   { name: "route_issue", about: "Ranks the teams that own an issue, with the graph path behind each one and a confidence.", writes: false },
   { name: "similar_past_issues", about: "Past issues that share entities with this one, and who fixed them.", writes: false },
   { name: "reporter_history", about: "Which teams a reporter's earlier issues went to.", writes: false },
@@ -353,7 +354,7 @@ export function ConnectPage({ client, onClient }: { client: ClientId; onClient: 
         <Card>
           <CardHeader>
             <CardTitle>Tools</CardTitle>
-            <CardDescription>What an agent can call once connected.</CardDescription>
+            <CardDescription>What an agent can call once connected. Every tool takes an optional <code>repo</code>, and only learned repos answer.</CardDescription>
           </CardHeader>
           <CardContent className="px-0">
             <Table>
