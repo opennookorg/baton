@@ -8,7 +8,7 @@
 
 <p align="center">
   <a href="https://youtu.be/kw4NBc0R2EY">
-    <img src="https://img.youtube.com/vi/kw4NBc0R2EY/maxresdefault.jpg" width="720" alt="Watch the Baton launch video on YouTube">
+    <img src="docs/assets/launch-video.jpg" width="720" alt="Watch the Baton launch video on YouTube">
   </a>
   <br>
   <a href="https://youtu.be/kw4NBc0R2EY">Watch the 1-minute launch video</a>
