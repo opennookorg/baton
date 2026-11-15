@@ -8,3 +8,6 @@ docs
 tests
 results/live_state.json
 results/curve_offline.json
+web/node_modules
+web/dist
+web/.vercel

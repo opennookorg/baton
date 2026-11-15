@@ -1,3 +1,10 @@
+FROM node:22-slim AS web
+WORKDIR /web
+COPY web/package.json web/package-lock.json ./
+RUN npm ci
+COPY web .
+RUN npm run build
+
 FROM ghcr.io/hydra-db/hydradb:0.4.0
 
 USER root
@@ -22,6 +29,7 @@ COPY eval eval
 COPY data data
 COPY results results
 COPY scripts scripts
+COPY --from=web /web/dist web/dist
 RUN chmod -R a+rX /app /opt && chown -R 1000:1000 /app/results
 
 USER 1000
