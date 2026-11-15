@@ -78,6 +78,15 @@ def test_learn_reports_the_step(client):
     assert isinstance(data["correct"], bool)
 
 
+def test_learn_needs_the_token_when_one_is_set():
+    locked = TestClient(create_app(fake_service, learn_token="s3cret"))
+    issue = {"number": 120002, "title": "kubelet crash", "created_at": "2024-01-01T00:00:00Z", "team": "sig/node"}
+    assert locked.post("/learn", json=issue).status_code == 401
+    assert locked.post("/learn", json=issue, headers={"Authorization": "Bearer wrong"}).status_code == 401
+    assert locked.post("/learn", json=issue, headers={"Authorization": "Bearer s3cret"}).status_code == 200
+    assert locked.post("/route", json={"title": "kubelet crash"}).status_code == 200
+
+
 @pytest.mark.parametrize(
     "drop_or_change",
     [{"team": None}, {"number": 0}, {"title": ""}, {"created_at": None}],

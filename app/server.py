@@ -1,11 +1,12 @@
 """FastAPI app serving the Baton API and the dashboard page."""
 
 import os
+import secrets
 from pathlib import Path
 from types import ModuleType
 from typing import Literal
 
-from fastapi import FastAPI, Query, Request
+from fastapi import FastAPI, Header, HTTPException, Query, Request
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
@@ -49,8 +50,8 @@ class LearnRequest(BaseModel):
         )
 
 
-def create_app(service: ModuleType) -> FastAPI:
-    """Build the app against a service module exposing the baton.service functions."""
+def create_app(service: ModuleType, learn_token: str | None = None) -> FastAPI:
+    """Build the app against a service module; when `learn_token` is set, POST /learn needs it as a bearer token."""
     app = FastAPI(title="Baton", version="0.1.0")
 
     @app.exception_handler(NotImplementedError)
@@ -68,7 +69,9 @@ def create_app(service: ModuleType) -> FastAPI:
         return service.route_issue(req.title, req.body, req.reporter, req.as_of).to_dict()
 
     @app.post("/learn")
-    def learn(req: LearnRequest) -> dict:
+    def learn(req: LearnRequest, authorization: str = Header(default="")) -> dict:
+        if learn_token and not secrets.compare_digest(authorization.encode(), f"Bearer {learn_token}".encode()):
+            raise HTTPException(status_code=401, detail="POST /learn needs the BATON_LEARN_TOKEN bearer token")
         return service.record_outcome(req.to_issue(), req.team)
 
     @app.get("/curve")
@@ -91,4 +94,4 @@ def create_app(service: ModuleType) -> FastAPI:
     return app
 
 
-app = create_app(fake_service if os.environ.get("BATON_FAKE_SERVICE") == "1" else real_service)
+app = create_app(fake_service if os.environ.get("BATON_FAKE_SERVICE") == "1" else real_service, os.environ.get("BATON_LEARN_TOKEN") or None)
