@@ -54,6 +54,12 @@ def learner() -> Learner:
     return Learner(table(), LIVE_TECHNIQUES, BATON_PARAMS, saved_state())
 
 
+@cache
+def graph_counts() -> dict:
+    """HydraDB node and link counts, cached until the next learning step changes the graph."""
+    return db.counts()
+
+
 def resolve(entity: str) -> str | None:
     """The vocabulary name for a prefixed or bare entity name, trying kinds in prefix order."""
     names = table().entities
@@ -78,6 +84,7 @@ def record_outcome(issue: Issue, team: str) -> dict:
         if issue.number in live.state.history or issue.number in live.state.learned_order:
             return {"team": team, "issue": issue.number, "already_learned": True}
         outcome = live.learn(issue, [team])
+        graph_counts.cache_clear()
         LIVE_STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
         LIVE_STATE_FILE.write_text(json.dumps(live.state.to_json(), separators=(",", ":")) + "\n")
     keys = ("issue", "predicted", "correct", "links_reweighted", "shortcuts_created", "merges")
@@ -129,7 +136,7 @@ def graph_around(entity: str) -> dict:
 
 def stats() -> dict:
     """Return node and link counts plus issues_learned, links_reweighted, merges, shortcuts, misroutes_avoided."""
-    counts = db.counts()
+    counts = graph_counts()
     counters = learner().state.counters
     summary = json.loads(CURVE_FILE.read_text()).get("meta", {}).get("summary", {}) if CURVE_FILE.exists() else {}
     return {

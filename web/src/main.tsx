@@ -1,8 +1,9 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRootRoute, createRoute, createRouter, Link, Outlet, RouterProvider, useRouterState } from "@tanstack/react-router";
 import { ArrowRight, ChartLine, FlaskConical, Monitor, Moon, Plug, Route as RouteIcon, Sun, Waypoints } from "lucide-react";
-import { StrictMode, useEffect, useLayoutEffect, useState } from "react";
+import { lazy, StrictMode, Suspense, useEffect, useLayoutEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { onServiceUnavailable, STAGES, type Metric, type Stage } from "./api";
+import { api, onServiceUnavailable, STAGES, type Metric, type Stage } from "./api";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -27,10 +28,11 @@ import {
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { CLIENT_IDS, ConnectPage, type ClientId } from "./routes/ConnectPage";
 import { CurvePage } from "./routes/CurvePage";
-import { GraphPage } from "./routes/GraphPage";
 import { TryPage } from "./routes/TryPage";
 import "./index.css";
 import { Counters, ThemeKey } from "./ui";
+
+const GraphPage = lazy(() => import("./routes/GraphPage").then((module) => ({ default: module.GraphPage })));
 
 type Theme = "auto" | "light" | "dark";
 const THEMES: { value: Theme; label: string; icon: typeof Sun }[] = [
@@ -191,7 +193,9 @@ function Layout() {
               )}
               <p className="max-w-2xl text-balance text-muted-foreground">{page.about}</p>
               {page.stats && <Counters />}
-              <Outlet />
+              <Suspense>
+                <Outlet />
+              </Suspense>
             </main>
             <footer className="border-t px-4 py-5 text-xs text-muted-foreground sm:px-6">
               Trained on 1,700 real kubernetes/kubernetes issues, scored on the 300 newest ones it never saw. Graph stored in a self-hosted HydraDB node.
@@ -260,8 +264,14 @@ declare module "@tanstack/react-router" {
   }
 }
 
+const queryClient = new QueryClient({ defaultOptions: { queries: { staleTime: 5 * 60_000, refetchOnWindowFocus: false, retry: 1 } } });
+queryClient.prefetchQuery({ queryKey: ["stats"], queryFn: api.stats });
+queryClient.prefetchQuery({ queryKey: ["curve"], queryFn: api.curve });
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
   </StrictMode>,
 );
