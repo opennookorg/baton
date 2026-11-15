@@ -196,3 +196,15 @@ def test_global_cap_and_minute_reset(monkeypatch):
 def test_oversized_body_is_rejected(client):
     res = client.post("/route", content=b"x" * 70_000, headers={"content-type": "application/json"})
     assert res.status_code == 413
+
+
+def test_mcp_endpoint_serves_read_tools_only():
+    rpc = {"jsonrpc": "2.0", "id": 1, "method": "tools/list"}
+    headers = {"Accept": "application/json, text/event-stream", "Host": "baton.example.run.app"}
+    with TestClient(create_app(fake_service)) as live:
+        res = live.post("/mcp", json=rpc, headers=headers)
+        assert res.status_code == 200
+        assert live.get("/stats").status_code == 200
+    names = set(re.findall(r'"name":"(\w+)"', res.text.replace(" ", "")))
+    assert {"route_issue", "similar_past_issues", "reporter_history", "team_profile"} <= names
+    assert "record_outcome" not in names

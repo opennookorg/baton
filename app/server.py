@@ -4,6 +4,8 @@ import os
 import secrets
 import time
 from collections import Counter
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 from pathlib import Path
 from types import ModuleType
 from typing import Literal
@@ -11,15 +13,17 @@ from typing import Literal
 from fastapi import FastAPI, Header, HTTPException, Query, Request
 from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, Response
 from fastapi.staticfiles import StaticFiles
+from mcp.server.transport_security import TransportSecuritySettings
 from pydantic import BaseModel, Field
 
+from agent.mcp_server import build_server
 from app import fake_service
 from baton import service as real_service
 from baton.models import Issue
 
 WEB_DIST = Path(os.environ.get("BATON_WEB_DIST", Path(__file__).resolve().parent.parent / "web" / "dist"))
 PAGES = ("/", "/try", "/explore", "/connect")
-PER_CLIENT_LIMITS = {"/route": 30, "/learn": 10, "/graph": 60, "/curve": 60, "/stats": 60}
+PER_CLIENT_LIMITS = {"/route": 30, "/learn": 10, "/graph": 60, "/curve": 60, "/stats": 60, "/mcp": 120}
 DEFAULT_PER_CLIENT_LIMIT = 300
 GLOBAL_LIMIT = 1200
 MAX_BODY_BYTES = 64_000
@@ -86,8 +90,16 @@ class LearnRequest(BaseModel):
 
 
 def create_app(service: ModuleType, learn_token: str | None = None) -> FastAPI:
-    """Build the app against a service module; when `learn_token` is set, POST /learn needs it as a bearer token."""
-    app = FastAPI(title="Baton", version="0.1.0")
+    """Build the app (API, dashboard, read-only MCP at /mcp) against a service module; `learn_token` guards POST /learn."""
+    mcp = build_server(read_only=True)
+    mcp_app = mcp.streamable_http_app(stateless_http=True, transport_security=TransportSecuritySettings(enable_dns_rebinding_protection=False))
+
+    @asynccontextmanager
+    async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+        async with mcp.session_manager.run():
+            yield
+
+    app = FastAPI(title="Baton", version="0.1.0", lifespan=lifespan)
     limiter = RateLimiter(PER_CLIENT_LIMITS, DEFAULT_PER_CLIENT_LIMIT, GLOBAL_LIMIT)
 
     @app.middleware("http")
@@ -144,6 +156,7 @@ def create_app(service: ModuleType, learn_token: str | None = None) -> FastAPI:
     for path in PAGES:
         app.add_api_route(path, page, methods=["GET"], include_in_schema=False)
     app.mount("/assets", StaticFiles(directory=WEB_DIST / "assets", check_dir=False), name="assets")
+    app.mount("/", mcp_app)
     return app
 
 
