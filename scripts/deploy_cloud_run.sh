@@ -41,6 +41,9 @@ fi
 
 gcloud services enable run.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com \
   billingbudgets.googleapis.com --project "$PROJECT"
+BUILD_SA="$(gcloud projects describe "$PROJECT" --format='value(projectNumber)')-compute@developer.gserviceaccount.com"
+gcloud projects add-iam-policy-binding "$PROJECT" --member="serviceAccount:$BUILD_SA" \
+  --role=roles/run.builder --condition=None --quiet >/dev/null
 
 budgets="$(gcloud billing budgets list --billing-project "$PROJECT" --billing-account="$BILLING_ID" --format='value(displayName)')"
 if ! grep -qx "$CAP_NAME" <<<"$budgets"; then
