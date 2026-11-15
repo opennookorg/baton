@@ -19,6 +19,9 @@ CASE_STUDY_LINES = ("frozen", "count_only", "baton")
 def diagnose(repo: str) -> tuple[dict, dict]:
     """Sample the repo's newest closed issues, report every owner signal and save the report next to its data."""
     records, info = fetch_repo.sample(repo)
+    if info["repo"] != repo:
+        print(f"{repo} is now {info['repo']} on GitHub", flush=True)
+    repo = info["repo"]
     report = doctor.diagnose(repo, records, info) | {"folders": info["folders"], "created_at": info["created_at"]}
     path = RepoProfile(repo=repo).data_dir / "doctor.json"
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -98,6 +101,7 @@ def evaluate(lines: tuple[str, ...] = CASE_STUDY_LINES) -> dict:
 def onboard(repo: str, signal: str | None = None, prefix: str | None = None, force: bool = False) -> dict:
     """Doctor, fetch, build and evaluate one repo; stop early with the doctor's reason when it cannot be routed."""
     report, info = diagnose(repo)
+    repo = info["repo"]
     if report["verdict"] != "ok" and not force and signal is None:
         print(f"not onboarding {repo}: {report['verdict']}", flush=True)
         return {"repo": repo, "verdict": report["verdict"]}

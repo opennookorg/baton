@@ -36,7 +36,7 @@ SEARCH_QUERY = (
     "nodes { ... on Issue { " + ISSUE_FIELDS + " } } } }"
 )
 REPO_QUERY = (
-    "query($owner: String!, $name: String!) { repository(owner: $owner, name: $name) { createdAt "
+    "query($owner: String!, $name: String!) { repository(owner: $owner, name: $name) { nameWithOwner createdAt "
     "object(expression: \"HEAD:\") { ... on Tree { entries { name type } } } } }"
 )
 LABELS_QUERY = (
@@ -122,15 +122,15 @@ class GitHub:
         return self.query("query($q: String!) { search(query: $q, type: ISSUE, first: 1) { issueCount } }", q=q)["search"]["issueCount"]
 
     def repo_info(self, repo: str) -> dict:
-        """The repo's creation date and top-level folders."""
+        """The repo's current name (GitHub follows renames and transfers), creation date and top-level folders."""
         owner, name = repo.split("/")
         info = self.query(REPO_QUERY, owner=owner, name=name)["repository"]
         entries = (info.get("object") or {}).get("entries") or []
         return {
+            "repo": info["nameWithOwner"],
             "created_at": info["createdAt"][:10],
             "folders": sorted(e["name"] for e in entries if e["type"] == "tree" and not e["name"].startswith(".")),
         }
-
 
     def labels(self, repo: str, prefix: str) -> list[str]:
         """Every label of the repo that starts with `prefix`."""
@@ -199,6 +199,7 @@ def sample(repo: str, size: int = SEARCH_CAP) -> tuple[list[dict], dict]:
     """The newest `size` closed issues of a repo, unfiltered, plus repo info: what doctor inspects."""
     github = GitHub()
     info = github.repo_info(repo)
+    repo = info["repo"]
     info["closed_issues"] = github.count(f"repo:{repo} is:issue is:closed")
     records: dict[int, dict] = {}
     for start, end in windows(date.today() + timedelta(days=1), date.fromisoformat(info["created_at"])):
