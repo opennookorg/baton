@@ -6,6 +6,14 @@
 
 **Ownership lists go stale the day they are written. Baton learns ownership from what actually gets fixed.**
 
+<p align="center">
+  <a href="https://youtu.be/kw4NBc0R2EY">
+    <img src="https://img.youtube.com/vi/kw4NBc0R2EY/maxresdefault.jpg" width="720" alt="Watch the Baton launch video on YouTube">
+  </a>
+  <br>
+  <a href="https://youtu.be/kw4NBc0R2EY">Watch the 1-minute launch video</a>
+</p>
+
 Baton routes a new GitHub issue to the team that owns it. It keeps a graph of past issues, the entities in them (components, file paths, words, error phrases, reporters) and the teams that fixed them. Every fixed issue is fed back into the graph: links that predicted the right team get cheaper, links that pointed the wrong way get dearer, and strong patterns become direct shortcuts. The graph lives in [HydraDB](https://github.com/hydra-db/hydradb), and one weighted path query answers "who owns this?".
 
 **Docs:** https://baton-docs-134858271117.us-central1.run.app (plain-language guide to the product, dashboard, agents and results).

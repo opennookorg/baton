@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { LaunchVideo } from '@/components/launch-video';
 import { dashboardUrl } from '@/lib/shared';
 
 const STATS = [
@@ -29,6 +30,7 @@ export default function HomePage() {
           Open the live dashboard
         </a>
       </div>
+      <LaunchVideo className="mb-14 max-w-4xl shadow-lg" />
       <div className="mb-14 grid w-full max-w-3xl gap-4 sm:grid-cols-3">
         {STATS.map((stat) => (
           <div key={stat.label} className="rounded-xl border bg-fd-card p-5">
