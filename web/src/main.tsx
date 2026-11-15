@@ -5,6 +5,7 @@ import { onServiceUnavailable, STAGES, type Metric, type Stage } from "./api";
 import { CurvePage } from "./routes/CurvePage";
 import { GraphPage } from "./routes/GraphPage";
 import { TryPage } from "./routes/TryPage";
+import "./index.css";
 import "./styles.css";
 import { Counters, ThemeKey } from "./ui";
 
