@@ -28,5 +28,5 @@ done
 echo "hydradb: listening on $BOLT_HOST:$BOLT_PORT"
 
 cd "$APP_DIR"
-"$PYTHON" -m eval.restore_graph
+"$PYTHON" -m eval.restore_graph --all
 exec "$PYTHON" -m uvicorn app.server:app --host 0.0.0.0 --port "${PORT:-7860}"

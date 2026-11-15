@@ -8,8 +8,6 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 from pathlib import Path
 from types import ModuleType
-from typing import Literal
-
 from fastapi import FastAPI, Header, HTTPException, Query, Request
 from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, Response
 from fastapi.staticfiles import StaticFiles
@@ -23,7 +21,7 @@ from baton.models import Issue
 
 WEB_DIST = Path(os.environ.get("BATON_WEB_DIST", Path(__file__).resolve().parent.parent / "web" / "dist"))
 PAGES = ("/", "/try", "/explore", "/connect")
-PER_CLIENT_LIMITS = {"/route": 30, "/learn": 10, "/graph": 60, "/curve": 60, "/stats": 60, "/mcp": 120}
+PER_CLIENT_LIMITS = {"/repos": 60, "/route": 30, "/learn": 10, "/graph": 60, "/curve": 60, "/stats": 60, "/mcp": 120}
 DEFAULT_PER_CLIENT_LIMIT = 300
 GLOBAL_LIMIT = 1200
 MAX_BODY_BYTES = 64_000
@@ -63,7 +61,8 @@ class RouteRequest(BaseModel):
     title: str = Field(min_length=1, max_length=500)
     body: str = Field(default="", max_length=50_000)
     reporter: str = Field(default="", max_length=100)
-    as_of: Literal[0, 500, 1000, 1700] | None = None
+    as_of: int | None = Field(default=None, ge=0)
+    repo: str | None = Field(default=None, max_length=200)
 
 
 class LearnRequest(BaseModel):
@@ -76,6 +75,7 @@ class LearnRequest(BaseModel):
     reporter: str = Field(default="", max_length=100)
     sigs: list[str] = Field(default_factory=list)
     team: str = Field(min_length=1, max_length=100)
+    repo: str | None = Field(default=None, max_length=200)
 
     def to_issue(self) -> Issue:
         """Convert to the shared Issue model."""
@@ -125,27 +125,39 @@ def create_app(service: ModuleType, learn_token: str | None = None) -> FastAPI:
             },
         )
 
+    @app.exception_handler(LookupError)
+    async def unknown_repo(_: Request, exc: LookupError) -> JSONResponse:
+        return JSONResponse(status_code=404, content={"error": "unknown_repo", "detail": str(exc).strip("'\"")})
+
+    @app.exception_handler(ValueError)
+    async def bad_value(_: Request, exc: ValueError) -> JSONResponse:
+        return JSONResponse(status_code=422, content={"error": "invalid", "detail": str(exc)})
+
+    @app.get("/repos")
+    def repos() -> dict:
+        return {"repos": service.list_repos()}
+
     @app.post("/route")
     def route(req: RouteRequest) -> dict:
-        return service.route_issue(req.title, req.body, req.reporter, req.as_of).to_dict()
+        return service.route_issue(req.title, req.body, req.reporter, req.as_of, repo=req.repo).to_dict()
 
     @app.post("/learn")
     def learn(req: LearnRequest, authorization: str = Header(default="")) -> dict:
         if learn_token and not secrets.compare_digest(authorization.encode(), f"Bearer {learn_token}".encode()):
             raise HTTPException(status_code=401, detail="POST /learn needs the BATON_LEARN_TOKEN bearer token")
-        return service.record_outcome(req.to_issue(), req.team)
+        return service.record_outcome(req.to_issue(), req.team, repo=req.repo)
 
     @app.get("/curve")
-    def curve() -> dict:
-        return service.curve()
+    def curve(repo: str | None = Query(default=None, max_length=200)) -> dict:
+        return service.curve(repo=repo)
 
     @app.get("/graph")
-    def graph(entity: str = Query(min_length=1, max_length=200)) -> dict:
-        return service.graph_around(entity.strip())
+    def graph(entity: str = Query(min_length=1, max_length=200), repo: str | None = Query(default=None, max_length=200)) -> dict:
+        return service.graph_around(entity.strip(), repo=repo)
 
     @app.get("/stats")
-    def stats() -> dict:
-        return service.stats()
+    def stats(repo: str | None = Query(default=None, max_length=200)) -> dict:
+        return service.stats(repo=repo)
 
     def page() -> Response:
         index = WEB_DIST / "index.html"

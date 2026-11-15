@@ -13,53 +13,70 @@ from baton.models import Issue
 
 INSTRUCTIONS = (
     "Baton routes GitHub issues to the team that owns them, using a graph learned from past issues. "
+    "Every tool takes an optional repo (owner/name, Kubernetes when omitted); list_repos shows which repos Baton has learned. "
     "Call route_issue first. If its confidence is under 0.6, check similar_past_issues, reporter_history "
     "and team_profile for the top candidates. Only name teams that appear in tool results."
 )
 
-def _call(fn: Callable[..., Any], *args: Any) -> Any:
-    """Run a service function and turn any failure into a readable tool error."""
+def _call(fn: Callable[..., Any], *args: Any, repo: str | None = None) -> Any:
+    """Run a service function for one repo and turn any failure into a readable tool error."""
     try:
-        return fn(*args)
+        return fn(*args, repo=repo or None)
+    except LookupError as error:
+        raise ToolError(str(error).strip("'\"")) from None
     except NotImplementedError:
         raise ToolError(f"Baton backend is not ready yet: {fn.__name__} is not implemented.") from None
     except Exception as error:
         raise ToolError(f"{fn.__name__} failed: {type(error).__name__}: {error}") from None
 
 
-def route_issue(title: str, body: str) -> dict:
+def list_repos() -> dict:
+    """List the repos Baton has learned."""
+    try:
+        return {"repos": service.list_repos()}
+    except Exception as error:
+        raise ToolError(f"list_repos failed: {type(error).__name__}: {error}") from None
+
+
+def route_issue(title: str, body: str, repo: str = "") -> dict:
     """Route an issue through the Baton graph."""
-    return _call(service.route_issue, title, body).to_dict()
+    return _call(service.route_issue, title, body, repo=repo).to_dict()
 
 
-def similar_past_issues(title: str, body: str) -> dict:
+def similar_past_issues(title: str, body: str, repo: str = "") -> dict:
     """List past issues most similar to the given one."""
-    return {"issues": _call(service.similar_past_issues, title, body)}
+    return {"issues": _call(service.similar_past_issues, title, body, repo=repo)}
 
 
-def reporter_history(username: str) -> dict:
+def reporter_history(username: str, repo: str = "") -> dict:
     """List teams that fixed this reporter's earlier issues."""
-    return {"username": username, "teams": _call(service.reporter_history, username)}
+    return {"username": username, "teams": _call(service.reporter_history, username, repo=repo)}
 
 
-def team_profile(team: str) -> dict:
+def team_profile(team: str, repo: str = "") -> dict:
     """List the entities most strongly linked to a team."""
-    return {"team": team, "entities": _call(service.team_profile, team)}
+    return {"team": team, "entities": _call(service.team_profile, team, repo=repo)}
 
 
-def record_outcome(number: int, title: str, body: str, reporter: str, created_at: str, team: str) -> dict:
+def record_outcome(number: int, title: str, body: str, reporter: str, created_at: str, team: str, repo: str = "") -> dict:
     """Feed a confirmed team back into the graph."""
     if not team.strip():
         raise ToolError("team must be a non-empty team name.")
     issue = Issue(number=number, title=title, body=body, created_at=created_at, reporter=reporter, sigs=(team,))
-    return _call(service.record_outcome, issue, team)
+    return _call(service.record_outcome, issue, team, repo=repo)
 
 
 TOOLS = {
+    list_repos: (
+        "List the GitHub repos Baton has learned an owner graph for: each repo's owner signal (label prefix, fixer "
+        "or assignee), its number of owners, issues learned and held-out top-1 accuracy. Pass one of these as `repo` "
+        "to the other tools."
+    ),
     route_issue: (
         "Route an issue to its owning team. Give the issue title and body. Returns up to 3 ranked teams, each "
         "with its share of the score and the graph path (node names from issue signal to team) that explains it, "
         "plus an overall confidence from 0 to 1 and how many signals were known or unknown to the graph. "
+        "Set repo to owner/name for a repo other than Kubernetes (see list_repos); a message explains an empty result. "
         "Call this first for every issue."
     ),
     similar_past_issues: (
@@ -87,7 +104,7 @@ LOCAL_HOSTS = ("127.0.0.1", "localhost", "[::1]")
 
 
 def build_server(read_only: bool = False) -> MCPServer:
-    """An MCP server with all five tools, or only the four read tools when `read_only` is set."""
+    """An MCP server with every tool, or only the read tools when `read_only` is set."""
     server = MCPServer("baton", instructions=INSTRUCTIONS)
     for fn, description in TOOLS.items():
         if not (read_only and fn in WRITE_TOOLS):

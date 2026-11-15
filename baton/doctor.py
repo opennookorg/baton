@@ -17,6 +17,7 @@ TRIAGE_FAMILIES = {
     "triage", "lifecycle", "cause", "from", "sweeper", "clawsweeper", "ci", "os", "browser", "release",
     "backport", "good", "help", "pr", "do", "cla", "ok", "approved", "lgtm", "stale", "i", "s", "e", "a",
     "beta", "stable", "regression", "relnotes", "rla", "perf", "merged", "close", "duplicate", "invalid",
+    "impact", "severity", "sev", "bug", "issue", "rating", "feature", "enhancement", "question",
 }
 
 
@@ -35,8 +36,8 @@ class Candidate:
 
     @property
     def score(self) -> float:
-        """Coverage times how evenly the work spreads: high when most issues have an owner and no owner dominates."""
-        return self.coverage * (1 - self.largest_share)
+        """Coverage times evenness times seen share: most issues owned, no owner dominating, and later owners already seen earlier."""
+        return self.coverage * (1 - self.largest_share) * self.seen_share
 
     def profile(self, repo: str) -> RepoProfile:
         """The profile this candidate stands for."""

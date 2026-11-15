@@ -208,3 +208,23 @@ def test_mcp_endpoint_serves_read_tools_only():
     names = set(re.findall(r'"name":"(\w+)"', res.text.replace(" ", "")))
     assert {"route_issue", "similar_past_issues", "reporter_history", "team_profile"} <= names
     assert "record_outcome" not in names
+
+
+def test_repos_lists_kubernetes_first(client):
+    repos = client.get("/repos").json()["repos"]
+    assert repos[0]["repo"] == "kubernetes/kubernetes"
+
+
+@pytest.mark.parametrize(
+    ("method", "path", "body"),
+    [
+        ("post", "/route", {"title": "x", "repo": "nobody/nothing"}),
+        ("get", "/stats?repo=nobody/nothing", None),
+        ("get", "/curve?repo=nobody/nothing", None),
+        ("get", "/graph?entity=kubelet&repo=nobody/nothing", None),
+    ],
+)
+def test_unknown_repo_is_404_with_reason(client, method, path, body):
+    res = client.request(method, path, json=body)
+    assert res.status_code == 404
+    assert res.json()["error"] == "unknown_repo" and "nobody/nothing" in res.json()["detail"]

@@ -12,3 +12,6 @@ web/node_modules
 web/dist
 web/.vercel
 docs-site
+data/repos/*/raw.jsonl.gz
+results/repos/*/live_state.json
+results/repos/*/curve_offline.json

@@ -190,17 +190,21 @@ def use(profile: RepoProfile) -> Iterator[RepoProfile]:
 
 
 def profile_path(repo: str) -> Path:
-    return REPOS_DATA_DIR / repo.replace("/", "__") / PROFILE_FILE
+    """Where a repo's profile lives, matching owner/name without regard to case as GitHub does."""
+    slug = repo.replace("/", "__")
+    found = next((path for path in REPOS_DATA_DIR.glob("*") if path.name.lower() == slug.lower()), None)
+    return (found or REPOS_DATA_DIR / slug) / PROFILE_FILE
 
 
 def load(repo: str | None = None) -> RepoProfile:
     """The saved profile for `owner/name`; Kubernetes for None, "kubernetes" or its full name."""
-    if repo in (None, "", "kubernetes", KUBERNETES):
+    if repo is None or repo.lower() in ("", "kubernetes", KUBERNETES):
         return KUBERNETES_PROFILE
     path = profile_path(repo)
     doctor_file = path.with_name("doctor.json")
-    if not path.exists() and doctor_file.exists():
-        raise LookupError(f"{repo} cannot be routed: {json.loads(doctor_file.read_text())['verdict']}")
+    verdict = json.loads(doctor_file.read_text())["verdict"] if doctor_file.exists() else "ok"
+    if not path.exists() and verdict != "ok":
+        raise LookupError(f"{repo} cannot be routed: {verdict}")
     if not path.exists():
         raise LookupError(f"unknown repo {repo!r}; Baton routes for: {', '.join(loaded())}")
     profile = RepoProfile.from_json(json.loads(path.read_text()))

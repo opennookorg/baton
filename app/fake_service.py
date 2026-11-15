@@ -3,9 +3,11 @@
 import math
 import re
 import zlib
+from functools import wraps
 
 from baton.config import ENTITY_ID_BASE, ISSUE_ID_BASE, LEARNING_SIZE, TEAM_ID_BASE
 from baton.models import Issue, RouteResult, TeamScore
+from baton.repos import KUBERNETES_PROFILE
 
 TEAMS = ["sig/node", "sig/network", "sig/storage", "sig/api-machinery", "sig/scheduling", "sig/cli", "sig/auth"]
 
@@ -34,6 +36,7 @@ ENTITIES: dict[str, dict] = {
 
 ALIASES = {"kube-apiserver": "apiserver", "pvc": "persistentvolumeclaim"}
 SPLITS = {("timeout", "kubelet"): {"name": "timeout + kubelet", "late": {"sig/node": 2.4}}}
+DEMO_STAGES = (0, 500, 1000, LEARNING_SIZE)
 MERGE_STAGE = 1000
 SPLIT_STAGE = 1000
 STOPWORDS = {"when", "with", "from", "that", "this", "after", "before", "into", "does", "doesn't", "should", "while", "about", "there", "their", "using", "fails", "failed", "error", "issue", "after", "being", "have", "will", "when", "pods", "pod"}
@@ -51,6 +54,18 @@ STATS = {
     "shortcuts": 212,
     "misroutes_avoided": 186,
 }
+
+
+def demo_repo_only(function):
+    """Accept a `repo` keyword like the real service, serving only the Kubernetes demo."""
+
+    @wraps(function)
+    def call(*args, repo: str | None = None, **kwargs):
+        if repo not in (None, "", KUBERNETES_PROFILE.repo):
+            raise LookupError(f"unknown repo {repo}; the demo service routes for {KUBERNETES_PROFILE.repo} only")
+        return function(*args, **kwargs)
+
+    return call
 
 
 def _history_issue(entity: str, team: str, n: int = 0) -> int:
@@ -79,8 +94,11 @@ def _strengths(entity: dict, stage: int) -> dict[str, float]:
     return {team: entity["early"].get(team, 0) * (1 - t) + entity["late"].get(team, 0) * t for team in teams}
 
 
+@demo_repo_only
 def route_issue(title: str, body: str, reporter: str = "", as_of: int | None = None) -> RouteResult:
     """Score teams from a fixed entity table, interpolated by learning stage."""
+    if as_of not in (None, *DEMO_STAGES):
+        raise ValueError(f"as_of must be one of {list(DEMO_STAGES)} for {KUBERNETES_PROFILE.repo}")
     stage = LEARNING_SIZE if as_of is None else as_of
     text = f"{title}\n{body}".lower()
     tokens = set(_tokens(text))
@@ -124,6 +142,7 @@ def route_issue(title: str, body: str, reporter: str = "", as_of: int | None = N
     )
 
 
+@demo_repo_only
 def record_outcome(issue: Issue, team: str) -> dict:
     """Report what one learning step would change, without mutating anything."""
     result = route_issue(issue.title, issue.body, issue.reporter)
@@ -148,6 +167,7 @@ def _wobble(n: int, phase: float) -> float:
     return 0.006 * math.sin(n / 137 + phase) * (1 - math.exp(-n / 300))
 
 
+@demo_repo_only
 def curve() -> dict:
     """Return 18 points per line for frozen, count_only, baton and each technique."""
     points = range(0, LEARNING_SIZE + 1, 100)
@@ -219,6 +239,7 @@ NODES, LINKS = _build_graph()
 NODES_BY_ID = {node["id"]: node for node in NODES.values()}
 
 
+@demo_repo_only
 def graph_around(entity: str) -> dict:
     """Return the entity, its links, merged names, history issues and the strongest peers per team."""
     focus = NODES.get(entity.lower())
@@ -242,11 +263,13 @@ def graph_around(entity: str) -> dict:
     return {"nodes": [NODES_BY_ID[i] for i in sorted(ids)], "links": chosen}
 
 
+@demo_repo_only
 def stats() -> dict:
     """Return fixed demo counters."""
     return dict(STATS)
 
 
+@demo_repo_only
 def similar_past_issues(title: str, body: str, limit: int = 5) -> list[dict]:
     """Return fake past issues for the entities found in the text."""
     result = route_issue(title, body)
@@ -257,6 +280,7 @@ def similar_past_issues(title: str, body: str, limit: int = 5) -> list[dict]:
     return rows[:limit]
 
 
+@demo_repo_only
 def reporter_history(username: str) -> list[dict]:
     """Return teams that fixed this reporter's earlier issues."""
     entity = ENTITIES.get(username.lower())
@@ -265,7 +289,13 @@ def reporter_history(username: str) -> list[dict]:
     return [{"team": team, "count": round(strength * 4)} for team, strength in sorted(entity["late"].items(), key=lambda kv: -kv[1])]
 
 
+@demo_repo_only
 def team_profile(team: str, limit: int = 15) -> list[dict]:
     """Return the entities most strongly linked to a team."""
     rows = [{"entity": name, "kind": e["kind"], "strength": e["late"][team]} for name, e in ENTITIES.items() if team in e["late"]]
     return sorted(rows, key=lambda row: -row["strength"])[:limit]
+
+
+def list_repos() -> list[dict]:
+    """The one demo repo."""
+    return [{"repo": KUBERNETES_PROFILE.repo, "signal": "label_prefix", "prefix": "sig/", "owners": len(TEAMS), "issues_learned": LEARNING_SIZE, "snapshots": list(DEMO_STAGES), "test_top1": None}]

@@ -1,0 +1,96 @@
+{
+ "repo": "kubernetes/kubernetes",
+ "closed_issues": 48106,
+ "sampled": 1000,
+ "recommended": {
+  "signal": "label_prefix",
+  "prefix": "sig/",
+  "coverage": 0.853,
+  "owners": 20,
+  "effective_owners": 7.39,
+  "largest_share": 0.281,
+  "seen_share": 1.0,
+  "estimated_owned": 41034
+ },
+ "verdict": "ok",
+ "candidates": [
+  {
+   "signal": "label_prefix",
+   "prefix": "sig/",
+   "coverage": 0.853,
+   "owners": 20,
+   "effective_owners": 7.39,
+   "largest_share": 0.281,
+   "seen_share": 1.0,
+   "estimated_owned": 41034,
+   "score": 0.613,
+   "verdict": "ok"
+  },
+  {
+   "signal": "assignee",
+   "prefix": "",
+   "coverage": 0.461,
+   "owners": 57,
+   "effective_owners": 118.68,
+   "largest_share": 0.026,
+   "seen_share": 0.507,
+   "estimated_owned": 22177,
+   "score": 0.449,
+   "verdict": "ok"
+  },
+  {
+   "signal": "fixer",
+   "prefix": "",
+   "coverage": 0.429,
+   "owners": 44,
+   "effective_owners": 114.95,
+   "largest_share": 0.035,
+   "seen_share": 0.312,
+   "estimated_owned": 20637,
+   "score": 0.414,
+   "verdict": "ok"
+  },
+  {
+   "signal": "label_prefix",
+   "prefix": "area/",
+   "coverage": 0.083,
+   "owners": 11,
+   "effective_owners": 10.48,
+   "largest_share": 0.152,
+   "seen_share": 0.5,
+   "estimated_owned": 3993,
+   "score": 0.07,
+   "verdict": "ok"
+  },
+  {
+   "signal": "label_prefix",
+   "prefix": "wg/",
+   "coverage": 0.121,
+   "owners": 2,
+   "effective_owners": 1.63,
+   "largest_share": 0.744,
+   "seen_share": 1.0,
+   "estimated_owned": 5821,
+   "score": 0.031,
+   "verdict": "ok"
+  }
+ ],
+ "folders": [
+  "CHANGELOG",
+  "LICENSES",
+  "api",
+  "build",
+  "cluster",
+  "cmd",
+  "docs",
+  "hack",
+  "logo",
+  "pkg",
+  "plugin",
+  "staging",
+  "test",
+  "third_party",
+  "vendor"
+ ],
+ "created_at": "2014-06-06"
+}
