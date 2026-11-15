@@ -10,7 +10,7 @@ uv run python -m eval.restore_graph
 uv run uvicorn app.server:app --port 8000
 ```
 
-- `restore_graph` puts the graph back in the baton end state, so the counters and the live route match the numbers below. It prints the counts: 22 teams, 1,225 entities, 2,286 issues.
+- `restore_graph` puts the graph back in the baton end state, so the counters and the live route match the numbers below. It prints the counts: 22 teams, 1,257 entities, 2,618 issues.
 - Open <http://localhost:8000> in a clean browser window at 1440 wide. The counters strip should read Issues learned 1,700, Links reweighted 13,621, Names merged 0, Shortcuts created 2,260, Misroutes avoided 90 (per 1,000 issues vs count-only).
 - Have `docs/assets/curve.png` and `docs/assets/recovery.png` open in tabs as fallbacks.
 - Set the dashboard theme to light or dark and keep it for the whole take.
