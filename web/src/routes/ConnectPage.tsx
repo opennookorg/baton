@@ -1,4 +1,4 @@
-import { Bot, Braces, Check, Copy, ExternalLink, Globe, HardDrive, MessagesSquare, MousePointer2, Plug, ShieldCheck, SquareTerminal, TerminalSquare, Waypoints, type LucideIcon } from "lucide-react";
+import { Check, Copy, ExternalLink, Globe, HardDrive, ShieldCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,14 @@ import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import claudeLogo from "@/assets/logos/claude.svg";
+import cursorLogo from "@/assets/logos/cursor.svg";
+import mcpLogo from "@/assets/logos/mcp.svg";
+import nousLogo from "@/assets/logos/nous.svg";
+import openaiLogo from "@/assets/logos/openai.svg";
+import openclawLogo from "@/assets/logos/openclaw.svg";
+import opencodeLogo from "@/assets/logos/opencode.svg";
+import { cn } from "@/lib/utils";
 
 type Transport = "local" | "remote";
 type Place = { dir: string; url: string };
@@ -21,7 +29,8 @@ type Client = {
   id: ClientId;
   name: string;
   maker: string;
-  icon: LucideIcon;
+  logo: string;
+  monochrome?: true;
   docs?: string;
   local?: Setup;
   remote: Setup;
@@ -38,7 +47,7 @@ const CLIENTS: Client[] = [
     id: "claude-code",
     name: "Claude Code",
     maker: "Anthropic",
-    icon: SquareTerminal,
+    logo: claudeLogo,
     docs: "https://code.claude.com/docs/en/mcp",
     local: {
       snippets: [{ title: "Terminal", code: (place) => `claude mcp add --transport stdio --scope user baton -- ${shellLaunch(place)}` }],
@@ -51,7 +60,7 @@ const CLIENTS: Client[] = [
     id: "chatgpt",
     name: "ChatGPT",
     maker: "OpenAI",
-    icon: MessagesSquare,
+    logo: openaiLogo,
     docs: "https://developers.openai.com/api/docs/guides/developer-mode",
     remote: {
       steps: [
@@ -69,7 +78,7 @@ const CLIENTS: Client[] = [
     id: "codex",
     name: "Codex",
     maker: "OpenAI",
-    icon: TerminalSquare,
+    logo: openaiLogo,
     docs: "https://learn.chatgpt.com/docs/extend/mcp?surface=cli",
     local: {
       snippets: [
@@ -89,7 +98,7 @@ const CLIENTS: Client[] = [
     id: "cursor",
     name: "Cursor",
     maker: "Anysphere",
-    icon: MousePointer2,
+    logo: cursorLogo,
     docs: "https://cursor.com/docs/context/mcp",
     local: { snippets: [{ title: "~/.cursor/mcp.json", code: (place) => mcpServersJson({ type: "stdio", command: "uv", args: launch(place).slice(1) }) }] },
     remote: { snippets: [{ title: "~/.cursor/mcp.json", code: ({ url }) => mcpServersJson({ url }) }] },
@@ -99,7 +108,7 @@ const CLIENTS: Client[] = [
     id: "opencode",
     name: "OpenCode",
     maker: "SST",
-    icon: Braces,
+    logo: opencodeLogo,
     docs: "https://opencode.ai/docs/mcp-servers/",
     local: { snippets: [{ title: "opencode.jsonc", code: (place) => JSON.stringify({ $schema: "https://opencode.ai/config.json", mcp: { servers: { baton: { type: "local", command: launch(place) } } } }, null, 2) }] },
     remote: { snippets: [{ title: "opencode.jsonc", code: ({ url }) => JSON.stringify({ $schema: "https://opencode.ai/config.json", mcp: { servers: { baton: { type: "remote", url, oauth: false } } } }, null, 2) }] },
@@ -109,7 +118,8 @@ const CLIENTS: Client[] = [
     id: "hermes",
     name: "Hermes Agent",
     maker: "Nous Research",
-    icon: Bot,
+    logo: nousLogo,
+    monochrome: true,
     docs: "https://hermes-agent.nousresearch.com/docs/user-guide/features/mcp",
     local: { snippets: [{ title: "~/.hermes/config.yaml", code: (place) => `mcp_servers:\n  baton:\n    command: "uv"\n    args: ${jsonArgs(place).replaceAll(",", ", ")}` }] },
     remote: { snippets: [{ title: "~/.hermes/config.yaml", code: ({ url }) => `mcp_servers:\n  baton:\n    url: "${url}"` }] },
@@ -119,7 +129,7 @@ const CLIENTS: Client[] = [
     id: "openclaw",
     name: "OpenClaw",
     maker: "Open source",
-    icon: Waypoints,
+    logo: openclawLogo,
     docs: "https://docs.openclaw.ai/tools/mcp.md",
     local: { snippets: [{ title: "OpenClaw config (JSON5)", code: (place) => `{\n  mcp: {\n    servers: {\n      baton: { command: "uv", args: ${jsonArgs(place).replaceAll(",", ", ")} },\n    },\n  },\n}` }] },
     remote: { snippets: [{ title: "Terminal", code: ({ url }) => `openclaw mcp add baton --url ${url} --transport streamable-http` }] },
@@ -129,7 +139,7 @@ const CLIENTS: Client[] = [
     id: "other",
     name: "Any MCP client",
     maker: "Claude Desktop, Windsurf and more",
-    icon: Plug,
+    logo: mcpLogo,
     local: { snippets: [{ title: "mcpServers entry", code: (place) => mcpServersJson({ command: "uv", args: launch(place).slice(1) }) }] },
     remote: { snippets: [{ title: "mcpServers entry", code: ({ url }) => mcpServersJson({ type: "http", url }) }] },
     verify: { text: "Most clients use this mcpServers shape. Ask the client to list its tools and look for route_issue." },
@@ -196,6 +206,10 @@ function CodeBlock({ title, code }: { title: string; code: string }) {
   );
 }
 
+function ClientLogo({ client }: { client: Client }) {
+  return <img src={client.logo} alt="" className={cn("size-4 shrink-0 object-contain", client.monochrome && "dark:invert")} />;
+}
+
 function ClientSetup({ client, place }: { client: Client; place: Place }) {
   const [chosen, setChosen] = useState<Transport>("local");
   const transport: Transport = client.local ? chosen : "remote";
@@ -204,7 +218,7 @@ function ClientSetup({ client, place }: { client: Client; place: Place }) {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <client.icon className="size-4 text-muted-foreground" aria-hidden="true" />
+          <ClientLogo client={client} />
           Connect {client.name}
         </CardTitle>
         <CardDescription>
@@ -301,7 +315,7 @@ export function ConnectPage({ client, onClient }: { client: ClientId; onClient: 
                 className="h-auto flex-col items-start gap-0.5 rounded-lg border-border bg-card px-3 py-2.5 text-left whitespace-normal shadow-xs hover:bg-muted/50 data-active:border-brand data-active:bg-brand-soft dark:data-active:border-brand dark:data-active:bg-brand-soft"
               >
                 <span className="flex items-center gap-1.5 text-foreground">
-                  <option.icon className="size-4 text-muted-foreground" aria-hidden="true" />
+                  <ClientLogo client={option} />
                   {option.name}
                 </span>
                 <span className="text-xs font-normal text-muted-foreground">{option.maker}</span>
