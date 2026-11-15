@@ -223,7 +223,7 @@ The baton graph at 1,700 issues: 22 teams, 1,257 entities, 2,618 issues, 3,770 `
 
 ## Deploy
 
-One container runs HydraDB and Baton together (`Dockerfile`, `scripts/serve.sh`) and serves the API and dashboard on one port. It deploys free to a Hugging Face Docker Space with `scripts/deploy_hf_space.sh <hf-user>/baton`, or to Fly.io with `fly deploy` (about $10 a month for the 2 GB machine HydraDB needs). Details and the other options are in [`docs/DEPLOY.md`](docs/DEPLOY.md).
+One container runs HydraDB and Baton together (`Dockerfile`, `scripts/serve.sh`) and serves the API and dashboard on one port. It runs live at https://baton-134858271117.us-central1.run.app, deployed free to Google Cloud Run with `scripts/deploy_cloud_run.sh <gcp-project-id>` (a spend cap keeps the bill at zero). It also runs locally with `docker compose up`, or on Fly.io with `fly deploy` (about $10 a month for the 2 GB machine HydraDB needs). Details and the other options are in [`docs/DEPLOY.md`](docs/DEPLOY.md).
 
 ## Repo layout
 

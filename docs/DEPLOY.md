@@ -2,7 +2,7 @@
 
 Baton ships as one container. `scripts/serve.sh` starts a HydraDB node inside it, restores the learned graph from `results/snapshots/1700.json`, and serves the API, dashboard and `/route` on port 7860. The image builds on the public HydraDB image (`ghcr.io/hydra-db/hydradb:0.4.0`, amd64 and arm64), so nothing has to be compiled. The HydraDB node uses about 1.5 GB of memory, so the host needs at least 2 GB.
 
-The dashboard is built into the image and served by the same container, so no separate frontend host is needed. `web/vercel.json` can also host it on Vercel, proxying the API to the container.
+The dashboard is built into the image and served by the same container, so no separate frontend host is needed. The live instance runs on Cloud Run at https://baton-134858271117.us-central1.run.app.
 
 ## Free: Google Cloud Run
 
