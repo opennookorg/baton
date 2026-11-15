@@ -1,0 +1,45 @@
+{
+  "repo": "openclaw/openclaw",
+  "signal": "fixer",
+  "prefix": "",
+  "labels": [],
+  "available": 5000,
+  "path_roots": [
+    "CHANGELOG",
+    "apps",
+    "config",
+    "crates",
+    "custodian-skills",
+    "deploy",
+    "docs",
+    "examples",
+    "extensions",
+    "git-hooks",
+    "packages",
+    "patches",
+    "qa",
+    "scripts",
+    "security",
+    "skills",
+    "src",
+    "test",
+    "tools",
+    "ui"
+  ],
+  "stop_words": [],
+  "hide_terms": [],
+  "doctor": {
+    "verdict": "ok",
+    "recommended": {
+      "signal": "fixer",
+      "prefix": "",
+      "coverage": 0.606,
+      "owners": 37,
+      "effective_owners": 16.64,
+      "largest_share": 0.139,
+      "seen_share": 0.868,
+      "estimated_owned": 36064
+    },
+    "closed_issues": 59512
+  }
+}

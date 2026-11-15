@@ -1,9 +1,9 @@
-"""The learning loop: route (gap filling first if unsure), reveal, write the issue, reweight; every BATCH_SIZE issues run shortcut, merge and split passes and prune history."""
+"""The learning loop: route (gap filling first if unsure), reveal, write the issue, reweight; every batch of issues run shortcut, merge and split passes and prune history."""
 
 from dataclasses import dataclass, replace
 
-from baton import db
-from baton.config import BATCH_SIZE, LearnParams, Techniques
+from baton import db, repos
+from baton.config import LearnParams, Techniques
 from baton.dataset import load_reserve
 from baton.entities import extract_issue, kind_of
 from baton.ids import IdTable
@@ -105,7 +105,7 @@ class Learner:
         return route_state(self.state, issue.title, issue.body, issue.reporter, self.table, issue.number)
 
     def learn(self, issue: Issue, teams: list[str] | None = None) -> dict:
-        """Route (after gap filling when unsure), reveal the real teams, write the issue as history, reweight; batch passes every BATCH_SIZE."""
+        """Route (after gap filling when unsure), reveal the real teams, write the issue as history, reweight; batch passes every batch."""
         routed = self.route(issue)
         pulled = 0
         if self.techniques.gap_filling and needs_gap_fill(routed.result.confidence, routed.result.entities_found, self.params):
@@ -128,7 +128,7 @@ class Learner:
         if predicted not in teams:
             for entity in entities:
                 self.state.entity_misses[entity] += 1
-        batch = self.end_batch() if counters["issues_learned"] % BATCH_SIZE == 0 else {}
+        batch = self.end_batch() if counters["issues_learned"] % repos.current().sizes.batch == 0 else {}
         return {
             "issue": issue.number,
             "team": teams[0] if len(teams) == 1 else teams,

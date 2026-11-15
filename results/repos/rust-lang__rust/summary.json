@@ -1,0 +1,46 @@
+{
+ "repo": "rust-lang/rust",
+ "scores": {
+  "frozen": {
+   "issues": 1700,
+   "top1": 0.66,
+   "top3": 0.81
+  },
+  "count_only": {
+   "issues": 1700,
+   "top1": 0.72,
+   "top3": 0.92
+  },
+  "baton": {
+   "issues": 1700,
+   "top1": 0.77,
+   "top3": 0.9367
+  },
+  "lookup": {
+   "top1": 0.6933,
+   "top3": 0.93
+  },
+  "naive_bayes": {
+   "top1": 0.72,
+   "top3": 0.89
+  },
+  "always_biggest": {
+   "top1": 0.6533,
+   "top3": 0.8833
+  }
+ },
+ "sizes": {
+  "total": 2000,
+  "learning": 1700,
+  "test": 300,
+  "reserve": 3000,
+  "batch": 100,
+  "frozen": 200,
+  "snapshots": [
+   0,
+   500,
+   1000,
+   1700
+  ]
+ }
+}

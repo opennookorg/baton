@@ -1,0 +1,46 @@
+{
+ "repo": "NousResearch/hermes-agent",
+ "scores": {
+  "frozen": {
+   "issues": 1700,
+   "top1": 0.3267,
+   "top3": 0.72
+  },
+  "count_only": {
+   "issues": 1700,
+   "top1": 0.4367,
+   "top3": 0.74
+  },
+  "baton": {
+   "issues": 1700,
+   "top1": 0.5267,
+   "top3": 0.87
+  },
+  "lookup": {
+   "top1": 0.4633,
+   "top3": 0.7967
+  },
+  "naive_bayes": {
+   "top1": 0.5533,
+   "top3": 0.8367
+  },
+  "always_biggest": {
+   "top1": 0.2667,
+   "top3": 0.57
+  }
+ },
+ "sizes": {
+  "total": 2000,
+  "learning": 1700,
+  "test": 300,
+  "reserve": 3000,
+  "batch": 100,
+  "frozen": 200,
+  "snapshots": [
+   0,
+   500,
+   1000,
+   1700
+  ]
+ }
+}

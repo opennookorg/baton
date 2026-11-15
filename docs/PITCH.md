@@ -14,7 +14,7 @@ Three minutes, in the order from `docs/SPEC.md`. Every number is from `results/`
 >
 > The slider routes it against the graph as it was at different points. At issue 0 the graph is empty: Baton knows the words but has seen no fixes, so it routes nothing. That is the honest starting point.
 >
-> At issue 500 it has a guess, sig/apps, through the word "delete". Wrong, and that is how count-based routing goes wrong: a generic word with lots of history wins.
+> At issue 500 it has a guess, sig/node, through the word "event". Wrong, and that is how count-based routing goes wrong: a generic word with lots of history wins.
 >
 > At issue 1,700 it says sig/scheduling, through "scheduler", with the path on screen. Nobody wrote "scheduler belongs to sig/scheduling" anywhere. Baton learned it from 1,700 fixed issues, and the path shows you why.
 

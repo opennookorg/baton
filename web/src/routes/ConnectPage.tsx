@@ -223,7 +223,7 @@ function ClientSetup({ client, place }: { client: Client; place: Place }) {
           Connect {client.name}
         </CardTitle>
         <CardDescription>
-          {transport === "local" ? "Runs the server on this machine over stdio, with all five tools." : "Reaches the server over HTTPS. Read-only: record_outcome is not exposed."}
+          {transport === "local" ? "Runs the server on this machine over stdio, with all six tools." : "Reaches the server over HTTPS. Read-only: record_outcome is not exposed."}
         </CardDescription>
         {client.docs && (
           <CardAction>

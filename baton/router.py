@@ -6,7 +6,7 @@ from dataclasses import dataclass
 
 from baton import db
 from baton.config import HISTORY_COST, SAME_AS_COST
-from baton.entities import extract
+from baton.entities import KINDS_BY_PREFIX, extract
 from baton.ids import IdTable
 from baton.models import RouteResult, TeamScore
 from baton.passes import with_compounds
@@ -28,7 +28,8 @@ class Routed:
 
 def display_name(node: str) -> str:
     """A path node as shown in API output: entity names lose their kind prefix; teams and #issues stay."""
-    return node.split(":", 1)[1] if ":" in node else node
+    prefix, _, rest = node.partition(":")
+    return rest if f"{prefix}:" in KINDS_BY_PREFIX else node
 
 
 def known_entities(title: str, body: str, reporter: str, table: IdTable) -> tuple[list[str], int]:

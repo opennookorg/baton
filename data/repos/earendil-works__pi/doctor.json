@@ -1,0 +1,61 @@
+{
+ "repo": "earendil-works/pi",
+ "closed_issues": 7701,
+ "sampled": 1000,
+ "recommended": {
+  "signal": "assignee",
+  "prefix": "",
+  "coverage": 0.144,
+  "owners": 5,
+  "effective_owners": 3.99,
+  "largest_share": 0.377,
+  "seen_share": 0.955,
+  "estimated_owned": 1109
+ },
+ "verdict": "ok",
+ "candidates": [
+  {
+   "signal": "assignee",
+   "prefix": "",
+   "coverage": 0.144,
+   "owners": 5,
+   "effective_owners": 3.99,
+   "largest_share": 0.377,
+   "seen_share": 0.955,
+   "estimated_owned": 1109,
+   "score": 0.086,
+   "verdict": "ok"
+  },
+  {
+   "signal": "fixer",
+   "prefix": "",
+   "coverage": 0.143,
+   "owners": 6,
+   "effective_owners": 5.98,
+   "largest_share": 0.266,
+   "seen_share": 0.81,
+   "estimated_owned": 1101,
+   "score": 0.085,
+   "verdict": "ok"
+  },
+  {
+   "signal": "label_prefix",
+   "prefix": "pkg:",
+   "coverage": 0.005,
+   "owners": 1,
+   "effective_owners": 2.57,
+   "largest_share": 0.5,
+   "seen_share": 1.0,
+   "estimated_owned": 39,
+   "score": 0.003,
+   "verdict": "one owner: the largest owner takes 50% of issues, nothing to route"
+  }
+ ],
+ "folders": [
+  "apps",
+  "nix",
+  "packages",
+  "scripts"
+ ],
+ "created_at": "2025-08-09"
+}

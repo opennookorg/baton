@@ -7,8 +7,8 @@ import time
 from dataclasses import asdict, replace
 from pathlib import Path
 
-from baton import db, snapshots
-from baton.config import BATCH_SIZE, COUNT_ONLY, CURVE_FILE, FROZEN_SIZE, SNAPSHOT_POINTS, LearnParams, Techniques
+from baton import db, repos, snapshots
+from baton.config import COUNT_ONLY, LearnParams, Techniques
 from baton.dataset import load_reserve, split
 from baton.entities import HIDE_SIG_MENTIONS
 from baton.ids import IdTable
@@ -61,9 +61,10 @@ def fresh_learner(table: IdTable, techniques: Techniques, params: LearnParams, l
 
 def run_line(name: str, table: IdTable, learning: list[Issue], test: list[Issue], live: bool, save, reserve: ReservePool | None = None) -> dict:
     """Run one line and return its points and meta; `save` is called after every point."""
+    sizes = repos.current().sizes
     params = LINE_PARAMS.get(name, LearnParams())
     learner = fresh_learner(table, LINES[name], params, live, reserve)
-    stream = learning[:FROZEN_SIZE] if name == "frozen" else learning
+    stream = learning[: sizes.frozen] if name == "frozen" else learning
     points: list[dict] = []
     latency: list[float] = []
     stream_hits: list[bool] = []
@@ -75,7 +76,7 @@ def run_line(name: str, table: IdTable, learning: list[Issue], test: list[Issue]
         points.append({"issues": issues, **accuracy})
         if live:
             meta["graph"][str(issues)] = db.counts()
-        if live and name == SNAPSHOT_LINE and issues in SNAPSHOT_POINTS:
+        if live and name == SNAPSHOT_LINE and issues in sizes.snapshots:
             snapshots.save(learner.state, issues, {"line": name, "note": AS_OF_ZERO if issues == 0 else ""})
         meta.update(
             counters=dict(learner.state.counters),
@@ -87,15 +88,15 @@ def run_line(name: str, table: IdTable, learning: list[Issue], test: list[Issue]
 
     if name != "frozen":
         checkpoint(0)
-    for start in range(0, len(stream), BATCH_SIZE):
-        stream_hits += [learner.learn(issue)["correct"] for issue in stream[start : start + BATCH_SIZE]]
+    for start in range(0, len(stream), sizes.batch):
+        stream_hits += [learner.learn(issue)["correct"] for issue in stream[start : start + sizes.batch]]
         if name != "frozen":
-            checkpoint(start + BATCH_SIZE)
+            checkpoint(min(start + sizes.batch, len(stream)))
     if name == "frozen":
-        checkpoint(FROZEN_SIZE)
+        checkpoint(sizes.frozen)
         flat = points[0]
-        points[:] = [{**flat, "issues": n} for n in range(0, len(learning) + 1, BATCH_SIZE)]
-        meta["note"] = f"graph built once from the first {FROZEN_SIZE} learning issues and never updated; the same score at every x"
+        points[:] = [{**flat, "issues": n} for n in sorted({*range(0, len(learning) + 1, sizes.batch), len(learning)})]
+        meta["note"] = f"graph built once from the first {sizes.frozen} learning issues and never updated; the same score at every x"
         save(points, meta)
     return {"points": points, "meta": meta}
 
@@ -124,17 +125,29 @@ def main() -> None:
     parser.add_argument("--lines", nargs="+", choices=list(LINES), default=list(DEFAULT_LINES))
     parser.add_argument("--offline", action="store_true", help="score on the in-memory mirror only, without HydraDB")
     parser.add_argument("--out", type=Path, default=None)
+    parser.add_argument("--repo", default=None, help="owner/name of an onboarded repo; Kubernetes by default")
     args = parser.parse_args()
-    out = args.out or (CURVE_FILE.with_name("curve_offline.json") if args.offline else CURVE_FILE)
+    with repos.use(repos.load(args.repo)):
+        run(args.lines, args.offline, args.out)
+
+
+def run(lines: list[str], offline: bool = False, out: Path | None = None) -> dict:
+    """Run `lines` for the active repo and write its curve file after every point."""
+    profile = repos.current()
+    out = out or (profile.curve_file.with_name("curve_offline.json") if offline else profile.curve_file)
     curve = json.loads(out.read_text()) if out.exists() else {"lines": {}, "meta": {}}
     table = IdTable.load()
     learning, test = split()
     reserve = ReservePool.build(load_reserve())
     curve["meta"].update(
-        mode="offline" if args.offline else "live",
+        repo=profile.repo,
+        signal={"signal": profile.signal, "prefix": profile.prefix},
+        mode="offline" if offline else "live",
         learning_issues=len(learning),
         test_issues=len(test),
-        batch_size=BATCH_SIZE,
+        batch_size=profile.sizes.batch,
+        frozen_size=profile.sizes.frozen,
+        snapshots=list(profile.sizes.snapshots),
         hide_sig_mentions=HIDE_SIG_MENTIONS,
         params=asdict(LearnParams()),
         params_note="values tuned on the learning stream only (eval/tune_stream.py, results/tuning.json); each line's own params are in meta.lines",
@@ -143,15 +156,16 @@ def main() -> None:
         as_of_zero=AS_OF_ZERO,
     )
     curve["meta"].setdefault("lines", {})
-    for name in args.lines:
+    for name in lines:
         def save(points: list[dict], meta: dict, name: str = name) -> None:
             curve["lines"][name] = points
             curve["meta"]["lines"][name] = meta
             curve["meta"]["summary"] = summary(curve)
             write(out, curve)
 
-        run_line(name, table, learning, test, not args.offline, save, reserve)
+        run_line(name, table, learning, test, not offline, save, reserve)
     print(json.dumps(curve["meta"]["summary"]))
+    return curve
 
 
 if __name__ == "__main__":

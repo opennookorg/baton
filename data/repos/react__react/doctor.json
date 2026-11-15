@@ -1,0 +1,74 @@
+{
+ "repo": "react/react",
+ "closed_issues": 13976,
+ "sampled": 1000,
+ "recommended": {
+  "signal": "label_prefix",
+  "prefix": "Component: ",
+  "coverage": 0.145,
+  "owners": 4,
+  "effective_owners": 2.24,
+  "largest_share": 0.541,
+  "seen_share": 1.0,
+  "estimated_owned": 2027
+ },
+ "verdict": "ok",
+ "candidates": [
+  {
+   "signal": "label_prefix",
+   "prefix": "Component: ",
+   "coverage": 0.145,
+   "owners": 4,
+   "effective_owners": 2.24,
+   "largest_share": 0.541,
+   "seen_share": 1.0,
+   "estimated_owned": 2027,
+   "score": 0.067,
+   "verdict": "ok"
+  },
+  {
+   "signal": "fixer",
+   "prefix": "",
+   "coverage": 0.085,
+   "owners": 7,
+   "effective_owners": 22.65,
+   "largest_share": 0.141,
+   "seen_share": 0.462,
+   "estimated_owned": 1188,
+   "score": 0.034,
+   "verdict": "ok"
+  },
+  {
+   "signal": "assignee",
+   "prefix": "",
+   "coverage": 0.026,
+   "owners": 3,
+   "effective_owners": 2.08,
+   "largest_share": 0.667,
+   "seen_share": 1.0,
+   "estimated_owned": 363,
+   "score": 0.009,
+   "verdict": "ok"
+  },
+  {
+   "signal": "label_prefix",
+   "prefix": "Compiler: ",
+   "coverage": 0.009,
+   "owners": 2,
+   "effective_owners": 2.45,
+   "largest_share": 0.444,
+   "seen_share": 1.0,
+   "estimated_owned": 126,
+   "score": 0.005,
+   "verdict": "too small: about 126 owned closed issues, Baton needs 300"
+  }
+ ],
+ "folders": [
+  "compiler",
+  "fixtures",
+  "flow-typed",
+  "packages",
+  "scripts"
+ ],
+ "created_at": "2013-05-24"
+}

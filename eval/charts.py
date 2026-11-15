@@ -10,7 +10,7 @@ from html import escape
 from pathlib import Path
 
 from baton.config import CURVE_FILE
-from eval.no_graph import NO_GRAPH_FILE
+from baton.repos import KUBERNETES_PROFILE
 from eval.recovery import RECOVERY_FILE
 
 ASSETS = Path(__file__).resolve().parent.parent / "docs" / "assets"
@@ -138,7 +138,7 @@ def main() -> None:
     if browser is None:
         raise SystemExit("needs Google Chrome or Chromium for the PNG step")
     ASSETS.mkdir(parents=True, exist_ok=True)
-    no_graph = json.loads(NO_GRAPH_FILE.read_text())
+    no_graph = json.loads(KUBERNETES_PROFILE.no_graph_file.read_text())
     render_svg(browser, curve_svg(json.loads(CURVE_FILE.read_text()), no_graph), ASSETS / "curve.png")
     if RECOVERY_FILE.exists():
         render_svg(browser, recovery_svg(json.loads(RECOVERY_FILE.read_text()), no_graph), ASSETS / "recovery.png")

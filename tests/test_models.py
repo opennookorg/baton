@@ -17,4 +17,5 @@ def test_route_result_shape():
         "confidence": 0.62,
         "entities_found": 3,
         "entities_unknown": 1,
+        "message": "",
     }

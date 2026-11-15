@@ -1,0 +1,46 @@
+{
+ "repo": "react/react",
+ "scores": {
+  "frozen": {
+   "issues": 1700,
+   "top1": 0.14,
+   "top3": 0.4467
+  },
+  "count_only": {
+   "issues": 1700,
+   "top1": 0.4233,
+   "top3": 0.47
+  },
+  "baton": {
+   "issues": 1700,
+   "top1": 0.4667,
+   "top3": 0.48
+  },
+  "lookup": {
+   "top1": 0.4667,
+   "top3": 0.4767
+  },
+  "naive_bayes": {
+   "top1": 0.46,
+   "top3": 0.4733
+  },
+  "always_biggest": {
+   "top1": 0.43,
+   "top3": 0.4433
+  }
+ },
+ "sizes": {
+  "total": 2000,
+  "learning": 1700,
+  "test": 300,
+  "reserve": 270,
+  "batch": 100,
+  "frozen": 200,
+  "snapshots": [
+   0,
+   500,
+   1000,
+   1700
+  ]
+ }
+}

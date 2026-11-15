@@ -4,7 +4,7 @@ import gzip
 import json
 from pathlib import Path
 
-from baton.config import ISSUES_FILE, LEARNING_SIZE, RESERVE_FILE, TEST_SIZE
+from baton import repos
 from baton.models import Issue
 
 
@@ -17,19 +17,23 @@ def read_jsonl(path: Path) -> list[Issue]:
     return sorted(issues, key=lambda issue: (issue.created_at, issue.number))
 
 
-def load_issues(path: Path = ISSUES_FILE) -> list[Issue]:
-    """Return the 2,000 main issues, oldest first."""
-    return read_jsonl(path)
+def load_issues(path: Path | None = None) -> list[Issue]:
+    """Return the active repo's main issues, oldest first."""
+    return read_jsonl(path or repos.current().issues_file)
 
 
-def load_reserve(path: Path = RESERVE_FILE) -> list[Issue]:
-    """Return the reserve pool (all older than the main issues), oldest first."""
+def load_reserve(path: Path | None = None) -> list[Issue]:
+    """Return the reserve pool (all older than the main issues), oldest first; empty when the repo has none."""
+    path = path or repos.current().reserve_file
+    if not path.exists() and not path.with_name(path.name + ".gz").exists():
+        return []
     return read_jsonl(path)
 
 
 def split(issues: list[Issue] | None = None) -> tuple[list[Issue], list[Issue]]:
-    """Return (learning, test): the oldest LEARNING_SIZE and the newest TEST_SIZE issues, both oldest first."""
+    """Return (learning, test) for the active repo's sizes: the oldest `learning` and the newest `test` issues, oldest first."""
+    sizes = repos.current().sizes
     ordered = sorted(load_issues() if issues is None else issues, key=lambda issue: (issue.created_at, issue.number))
-    if len(ordered) < LEARNING_SIZE + TEST_SIZE:
-        raise ValueError(f"need {LEARNING_SIZE + TEST_SIZE} issues, got {len(ordered)}")
-    return ordered[:LEARNING_SIZE], ordered[-TEST_SIZE:]
+    if len(ordered) < sizes.learning + sizes.test:
+        raise ValueError(f"need {sizes.learning + sizes.test} issues, got {len(ordered)}")
+    return ordered[: sizes.learning], ordered[-sizes.test :]

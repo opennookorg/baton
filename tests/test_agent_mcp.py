@@ -17,7 +17,7 @@ from baton import service
 from baton.models import Issue, RouteResult, TeamScore
 
 ROOT = Path(__file__).resolve().parent.parent
-TOOL_NAMES = {"route_issue", "similar_past_issues", "reporter_history", "team_profile", "record_outcome"}
+TOOL_NAMES = {"list_repos", "route_issue", "similar_past_issues", "reporter_history", "team_profile", "record_outcome"}
 
 
 def call(name: str, arguments: dict):
@@ -40,7 +40,8 @@ def payload(result) -> dict:
 def fake_service(monkeypatch):
     recorded = {}
 
-    def route_issue(title, body, reporter="", as_of=None):
+    def route_issue(title, body, reporter="", as_of=None, repo=None):
+        recorded["repo"] = repo
         return RouteResult(
             teams=[TeamScore("sig-node", 0.7, ["kubelet", "sig-node"]), TeamScore("sig-storage", 0.3, ["pv", "sig-storage"])],
             confidence=0.7,
@@ -48,19 +49,19 @@ def fake_service(monkeypatch):
             entities_unknown=1,
         )
 
-    def record_outcome(issue, team):
+    def record_outcome(issue, team, repo=None):
         recorded["issue"], recorded["team"] = issue, team
         return {"links_reweighted": 3}
 
     monkeypatch.setattr(service, "route_issue", route_issue)
     monkeypatch.setattr(service, "record_outcome", record_outcome)
-    monkeypatch.setattr(service, "similar_past_issues", lambda t, b, limit=5: [{"number": 9, "title": "x", "team": "sig-node", "shared": ["kubelet"]}])
-    monkeypatch.setattr(service, "reporter_history", lambda u: [{"team": "sig-node", "count": 4}])
-    monkeypatch.setattr(service, "team_profile", lambda t, limit=15: [{"entity": "kubelet", "kind": "component", "strength": 0.9}])
+    monkeypatch.setattr(service, "similar_past_issues", lambda t, b, limit=5, repo=None: [{"number": 9, "title": "x", "team": "sig-node", "shared": ["kubelet"]}])
+    monkeypatch.setattr(service, "reporter_history", lambda u, repo=None: [{"team": "sig-node", "count": 4}])
+    monkeypatch.setattr(service, "team_profile", lambda t, limit=15, repo=None: [{"entity": "kubelet", "kind": "component", "strength": 0.9}])
     return recorded
 
 
-def test_lists_exactly_five_tools():
+def test_lists_every_tool():
     async def run():
         async with Client(mcp_server.mcp) as client:
             return await client.list_tools()
@@ -75,6 +76,24 @@ def test_route_issue_shape(fake_service):
     assert data["confidence"] == 0.7
     assert data["teams"][0] == {"team": "sig-node", "share": 0.7, "path": ["kubelet", "sig-node"]}
     assert data["entities_found"] == 2 and data["entities_unknown"] == 1
+
+
+def test_route_issue_passes_repo_and_defaults_to_kubernetes(fake_service):
+    call("route_issue", {"title": "a", "body": "b", "repo": "rust-lang/rust"})
+    assert fake_service["repo"] == "rust-lang/rust"
+    call("route_issue", {"title": "a", "body": "b"})
+    assert fake_service["repo"] is None
+
+
+def test_unknown_repo_is_a_clear_tool_error():
+    result = call("route_issue", {"title": "a", "body": "b", "repo": "nobody/nothing"})
+    assert result.is_error
+    assert "unknown repo 'nobody/nothing'" in result.content[0].text
+
+
+def test_list_repos_starts_with_kubernetes():
+    repos = payload(call("list_repos", {}))["repos"]
+    assert repos[0]["repo"] == "kubernetes/kubernetes" and repos[0]["signal"] == "label_prefix"
 
 
 def test_read_tool_shapes(fake_service):
@@ -97,7 +116,7 @@ def test_record_outcome_rejects_blank_team(fake_service):
 
 
 def test_not_implemented_becomes_readable_error(monkeypatch):
-    def not_ready(title, body):
+    def not_ready(title, body, repo=None):
         raise NotImplementedError
 
     monkeypatch.setattr(service, "route_issue", not_ready)
@@ -107,7 +126,7 @@ def test_not_implemented_becomes_readable_error(monkeypatch):
 
 
 def test_other_failures_become_readable_errors(monkeypatch):
-    def broken(username):
+    def broken(username, repo=None):
         raise ConnectionError("HydraDB unreachable")
 
     monkeypatch.setattr(service, "reporter_history", broken)

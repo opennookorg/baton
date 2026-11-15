@@ -1,0 +1,29 @@
+{
+  "repo": "earendil-works/pi",
+  "signal": "assignee",
+  "prefix": "",
+  "labels": [],
+  "available": 855,
+  "path_roots": [
+    "apps",
+    "nix",
+    "packages",
+    "scripts"
+  ],
+  "stop_words": [],
+  "hide_terms": [],
+  "doctor": {
+    "verdict": "ok",
+    "recommended": {
+      "signal": "assignee",
+      "prefix": "",
+      "coverage": 0.144,
+      "owners": 5,
+      "effective_owners": 3.99,
+      "largest_share": 0.377,
+      "seen_share": 0.955,
+      "estimated_owned": 1109
+    },
+    "closed_issues": 7701
+  }
+}

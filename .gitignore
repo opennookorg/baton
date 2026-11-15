@@ -8,3 +8,4 @@ __pycache__/
 results/curve_offline.json
 results/live_state.json
 results/*.tmp
+data/repos/*/raw.jsonl.gz

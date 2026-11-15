@@ -3,8 +3,12 @@
 import re
 from collections import Counter
 from collections.abc import Iterable
+from dataclasses import dataclass
+from functools import lru_cache
 
+from baton import repos
 from baton.models import Entity, EntityKind, Issue
+from baton.repos import RepoProfile
 
 PREFIXES: dict[EntityKind, str] = {"component": "comp:", "path": "path:", "word": "word:", "error": "err:", "reporter": "user:"}
 KINDS_BY_PREFIX = {prefix: kind for kind, prefix in PREFIXES.items()}
@@ -137,11 +141,12 @@ STOP_WORDS = frozenset(
     able add added adding allow allows another around automatically back based better call called case cause causes
     change changes check could correctly current currently doesnt don't due either enough etc existing expected fail
     failed failing fails failure fix fixed fixes following happen happens incorrect incorrectly instead issue issues
-    k8s keep kubernetes make makes many missing new non one ones possible properly really related remove removed request
+    keep make makes many missing new non one ones possible properly really related remove removed request
     required return returns right set should show shows something sometimes specific support supported take two unable
     unexpected via want way well wrong yaml error errors bug
     """.split()
 )
+KUBERNETES_STOP_WORDS = STOP_WORDS | {"k8s", "kubernetes"}
 
 FENCED_CODE = re.compile(r"```.*?(?:```|\Z)", re.DOTALL)
 HTML_COMMENT = re.compile(r"<!--.*?(?:-->|\Z)", re.DOTALL)
@@ -166,9 +171,53 @@ SIG_MENTION = re.compile(
 )
 
 
-def hide_sig_mentions(text: str) -> str:
-    """Blank out sig names written in the text (`[sig-node]`, `/sig node`), which would give the answer away."""
-    return SIG_MENTION.sub(" ", text)
+GENERIC_PATH_DEPTH = 3
+
+
+@dataclass(frozen=True)
+class Lexicon:
+    """The repo-specific parts of extraction: component aliases, path rules, stop words and owner mentions to hide."""
+
+    component_pattern: re.Pattern | None
+    component_by_squashed: dict[str, str]
+    path_pattern: re.Pattern | None
+    path_roots: tuple[str, ...]
+    kubernetes_paths: bool
+    stop_words: frozenset[str]
+    hide_pattern: re.Pattern | None
+
+
+KUBERNETES_LEXICON = Lexicon(COMPONENT_PATTERN, COMPONENT_BY_SQUASHED, PATH_PATTERN, PATH_ROOTS, True, KUBERNETES_STOP_WORDS, SIG_MENTION)
+
+
+def term_pattern(terms: Iterable[str]) -> re.Pattern | None:
+    """A case-insensitive pattern matching any of the terms as a whole token."""
+    ordered = sorted({t.lower() for t in terms if t}, key=len, reverse=True)
+    if not ordered:
+        return None
+    return re.compile(r"(?<![a-z0-9_\-])(?:" + "|".join(re.escape(t) for t in ordered) + r")(?![a-z0-9_\-])", re.IGNORECASE)
+
+
+@lru_cache(maxsize=64)
+def lexicon_for(profile: RepoProfile) -> Lexicon:
+    """Kubernetes' original lexicon, or a generic one built from the repo's top-level folders, name and owner labels."""
+    if profile.is_kubernetes:
+        return KUBERNETES_LEXICON
+    roots = tuple(sorted({r.lower() for r in profile.path_roots}))
+    path_pattern = re.compile(r"(?<![a-z0-9_\-.])((?:" + "|".join(re.escape(r) for r in roots) + r")/[a-z0-9_\-./]+)") if roots else None
+    name_words = set(PHRASE_TOKEN.findall(profile.repo.lower().replace("/", " ")))
+    return Lexicon(None, {}, path_pattern, roots, False, STOP_WORDS | name_words | {w.lower() for w in profile.stop_words}, term_pattern(profile.hide_terms))
+
+
+def lexicon() -> Lexicon:
+    """The lexicon of the active repo."""
+    return lexicon_for(repos.current())
+
+
+def hide_sig_mentions(text: str, lex: Lexicon | None = None) -> str:
+    """Blank out owner names written in the text (`[sig-node]`, `/sig node`, `T-compiler`), which would give the answer away."""
+    pattern = (lex or lexicon()).hide_pattern
+    return pattern.sub(" ", text) if pattern else text
 
 
 def strip_noise(body: str) -> str:
@@ -181,9 +230,12 @@ def prose(text: str) -> str:
     return URL.sub(" ", FENCED_CODE.sub(" ", text))
 
 
-def components(text: str) -> set[str]:
+def components(text: str, lex: Lexicon | None = None) -> set[str]:
     """Canonical component names mentioned in lowercase text."""
-    return {COMPONENT_BY_SQUASHED[SEPARATORS.sub("", match)] for match in COMPONENT_PATTERN.findall(text)}
+    lex = lex or lexicon()
+    if lex.component_pattern is None:
+        return set()
+    return {lex.component_by_squashed[SEPARATORS.sub("", match)] for match in lex.component_pattern.findall(text)}
 
 
 def normalise_path(raw: str) -> str | None:
@@ -206,25 +258,44 @@ def normalise_path(raw: str) -> str | None:
     return "/".join(directories)
 
 
-def paths(text: str) -> set[str]:
-    """Normalised repository and Go package paths found in lowercase text."""
-    return {p for p in (normalise_path(m) for m in PATH_PATTERN.findall(text)) if p}
+def normalise_generic_path(raw: str, roots: tuple[str, ...]) -> str | None:
+    """Reduce a repository path to its first GENERIC_PATH_DEPTH folders, when it starts at one of the repo's top-level folders."""
+    directories = []
+    for segment in (s for s in raw.strip("./").split("/") if s and s not in (".", "..")):
+        if "." in segment:
+            break
+        directories.append(segment)
+    directories = directories[:GENERIC_PATH_DEPTH]
+    if len(directories) < 2 or directories[0] not in roots:
+        return None
+    return "/".join(directories)
 
 
-def phrase(raw: str) -> str | None:
+def paths(text: str, lex: Lexicon | None = None) -> set[str]:
+    """Normalised repository paths (and Go package paths for Kubernetes) found in lowercase text."""
+    lex = lex or lexicon()
+    if lex.path_pattern is None:
+        return set()
+    normalise = normalise_path if lex.kubernetes_paths else lambda raw: normalise_generic_path(raw, lex.path_roots)
+    return {p for p in (normalise(m) for m in lex.path_pattern.findall(text)) if p}
+
+
+def phrase(raw: str, lex: Lexicon | None = None) -> str | None:
     """Normalise an error phrase to at most ERROR_WORDS lowercase word tokens."""
+    lex = lex or lexicon()
     if "/" in raw:
         return None
     text = " ".join(PHRASE_TOKEN.findall(raw.lower())[:ERROR_WORDS])
-    if len(text) < 3 or text in VAGUE_PHRASES or text in STOP_WORDS or SEPARATORS.sub("", text) in COMPONENT_BY_SQUASHED:
+    if len(text) < 3 or text in VAGUE_PHRASES or text in lex.stop_words or SEPARATORS.sub("", text) in lex.component_by_squashed:
         return None
     return text
 
 
-def errors(full_text: str, prose_text: str) -> set[str]:
+def errors(full_text: str, prose_text: str, lex: Lexicon | None = None) -> set[str]:
     """Error phrases: inline code in prose, plus text after `error:` anywhere."""
-    found = [phrase(m) for m in INLINE_CODE.findall(prose_text)]
-    found += [phrase(m) for m in ERROR_AFTER.findall(full_text)]
+    lex = lex or lexicon()
+    found = [phrase(m, lex) for m in INLINE_CODE.findall(prose_text)]
+    found += [phrase(m, lex) for m in ERROR_AFTER.findall(full_text)]
     return {p for p in found if p}
 
 
@@ -237,32 +308,35 @@ def singular(word: str) -> str:
     return word
 
 
-def title_words(title: str) -> set[str]:
+def title_words(title: str, lex: Lexicon | None = None) -> set[str]:
     """Lowercased title words minus stop words, numbers and words already captured as components."""
+    lex = lex or lexicon()
+    stop_words, squashed = lex.stop_words, lex.component_by_squashed
     words = set()
     title_without_paths = " ".join(token for token in title.lower().split() if "/" not in token)
     for raw in WORD.findall(title_without_paths):
         word = WORD_SYNONYMS.get(raw) or singular(raw.strip("-_"))
-        if len(word) < 3 or word in STOP_WORDS or raw in STOP_WORDS:
+        if len(word) < 3 or word in stop_words or raw in stop_words:
             continue
-        if SEPARATORS.sub("", raw) in COMPONENT_BY_SQUASHED or SEPARATORS.sub("", word) in COMPONENT_BY_SQUASHED:
+        if SEPARATORS.sub("", raw) in squashed or SEPARATORS.sub("", word) in squashed:
             continue
         words.add(word)
     return words
 
 
 def extract(title: str, body: str, reporter: str, hide_sigs: bool = HIDE_SIG_MENTIONS) -> list[Entity]:
-    """Extract the distinct entities of one issue, sorted by name; `hide_sigs` drops sig mentions first."""
+    """Extract the distinct entities of one issue with the active repo's lexicon, sorted by name; `hide_sigs` drops owner mentions first."""
+    lex = lexicon()
     if hide_sigs:
-        title, body = hide_sig_mentions(title), hide_sig_mentions(body or "")
+        title, body = hide_sig_mentions(title, lex), hide_sig_mentions(body or "", lex)
     title_text = title.lower()
     full_text = strip_noise(body or "").lower()
     prose_text = prose(full_text)
-    found_components = components(title_text) | components(prose_text)
+    found_components = components(title_text, lex) | components(prose_text, lex)
     names = {PREFIXES["component"] + c for c in found_components}
-    names |= {PREFIXES["path"] + p for p in paths(title_text) | paths(full_text)}
-    names |= {PREFIXES["word"] + w for w in title_words(title)}
-    names |= {PREFIXES["error"] + e for e in errors(title_text + "\n" + full_text, prose(title_text) + "\n" + prose_text)}
+    names |= {PREFIXES["path"] + p for p in paths(title_text, lex) | paths(full_text, lex)}
+    names |= {PREFIXES["word"] + w for w in title_words(title, lex)}
+    names |= {PREFIXES["error"] + e for e in errors(title_text + "\n" + full_text, prose(title_text) + "\n" + prose_text, lex)}
     if reporter:
         names.add(PREFIXES["reporter"] + reporter.lower())
     return [Entity(name, kind_of(name)) for name in sorted(names)]

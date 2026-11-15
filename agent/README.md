@@ -1,14 +1,17 @@
 # Baton triage agent
 
-`agent/mcp_server.py` is an MCP server (Python MCP SDK 2.x `MCPServer`, formerly FastMCP) over `baton.service`. It exposes five tools and nothing else, so an agent can read the graph only through them:
+`agent/mcp_server.py` is an MCP server (Python MCP SDK 2.x `MCPServer`, formerly FastMCP) over `baton.service`. It exposes six tools and nothing else, so an agent can read the graph only through them:
 
 | Tool | Arguments | Returns |
 |---|---|---|
-| `route_issue` | `title`, `body` | `{teams: [{team, share, path}], confidence, entities_found, entities_unknown}` |
+| `list_repos` | none | `{repos: [{repo, signal, prefix, owners, issues_learned, snapshots, test_top1}]}` |
+| `route_issue` | `title`, `body` | `{teams: [{team, share, path}], confidence, entities_found, entities_unknown, message}` |
 | `similar_past_issues` | `title`, `body` | `{issues: [{number, title, team, shared}]}` |
 | `reporter_history` | `username` | `{username, teams: [{team, count}]}` |
 | `team_profile` | `team` | `{team, entities: [{entity, kind, strength}]}` |
 | `record_outcome` | `number`, `title`, `body`, `reporter`, `created_at`, `team` | what the learning step changed |
+
+Every tool except `list_repos` also takes an optional `repo` (`owner/name`). Omitted, it means `kubernetes/kubernetes`. An unknown repo, or one Baton has not learned, comes back as a tool error that says why. A `route_issue` result with no teams carries a `message` saying nothing in the issue matched.
 
 Failures (including the backend not being built yet) come back as tool errors with a readable message, never a crash.
 
@@ -41,7 +44,7 @@ The repo root `.mcp.json` registers the server as `baton`. Start Claude Code fro
 claude mcp list
 ```
 
-`baton` should show as connected. Inside a session, `/mcp` lists its five tools. To triage, start a session with the instructions loaded:
+`baton` should show as connected. Inside a session, `/mcp` lists its six tools. To triage, start a session with the instructions loaded:
 
 ```sh
 claude --append-system-prompt "$(cat agent/TRIAGE.md)"
@@ -58,7 +61,7 @@ args = ["run", "python", "-m", "agent.mcp_server"]
 cwd = "/path/to/baton"
 ```
 
-Verify with `codex mcp list`, then `/mcp` inside a Codex session lists the five tools. Paste `agent/TRIAGE.md` as the first message, or put it in the session's instructions.
+Verify with `codex mcp list`, then `/mcp` inside a Codex session lists the six tools. Paste `agent/TRIAGE.md` as the first message, or put it in the session's instructions.
 
 ## Check without a client
 

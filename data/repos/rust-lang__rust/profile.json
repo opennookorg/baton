@@ -1,0 +1,52 @@
+{
+  "repo": "rust-lang/rust",
+  "signal": "label_prefix",
+  "prefix": "T-",
+  "labels": [],
+  "available": 5000,
+  "path_roots": [
+    "LICENSES",
+    "compiler",
+    "library",
+    "src",
+    "tests"
+  ],
+  "stop_words": [],
+  "hide_terms": [
+    "T-bootstrap",
+    "T-cargo",
+    "T-clippy",
+    "T-compiler",
+    "T-edition",
+    "T-infra",
+    "T-lang",
+    "T-lang-docs",
+    "T-libs",
+    "T-libs-api",
+    "T-opsem",
+    "T-release",
+    "T-rust-analyzer",
+    "T-rustdoc",
+    "T-rustdoc-frontend",
+    "T-rustdoc-internals",
+    "T-rustdoc-json-backend",
+    "T-rustfmt",
+    "T-style",
+    "T-testing-devex",
+    "T-types"
+  ],
+  "doctor": {
+    "verdict": "ok",
+    "recommended": {
+      "signal": "label_prefix",
+      "prefix": "T-",
+      "coverage": 0.812,
+      "owners": 15,
+      "effective_owners": 2.9,
+      "largest_share": 0.556,
+      "seen_share": 1.0,
+      "estimated_owned": 43464
+    },
+    "closed_issues": 53527
+  }
+}
