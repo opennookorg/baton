@@ -1,6 +1,6 @@
 # Baton triage agent
 
-`agent/mcp_server.py` is a stdio MCP server (Python MCP SDK 2.x `MCPServer`, formerly FastMCP) over `baton.service`. It exposes five tools and nothing else, so an agent can read the graph only through them:
+`agent/mcp_server.py` is an MCP server (Python MCP SDK 2.x `MCPServer`, formerly FastMCP) over `baton.service`. It exposes five tools and nothing else, so an agent can read the graph only through them:
 
 | Tool | Arguments | Returns |
 |---|---|---|
@@ -13,6 +13,19 @@
 Failures (including the backend not being built yet) come back as tool errors with a readable message, never a crash.
 
 The triage instructions live in [`TRIAGE.md`](TRIAGE.md).
+
+The dashboard's Connect page (`/connect`) has copy-ready setup for Claude Code, ChatGPT, Codex, Cursor, OpenCode, Hermes Agent and OpenClaw.
+
+## Remote clients (ChatGPT and other web clients)
+
+Clients that cannot launch a local process need an HTTPS URL. `--http` serves streamable HTTP at `/mcp` on port 8001 with `record_outcome` removed, so a public URL can read the graph but never write to it. Start a tunnel, then start the server with the tunnel's host name:
+
+```sh
+cloudflared tunnel --url http://127.0.0.1:8001
+uv run python -m agent.mcp_server --http --allow-host <name>.trycloudflare.com
+```
+
+The server rejects any other `Host` header (DNS rebinding protection), so pass `--allow-host` once per public host. The client's server URL is `https://<name>.trycloudflare.com/mcp`.
 
 ## Claude Code
 
@@ -47,7 +60,7 @@ Verify with `codex mcp list`, then `/mcp` inside a Codex session lists the five 
 uv run pytest tests/test_agent_mcp.py
 ```
 
-`test_stdio_server_starts_and_lists_tools` launches the server as a subprocess over stdio and checks the tool list.
+`test_stdio_server_starts_and_lists_tools` launches the server as a subprocess over stdio and checks the tool list. The `test_http_server_*` tests do the same over `--http` and check that `record_outcome` is gone and unknown hosts get 421.
 
 ## Load test
 

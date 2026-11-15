@@ -1,10 +1,12 @@
-"""Stdio MCP server exposing Baton's five triage tools over baton.service."""
+"""MCP server exposing Baton's triage tools over baton.service, on stdio or read-only streamable HTTP."""
 
+import argparse
 from collections.abc import Callable
 from typing import Any
 
 from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
+from mcp.server.transport_security import TransportSecuritySettings
 
 from baton import service
 from baton.models import Issue
@@ -91,5 +93,33 @@ def record_outcome(number: int, title: str, body: str, reporter: str, created_at
     return _call(service.record_outcome, issue, team)
 
 
+WRITE_TOOLS = ("record_outcome",)
+LOCAL_HOSTS = ("127.0.0.1", "localhost", "[::1]")
+
+
+def serve_http(port: int, allowed_hosts: list[str]) -> None:
+    """Serve only the read tools over streamable HTTP, accepting local hosts plus the given tunnel hosts."""
+    for name in WRITE_TOOLS:
+        mcp.remove_tool(name)
+    security = TransportSecuritySettings(
+        allowed_hosts=[f"{host}:*" for host in LOCAL_HOSTS] + allowed_hosts,
+        allowed_origins=[f"http://{host}:*" for host in LOCAL_HOSTS] + [f"https://{host}" for host in allowed_hosts] + ["https://chatgpt.com"],
+    )
+    mcp.run("streamable-http", port=port, stateless_http=True, transport_security=security)
+
+
+def main() -> None:
+    """Run on stdio by default, or on read-only HTTP with --http."""
+    parser = argparse.ArgumentParser(description="Baton MCP server")
+    parser.add_argument("--http", action="store_true", help="serve read-only tools over streamable HTTP at /mcp")
+    parser.add_argument("--port", type=int, default=8001)
+    parser.add_argument("--allow-host", action="append", default=[], metavar="HOST", help="public tunnel host to accept, repeatable")
+    args = parser.parse_args()
+    if args.http:
+        serve_http(args.port, args.allow_host)
+    else:
+        mcp.run()
+
+
 if __name__ == "__main__":
-    mcp.run()
+    main()
