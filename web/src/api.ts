@@ -51,4 +51,15 @@ export const api = {
 export const pct = (value: number) => `${Math.round(value * 100)}%`;
 export const fmt = (value: number) => value.toLocaleString("en-US");
 export const token = (name: string) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+const colorProbe = document.createElement("canvas").getContext("2d", { willReadFrequently: true })!;
+
+export function color(name: string) {
+  colorProbe.clearRect(0, 0, 1, 1);
+  colorProbe.fillStyle = "#000";
+  colorProbe.fillStyle = token(name);
+  colorProbe.fillRect(0, 0, 1, 1);
+  const [r, g, b, a] = colorProbe.getImageData(0, 0, 1, 1).data;
+  return `rgba(${r}, ${g}, ${b}, ${(a / 255).toFixed(3)})`;
+}
 export const REDUCED_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
