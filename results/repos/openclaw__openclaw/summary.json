@@ -1,0 +1,46 @@
+{
+ "repo": "openclaw/openclaw",
+ "scores": {
+  "frozen": {
+   "issues": 1700,
+   "top1": 0.0733,
+   "top3": 0.29
+  },
+  "count_only": {
+   "issues": 1700,
+   "top1": 0.2067,
+   "top3": 0.5
+  },
+  "baton": {
+   "issues": 1700,
+   "top1": 0.3733,
+   "top3": 0.5967
+  },
+  "lookup": {
+   "top1": 0.1233,
+   "top3": 0.4933
+  },
+  "naive_bayes": {
+   "top1": 0.2033,
+   "top3": 0.4367
+  },
+  "always_biggest": {
+   "top1": 0.0167,
+   "top3": 0.1667
+  }
+ },
+ "sizes": {
+  "total": 2000,
+  "learning": 1700,
+  "test": 300,
+  "reserve": 3000,
+  "batch": 100,
+  "frozen": 200,
+  "snapshots": [
+   0,
+   500,
+   1000,
+   1700
+  ]
+ }
+}

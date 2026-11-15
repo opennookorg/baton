@@ -1,0 +1,65 @@
+{
+ "repo": "openclaw/openclaw",
+ "closed_issues": 59512,
+ "sampled": 1000,
+ "recommended": {
+  "signal": "fixer",
+  "prefix": "",
+  "coverage": 0.606,
+  "owners": 37,
+  "effective_owners": 16.64,
+  "largest_share": 0.139,
+  "seen_share": 0.868,
+  "estimated_owned": 36064
+ },
+ "verdict": "ok",
+ "candidates": [
+  {
+   "signal": "fixer",
+   "prefix": "",
+   "coverage": 0.606,
+   "owners": 37,
+   "effective_owners": 16.64,
+   "largest_share": 0.139,
+   "seen_share": 0.868,
+   "estimated_owned": 36064,
+   "score": 0.453,
+   "verdict": "ok"
+  },
+  {
+   "signal": "assignee",
+   "prefix": "",
+   "coverage": 0.147,
+   "owners": 3,
+   "effective_owners": 2.39,
+   "largest_share": 0.469,
+   "seen_share": 0.818,
+   "estimated_owned": 8748,
+   "score": 0.064,
+   "verdict": "ok"
+  }
+ ],
+ "folders": [
+  "CHANGELOG",
+  "apps",
+  "config",
+  "crates",
+  "custodian-skills",
+  "deploy",
+  "docs",
+  "examples",
+  "extensions",
+  "git-hooks",
+  "packages",
+  "patches",
+  "qa",
+  "scripts",
+  "security",
+  "skills",
+  "src",
+  "test",
+  "tools",
+  "ui"
+ ],
+ "created_at": "2025-11-24"
+}
