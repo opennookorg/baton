@@ -5,7 +5,7 @@ import json
 from collections.abc import Iterator
 from contextlib import contextmanager
 from contextvars import ContextVar
-from dataclasses import asdict, dataclass, field, replace
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Literal
 
@@ -58,7 +58,8 @@ class Sizes:
         reserve = min(max(available - total, 0), RESERVE_SIZE)
         batch = max(MIN_BATCH, round(learning * BATCH_SIZE / LEARNING_SIZE))
         frozen = round(learning * FROZEN_SIZE / LEARNING_SIZE)
-        snapshots = tuple(sorted({round(learning * point / LEARNING_SIZE) for point in SNAPSHOT_POINTS}))
+        middle = {min(round(learning * point / LEARNING_SIZE / batch) * batch, learning) for point in SNAPSHOT_POINTS}
+        snapshots = tuple(sorted(middle | {0, learning}))
         return cls(total, learning, test, reserve, batch, frozen, snapshots)
 
 
@@ -205,8 +206,3 @@ def loaded() -> list[str]:
         if (profile.snapshot_dir / f"{profile.sizes.snapshots[-1]}.json").exists():
             found.append(profile.repo)
     return found
-
-
-def with_available(profile: RepoProfile, available: int) -> RepoProfile:
-    """The same profile sized for a different number of owned issues."""
-    return replace(profile, available=available)
