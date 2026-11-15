@@ -1,0 +1,48 @@
+---
+title: How it works
+description: The graph, how an issue is routed, and how Baton learns, in plain words.
+---
+
+## 1. Pull out the clues
+
+When an issue comes in, Baton picks out the useful bits from its title and body: component names (`kubelet`, `scheduler`), file paths, key words, error phrases and who reported it. We call each of these an **entity**. This is plain code with no AI model.
+
+Many Kubernetes titles mention the team directly, like `[sig-node]`. Baton hides those, so it has to learn ownership, not read the answer.
+
+## 2. Keep a graph
+
+Everything Baton knows lives in one graph, stored in [HydraDB](https://github.com/hydra-db/hydradb), a graph database:
+
+```
+entity ──SEEN_IN──▶ past issue ──OWNED_BY──▶ team
+entity ──────────ROUTES_TO (learned)───────▶ team
+```
+
+- **Entities** are the clues: `scheduler`, `watch`, `pkg/kubelet`.
+- **Past issues** link to the entities found in them and the team that fixed them.
+- **Teams** are the owners, like `sig/scheduling`.
+- **Learned links** go straight from an entity to a team. Each has a cost: the cheaper it is, the more Baton trusts it.
+
+At the end of the run the graph holds 22 teams, 1,257 entities and 2,618 issues.
+
+## 3. Route with one query
+
+To route an issue, Baton asks the graph one question: *what is the cheapest path from this issue's entities to each team?* HydraDB answers it with a single weighted path query (`algo.MSpaths`). Teams with cheaper paths rank higher. The cheapest path is also the explanation you see on screen, like `scheduler → sig/scheduling`.
+
+## 4. Learn from every fix
+
+When an issue is fixed, Baton finds out who really fixed it and updates the graph:
+
+- **Reweighting.** Links that pointed to the right team get cheaper. Links that pointed to a wrong team get dearer. This is what lets Baton follow change: after a reorg, the old links slowly lose.
+- **Shortcuts.** When most issues with an entity go to one team, Baton adds a direct, cheap link from that entity to the team.
+- **Gap filling.** When Baton meets an entity it knows little about, it pulls in older fixed issues that mention it, to fill in the history.
+
+We also built two more ideas and measured them: **merging** names that always agree, and **splitting** a name that means different things in different places. Neither helped on the learning data, so they are off. You can still see their lines on the [learning curve](/docs/dashboard#learning-curve).
+
+## Why a graph?
+
+A simple classifier can guess a team from words too. On a fixed test it scores about the same as Baton. But Baton is better where it matters, and the [results](/docs/results) show it:
+
+- **Live, while still learning,** Baton is right 70% of the time against 64.5% for the classifier.
+- **After a reorg,** Baton catches up much faster.
+- **Every answer has a path** you can read and check.

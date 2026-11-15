@@ -1,0 +1,49 @@
+---
+title: Quickstart
+description: Three ways to try Baton, from no setup at all to your own copy.
+---
+
+## 1. In your browser (no setup)
+
+1. Open the live dashboard: [baton-134858271117.us-central1.run.app](https://baton-134858271117.us-central1.run.app/try).
+2. Go to **Try an issue** and click one of the examples, or paste your own issue title.
+3. Click **Route issue**. You get the top teams, a confidence score and the path Baton followed.
+
+<Callout title="First visit may be slow">
+  The live site sleeps when nobody is using it, to stay free. The first request wakes it up, which can take up to a minute.
+</Callout>
+
+## 2. From your AI agent
+
+Add Baton to Claude Code with one command:
+
+```sh
+claude mcp add --transport http --scope user baton https://baton-134858271117.us-central1.run.app/mcp
+```
+
+Then ask: *"Which team should own this issue: kubelet OOM kills pods even when cgroup memory is under the limit?"* See [Connect your AI agent](/docs/agents) for ChatGPT, Codex, Cursor and others.
+
+## 3. From code
+
+Send a title (and optionally a body) to the API:
+
+```sh
+curl -X POST https://baton-134858271117.us-central1.run.app/route \
+  -H 'Content-Type: application/json' \
+  -d '{"title": "kube-apiserver drops watch events under load"}'
+```
+
+The answer lists the top teams, each with its share and the path. See the [API reference](/docs/api).
+
+## 4. On your own machine
+
+With Docker installed:
+
+```sh
+git clone https://github.com/opennookorg/baton.git
+cd baton
+echo "BATON_LEARN_TOKEN=$(openssl rand -hex 24)" > .env
+docker compose up
+```
+
+Open [localhost:8000](http://localhost:8000) (the first start takes a few minutes). Other options are in [Run it yourself](/docs/self-host).

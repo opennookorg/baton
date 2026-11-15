@@ -1,0 +1,32 @@
+---
+title: What is Baton?
+description: An issue router that learns which team owns what, from the issues that get fixed.
+---
+
+## The problem
+
+Big projects get hundreds of bug reports a week. Each one has to reach the team that can fix it. Most projects keep an ownership list for that: "the scheduler belongs to this team, storage belongs to that one".
+
+That list goes stale the day it is written. Teams split, people move, code changes hands. Issues end up in the wrong queue and bounce between teams until someone who knows picks them up.
+
+## What Baton does
+
+Baton reads a new issue and tells you which team should own it. It does not use a list someone wrote. It learns ownership from history: every time an issue is fixed, Baton notes which words, file paths and components were in it, and which team fixed it.
+
+- **It gets better over time.** Every fixed issue teaches it something. Links that pointed to the right team get stronger, links that pointed the wrong way get weaker.
+- **It shows its reason.** Every answer comes with the path it followed, for example `scheduler → sig/scheduling`. You can check it, not just trust it.
+- **It follows change.** When a team hands work to another team, Baton notices from the fixes and moves its answers over, with nobody editing a list.
+- **It has no AI model inside.** Routing is plain code and a graph query. It is fast, cheap and gives the same answer every time.
+
+![The Baton dashboard routing an issue](/images/page-try.png)
+
+## Where to go next
+
+<Cards>
+  <Card title="Quickstart" href="/docs/quickstart" description="Route your first issue in under a minute." />
+  <Card title="Use the dashboard" href="/docs/dashboard" description="A tour of every page in the dashboard." />
+  <Card title="Connect your AI agent" href="/docs/agents" description="Give Claude, ChatGPT, Cursor and others Baton's tools." />
+  <Card title="How it works" href="/docs/how-it-works" description="The graph, routing and learning, in plain words." />
+  <Card title="Results" href="/docs/results" description="How well it works, measured on real Kubernetes issues." />
+  <Card title="Run it yourself" href="/docs/self-host" description="Docker, Google Cloud Run, or a local setup." />
+</Cards>

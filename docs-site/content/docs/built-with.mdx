@@ -1,0 +1,47 @@
+---
+title: How we built it
+description: The parts of Baton, the tools we used, and how they fit together.
+---
+
+## The parts
+
+```
+GitHub issues ──▶ entity extraction ──▶ HydraDB graph ◀── learning
+                                             │
+                                       baton/service.py
+                                     ┌───────┴────────┐
+                               FastAPI server     MCP server
+                               (API + dashboard)  (AI agents)
+```
+
+| Part | What it does | Where |
+|---|---|---|
+| Data | Fetches closed `kubernetes/kubernetes` issues from GitHub | `data/` |
+| Entities | Pulls components, paths, words and errors out of issue text | `baton/entities.py` |
+| Graph | Stores issues, entities, teams and learned links in HydraDB | `baton/db.py`, `baton/ingest.py` |
+| Router | One weighted path query from entities to teams | `baton/router.py` |
+| Learning | Reweighting, shortcuts, gap filling (and merging, splitting) | `baton/learn.py`, `baton/passes.py` |
+| Service | The one interface everything else calls | `baton/service.py` |
+| API | FastAPI: `/route`, `/learn`, `/stats`, `/curve`, `/graph`, `/mcp` | `app/server.py` |
+| Dashboard | React, Vite, TanStack Router and Query, shadcn/ui | `web/` |
+| Agent | MCP server with five tools and triage instructions | `agent/` |
+| Evaluation | Learning curve, tuning, load test, reorg simulation | `eval/`, `results/` |
+
+## Tools
+
+- **HydraDB** for the graph and the weighted path query.
+- **Python** with **uv**, **FastAPI** and the **MCP Python SDK**.
+- **React** and **Vite** for the dashboard.
+- **Locust** for the load test.
+- **Docker** and **Google Cloud Run** to host it for free.
+- **Fumadocs** for this site.
+
+## How we worked
+
+We split the build into parallel streams, each in its own git worktree with clear file ownership: the database, the data, the core router, learning, the dashboard and the agent. They all coded against one shared interface, `baton/service.py`, so each part could be built and tested on its own.
+
+Two rules kept the results honest: no paid AI calls anywhere in routing, and no peeking at test scores when picking settings.
+
+## Hosting
+
+One container runs HydraDB and Baton together and serves the API, dashboard and MCP on one port. It runs on Google Cloud Run, which sleeps when idle. A spend cap pauses the service before any real charge, so the bill stays at zero. This docs site is a static site on Cloud Run too.

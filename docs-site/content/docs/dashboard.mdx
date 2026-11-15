@@ -1,0 +1,64 @@
+---
+title: Use the dashboard
+description: A tour of the four pages in the Baton dashboard.
+---
+
+The dashboard runs live at [baton-134858271117.us-central1.run.app](https://baton-134858271117.us-central1.run.app). It has four pages in the left sidebar. The theme button in the top right switches between light, dark and your system setting.
+
+## The counters
+
+Every dashboard page starts with the same five numbers:
+
+| Counter | What it means |
+|---|---|
+| Issues learned | Fixed issues Baton has learned from. |
+| Links reweighted | Times a link got stronger or weaker after an issue was fixed. |
+| Names merged | Pairs of names Baton treats as the same thing (off in the shipped setup). |
+| Shortcuts created | Direct "this word means this team" links Baton built from strong patterns. |
+| Misroutes avoided | Issues per 1,000 that Baton sends to the right team and a plain counting router does not. |
+
+## Learning curve
+
+![The learning curve page](/images/page-curve.png)
+
+This page shows how Baton got better as it learned. The 300 newest issues are kept aside as a test it never learns from. After every 100 issues learned, Baton is scored on that test.
+
+- **Blue (Baton)** ends at 70%: the right team on its first guess, 7 times out of 10.
+- **White (Count-only)** is the same graph without learning: 59%.
+- **Dashed (Frozen)** is a graph built once and never updated, like an ownership list: 54%, flat forever.
+
+Use **Top 1 / Top 3** to switch between "first guess right" and "right team in the top three". The buttons under the chart add one learning technique at a time, so you can see what each one adds.
+
+## Try an issue
+
+![Routing an issue](/images/page-try.png)
+
+1. Click an example, or type a **Title**. The **Body** is optional: logs, file paths and error messages help.
+2. Move the **Graph as of learning issue** slider to see what Baton would have said with less history: at 0 it knows nothing, at 1,700 it has learned everything.
+3. Click **Route issue**.
+
+On the right you get:
+
+- **Confidence**: how sure Baton is about its top pick. Under 60%, a person (or an agent) should take a second look.
+- **Entities known / unknown**: how many words and names from the issue Baton has seen before.
+- **The top teams**, each with its share and the **path**, for example `watch → sig/api-machinery`. The path is the reason: this issue mentions "watch", and issues about "watch" are fixed by sig/api-machinery.
+
+<Callout title="Try this">
+  Paste `kube-scheduler: (Composite)PodGroup update event handlers don't distinguish a real update from a coalesced delete+create` and move the slider. At 500 Baton guesses sig/node (wrong). At 1,700 it says sig/scheduling (right), through `scheduler`.
+</Callout>
+
+## Ownership graph
+
+![The ownership graph around kubelet](/images/page-explore.png)
+
+This page draws what Baton has learned around one word or name. Type an entity (try `scheduler` or `kubelet`) and click **Show**.
+
+- **White pills** are teams. **The blue dot** is the entity you picked. **Small grey dots** are past issues.
+- **Thick green lines** are strong links. The number on a line is its strength.
+- Drag to move things, scroll to zoom, hover to trace a link, click an entity to jump to it.
+
+## MCP connector
+
+![The MCP connector page](/images/page-connect.png)
+
+This page gives copy-ready setup for connecting AI agents to Baton: Claude Code, ChatGPT, Codex, Cursor, OpenCode, Hermes Agent, OpenClaw and any other MCP client. Pick your client, copy the command, and run it. Details are in [Connect your AI agent](/docs/agents).

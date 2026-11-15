@@ -26,6 +26,10 @@ The image is built by Cloud Build from the uploaded source (`.gcloudignore` reus
 
 `app/server.py` caps requests per client IP per minute: 30 for `POST /route`, 10 for `POST /learn`, 60 each for `/graph`, `/curve` and `/stats`, 120 for `/mcp`, and 300 for pages and assets. All clients together get 1,200 requests a minute, and request bodies over 64 KB get a 413. Rejected requests get a 429 with `Retry-After` and do not count against the limits. The client IP is the last `X-Forwarded-For` entry, the one Cloud Run's front end adds, so a client cannot dodge the cap by sending its own header. The counts live in memory, which works because the service runs one instance. Behind another proxy, such as a Vercel rewrite, every user shares that proxy's IP, so serve the dashboard from the Cloud Run URL. The limits slow one abuser down. The spend cap is still what keeps the bill at zero if traffic stays high all month.
 
+### Docs site
+
+`docs-site/` is a Fumadocs site built as a static export and served by nginx. `scripts/deploy_docs.sh <project-id>` deploys it as the `baton-docs` Cloud Run service (256 MiB, scales to zero, one instance), under the same spend cap. It runs at https://baton-docs-134858271117.us-central1.run.app. Preview locally with `cd docs-site && npm install && npm run dev`.
+
 Hugging Face Docker Spaces now need a PRO subscription, so `scripts/deploy_hf_space.sh` only works on a paid account.
 
 ## Paid, about $10 a month: Fly.io

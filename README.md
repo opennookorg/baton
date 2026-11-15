@@ -8,6 +8,8 @@
 
 Baton routes a new GitHub issue to the team that owns it. It keeps a graph of past issues, the entities in them (components, file paths, words, error phrases, reporters) and the teams that fixed them. Every fixed issue is fed back into the graph: links that predicted the right team get cheaper, links that pointed the wrong way get dearer, and strong patterns become direct shortcuts. The graph lives in [HydraDB](https://github.com/hydra-db/hydradb), and one weighted path query answers "who owns this?".
 
+**Docs:** https://baton-docs-134858271117.us-central1.run.app (plain-language guide to the product, dashboard, agents and results).
+
 There is no AI model in the router. Entity extraction and routing are plain code. An AI agent can sit on top through MCP (see [the agent](#triage-agent-over-mcp)), but the curve below is the plain router.
 
 ## The curve
@@ -229,7 +231,7 @@ The baton graph at 1,700 issues: 22 teams, 1,257 entities, 2,618 issues, 3,770 `
 
 ## Deploy
 
-One container runs HydraDB and Baton together (`Dockerfile`, `scripts/serve.sh`) and serves the API and dashboard on one port. It runs live at https://baton-134858271117.us-central1.run.app, deployed free to Google Cloud Run with `scripts/deploy_cloud_run.sh <gcp-project-id>` (a spend cap keeps the bill at zero). It also runs locally with `docker compose up`, or on Fly.io with `fly deploy` (about $10 a month for the 2 GB machine HydraDB needs). Details and the other options are in [`docs/DEPLOY.md`](docs/DEPLOY.md).
+One container runs HydraDB and Baton together (`Dockerfile`, `scripts/serve.sh`) and serves the API and dashboard on one port. It runs live at https://baton-134858271117.us-central1.run.app, deployed free to Google Cloud Run with `scripts/deploy_cloud_run.sh <gcp-project-id>` (a spend cap keeps the bill at zero). It also runs locally with `docker compose up`, or on Fly.io with `fly deploy` (about $10 a month for the 2 GB machine HydraDB needs). Details and the other options are in [`docs/DEPLOY.md`](docs/DEPLOY.md). The docs site (`docs-site/`, Fumadocs) deploys as a static site to its own Cloud Run service with `scripts/deploy_docs.sh <gcp-project-id>`.
 
 ## Repo layout
 
@@ -240,6 +242,7 @@ baton/      config, models, db (HydraDB driver and MSpaths), entities, ids, data
             ingest, router, learn, passes (merging, splitting, gap filling), snapshots,
             service (the one interface the API and MCP server call)
 data/       fetch_issues.py, issues.jsonl, reserve.jsonl, entity_ids.json
+docs-site/  documentation site (Fumadocs, static export served by nginx)
 docs/       SPEC.md, HYDRADB_NOTES.md, PITCH.md, DEMO.md, presentation/ (pitch deck), assets/
 eval/       run_curve, tune_stream, loadtest, restore_graph, recovery, charts
 results/    curve.json, tuning.json, loadtest.json, recovery.json, snapshots/
