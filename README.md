@@ -18,7 +18,9 @@ Baton routes a new GitHub issue to the team that owns it. It keeps a graph of pa
 
 **Docs:** https://baton-docs-134858271117.us-central1.run.app (plain-language guide to the product, dashboard, agents and results).
 
-**Supported repos:** Baton routes six GitHub repos today: `kubernetes/kubernetes`, `rust-lang/rust`, `react/react`, `NousResearch/hermes-agent`, `earendil-works/pi` and `openclaw/openclaw`. The dashboard shows Kubernetes only; the API and MCP tools reach all six with `repo`. Any other repo returns "unknown repo" until it is onboarded (see [Use Baton on your repo](#use-baton-on-your-repo)).
+**Supported repos:** the hosted server routes six GitHub repos: `kubernetes/kubernetes`, `rust-lang/rust`, `react/react`, `NousResearch/hermes-agent`, `earendil-works/pi` and `openclaw/openclaw`. Its dashboard shows Kubernetes only, and its API and MCP tools reach all six with `repo`. Every other repo returns "unknown repo".
+
+**Your own repo needs a self-hosted copy.** The hosted server is a read-only demo. You cannot add a repo to it, and connecting its MCP server or calling its API does not learn your repo. To route your repo, run your own copy of Baton, onboard the repo there, and point your agent at your copy (see [Use Baton on your repo](#use-baton-on-your-repo)).
 
 There is no AI model in the router. Entity extraction and routing are plain code. An AI agent can sit on top through MCP (see [the agent](#triage-agent-over-mcp)), but the curve below is the plain router.
 
@@ -132,7 +134,7 @@ Run the tests with `uv run pytest`.
 uv run uvicorn app.server:app --port 8000
 ```
 
-Open <http://localhost:8000>.
+Open <http://localhost:8000>. The dashboard shows `kubernetes/kubernetes` only, on the hosted server and on your own copy. A notice on every page lists the other learned repos, which answer through the API and MCP tools.
 
 ![The Baton dashboard: counters, try-an-issue with the as-of slider, the curve and the graph around an entity](docs/assets/dashboard.png)
 
@@ -141,11 +143,13 @@ Open <http://localhost:8000>.
 - **The curve**, from `results/curve.json`.
 - **The graph** around one entity (try `scheduler`).
 
-The API behind it: `POST /route`, `POST /learn`, `GET /curve`, `GET /graph?entity=...`, `GET /stats`. `app/server.py` and the MCP server both call `baton/service.py` and nothing else.
+The API behind it: `POST /route`, `POST /learn`, `GET /curve`, `GET /graph?entity=...`, `GET /stats` and `GET /repos`. Every endpoint except `/repos` takes `repo` (Kubernetes when omitted). `app/server.py` and the MCP server both call `baton/service.py` and nothing else.
 
 ## Use Baton on your repo
 
-Kubernetes is one case study. Baton can learn any GitHub repo whose closed issues say who owned them, but only after it is onboarded: connecting the MCP server or calling the API does not build a graph. The live server has six onboarded repos, and [`docs/CASE_STUDIES.md`](docs/CASE_STUDIES.md) has the results on five more. One command onboards a repo end to end:
+Kubernetes is one case study. Baton can learn any GitHub repo whose closed issues say who owned them, but you have to self-host it to do that. The hosted server only answers for the six repos built into its image and has no way to add one. Connecting its MCP server or calling its API does not build a graph for your repo.
+
+Onboarding runs on your own machine. It needs a checkout of this repo, a local HydraDB node (steps 1 to 4 of [Setup from scratch](#setup-from-scratch)) and a GitHub token, and it takes tens of minutes per repo. The hosted server has six onboarded repos, and [`docs/CASE_STUDIES.md`](docs/CASE_STUDIES.md) has the results on five more. One command onboards a repo end to end:
 
 ```sh
 gh auth login
@@ -169,6 +173,8 @@ claude mcp add --scope user baton -- uv run --directory "$PWD" python -m agent.m
 
 In Claude Code, ask it to route an issue for `owner/name`, or call `list_repos` first. A repo Baton has not learned gets a 404 (or a tool error) that names the repos it has. A repo the doctor refused gets the doctor's reason.
 
+This API and MCP server are your local copy, so they know your repo and the six that ship with the checkout. The hosted `/mcp` URL never will. To share your repo's routing with a team, deploy your copy: the container serves every repo onboarded in the checkout it was built from (see [Deploy](#deploy)).
+
 ## Triage agent over MCP
 
 `agent/mcp_server.py` exposes Baton to Claude Code or Codex as six tools. Every tool except `list_repos` takes an optional `repo` (`owner/name`, Kubernetes when omitted):
@@ -187,6 +193,8 @@ The live deployment serves the five read tools over streamable HTTP at `/mcp`, s
 ```sh
 claude mcp add --transport http --scope user baton https://baton-134858271117.us-central1.run.app/mcp
 ```
+
+That URL answers for the six hosted repos only. For your own repo, connect to your self-hosted copy instead (see [Use Baton on your repo](#use-baton-on-your-repo)).
 
 `record_outcome` writes to the graph, so it is only on the local stdio server. Inside this repo Claude Code also picks that one up from `.mcp.json` (check with `claude mcp list`). Start it with the triage instructions:
 
@@ -268,7 +276,7 @@ The baton graph at 1,700 issues: 22 teams, 1,257 entities, 2,618 issues, 3,770 `
 
 ## Deploy
 
-One container runs HydraDB and Baton together (`Dockerfile`, `scripts/serve.sh`) and serves the API and dashboard on one port. It runs live at https://baton-134858271117.us-central1.run.app, deployed free to Google Cloud Run with `scripts/deploy_cloud_run.sh <gcp-project-id>` (a spend cap keeps the bill at zero). It also runs locally with `docker compose up`, or on Fly.io with `fly deploy` (about $10 a month for the 2 GB machine HydraDB needs). Details and the other options are in [`docs/DEPLOY.md`](docs/DEPLOY.md). The docs site (`docs-site/`, Fumadocs) deploys as a static site to its own Cloud Run service with `scripts/deploy_docs.sh <gcp-project-id>`.
+One container runs HydraDB and Baton together (`Dockerfile`, `scripts/serve.sh`) and serves the API and dashboard on one port. It runs live at https://baton-134858271117.us-central1.run.app, deployed free to Google Cloud Run with `scripts/deploy_cloud_run.sh <gcp-project-id>` (a spend cap keeps the bill at zero). It also runs locally with `docker compose up`, or on Fly.io with `fly deploy` (about $10 a month for the 2 GB machine HydraDB needs). Details and the other options are in [`docs/DEPLOY.md`](docs/DEPLOY.md). A deployed copy serves every repo onboarded in the checkout it was built from, so deploying your own copy is how a team gets Baton on its own repo. The docs site (`docs-site/`, Fumadocs) deploys as a static site to its own Cloud Run service with `scripts/deploy_docs.sh <gcp-project-id>`.
 
 ## Repo layout
 
