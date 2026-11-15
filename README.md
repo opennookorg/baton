@@ -205,7 +205,7 @@ f"weightProp: 'cost', resultLimit: {int(result_limit)}"
 
 `PATH_REL_TYPES = ("ROUTES_TO", "SEEN_IN", "OWNED_BY", "SAME_AS")`, `maxLen` 3 and `pathCount` 3. Each team's score is the sum of `1 / pathWeight` over its paths, with each path's part divided by the number of teams its source entity reaches, so a generic word that points everywhere counts for less. The cheapest path is the one shown. All links point from entities towards teams (`Entity -ROUTES_TO-> Team`, `Entity -SEEN_IN-> Issue -OWNED_BY-> Team`), so one outgoing search finds every route. Learning writes go back through batched `UNWIND ... MERGE` statements. What we learned about HydraDB while building this is in [`docs/HYDRADB_NOTES.md`](docs/HYDRADB_NOTES.md).
 
-The baton graph at 1,700 issues: 22 teams, 1,225 entities, 2,286 issues, 3,692 `ROUTES_TO`, 18,032 `SEEN_IN` and 2,767 `OWNED_BY` links.
+The baton graph at 1,700 issues: 22 teams, 1,257 entities, 2,618 issues, 3,770 `ROUTES_TO`, 20,496 `SEEN_IN` and 3,157 `OWNED_BY` links.
 
 ## Honesty notes
 

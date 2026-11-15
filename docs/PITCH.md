@@ -44,9 +44,9 @@ Three minutes, in the order from `docs/SPEC.md`. Every number is from `results/`
 >
 > It keeps a HydraDB graph of past issues, their components, words and paths, and the teams that fixed them. Every route is one weighted path query. Every fixed issue reweights the graph: right links get cheaper, wrong links get dearer.
 >
-> Take a real Kubernetes scheduler issue. On an empty graph Baton routes nothing. At 500 issues it guesses sig/apps, wrong. At 1,700 it says sig/scheduling, through "scheduler", and shows the path.
+> Take a real Kubernetes scheduler issue. On an empty graph Baton routes nothing. At 500 issues it guesses sig/node through the word "event", wrong. At 1,700 it says sig/scheduling, through "scheduler", and shows the path.
 >
-> On 300 newer issues it never learns from, a frozen graph gets 54 percent right. Counting on the same graph gets 59. Baton gets 70, with 86 percent in the top three: 107 fewer misroutes per 1,000 issues. A naive Bayes classifier with no graph ties it on that fixed set, but routing live, before the answer is known, Baton wins 70 to 64.5 and relearns a reorg twice as fast. Under load it served 643 requests with zero failures while it learned.
+> On 300 newer issues it never learns from, a frozen graph gets 54 percent right. Counting on the same graph gets 59. Baton gets 70, with 86 percent in the top three: 107 fewer misroutes per 1,000 issues. A naive Bayes classifier with no graph ties it on that fixed set, but routing live, before the answer is known, Baton wins 70 to 64.5 and relearns a reorg twice as fast. Under load it served 453 requests with zero failures while it learned.
 >
 > No AI model in the router, tuned on the learning stream only, and one command reproduces the curve.
 
