@@ -2,6 +2,8 @@
 
 import os
 import secrets
+import time
+from collections import Counter
 from pathlib import Path
 from types import ModuleType
 from typing import Literal
@@ -17,6 +19,38 @@ from baton.models import Issue
 
 WEB_DIST = Path(os.environ.get("BATON_WEB_DIST", Path(__file__).resolve().parent.parent / "web" / "dist"))
 PAGES = ("/", "/try", "/explore", "/connect")
+PER_CLIENT_LIMITS = {"/route": 30, "/learn": 10, "/graph": 60, "/curve": 60, "/stats": 60}
+DEFAULT_PER_CLIENT_LIMIT = 300
+GLOBAL_LIMIT = 1200
+MAX_BODY_BYTES = 64_000
+
+
+class RateLimiter:
+    """Per-minute request caps per client and path, plus one cap across all clients."""
+
+    def __init__(self, per_client: dict[str, int], default: int, total: int) -> None:
+        self.per_client, self.default, self.total = per_client, default, total
+        self.window = -1
+        self.counts: Counter[tuple[str, str]] = Counter()
+        self.served = 0
+
+    def retry_after(self, client: str, path: str) -> int:
+        """Admit and count a request (returns 0), or return the seconds until the current minute ends."""
+        now = time.time()
+        if int(now // 60) != self.window:
+            self.window, self.counts, self.served = int(now // 60), Counter(), 0
+        bucket = path if path in self.per_client else "*"
+        if self.counts[client, bucket] >= self.per_client.get(bucket, self.default) or self.served >= self.total:
+            return 60 - int(now % 60)
+        self.counts[client, bucket] += 1
+        self.served += 1
+        return 0
+
+
+def client_ip(request: Request) -> str:
+    """The address Cloud Run's front end appended last to X-Forwarded-For, else the socket peer."""
+    forwarded = request.headers.get("x-forwarded-for", "").rsplit(",", 1)[-1].strip()
+    return forwarded or (request.client.host if request.client else "unknown")
 
 
 class RouteRequest(BaseModel):
@@ -54,6 +88,20 @@ class LearnRequest(BaseModel):
 def create_app(service: ModuleType, learn_token: str | None = None) -> FastAPI:
     """Build the app against a service module; when `learn_token` is set, POST /learn needs it as a bearer token."""
     app = FastAPI(title="Baton", version="0.1.0")
+    limiter = RateLimiter(PER_CLIENT_LIMITS, DEFAULT_PER_CLIENT_LIMIT, GLOBAL_LIMIT)
+
+    @app.middleware("http")
+    async def guard(request: Request, call_next) -> Response:
+        if int(request.headers.get("content-length") or 0) > MAX_BODY_BYTES:
+            return JSONResponse(status_code=413, content={"error": "too_large", "detail": f"Request bodies are capped at {MAX_BODY_BYTES} bytes"})
+        wait = limiter.retry_after(client_ip(request), request.url.path)
+        if wait:
+            return JSONResponse(
+                status_code=429,
+                headers={"Retry-After": str(wait)},
+                content={"error": "rate_limited", "detail": f"Too many requests. Retry in {wait} seconds."},
+            )
+        return await call_next(request)
 
     @app.exception_handler(NotImplementedError)
     async def service_not_ready(request: Request, exc: NotImplementedError) -> JSONResponse:

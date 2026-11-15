@@ -6,7 +6,7 @@ from types import SimpleNamespace
 import pytest
 from fastapi.testclient import TestClient
 
-from app import fake_service
+from app import fake_service, server
 from app.server import create_app
 
 LINES = ("frozen", "count_only", "baton", "reweight", "shortcuts", "merging", "splitting", "gap_filling")
@@ -164,3 +164,35 @@ def test_unimplemented_service_returns_503(stub_client, method, path, kwargs):
     body = res.json()
     assert body["error"] == "service_unavailable"
     assert path in body["detail"]
+
+
+def test_route_is_capped_per_client_with_retry_after(client):
+    for _ in range(30):
+        assert client.post("/route", json={"title": CSI_TITLE}).status_code == 200
+    blocked = client.post("/route", json={"title": CSI_TITLE})
+    assert blocked.status_code == 429
+    assert 1 <= int(blocked.headers["retry-after"]) <= 60
+    assert client.post("/route", json={"title": CSI_TITLE}, headers={"x-forwarded-for": "203.0.113.9"}).status_code == 200
+    assert client.get("/stats").status_code == 200
+
+
+def test_spoofed_forwarded_prefix_does_not_dodge_the_cap(client):
+    for n in range(30):
+        client.post("/route", json={"title": CSI_TITLE}, headers={"x-forwarded-for": f"10.0.0.{n}, 198.51.100.7"})
+    assert client.post("/route", json={"title": CSI_TITLE}, headers={"x-forwarded-for": "1.2.3.4, 198.51.100.7"}).status_code == 429
+
+
+def test_global_cap_and_minute_reset(monkeypatch):
+    clock = [120.0]
+    monkeypatch.setattr(server.time, "time", lambda: clock[0])
+    limiter = server.RateLimiter({"/route": 2}, default=5, total=3)
+    assert [limiter.retry_after("a", "/route") for _ in range(3)] == [0, 0, 60]
+    assert limiter.retry_after("b", "/stats") == 0
+    assert limiter.retry_after("c", "/stats") == 60
+    clock[0] = 180.5
+    assert limiter.retry_after("a", "/route") == 0
+
+
+def test_oversized_body_is_rejected(client):
+    res = client.post("/route", content=b"x" * 70_000, headers={"content-type": "application/json"})
+    assert res.status_code == 413

@@ -22,6 +22,10 @@ scripts/deploy_cloud_run.sh <project-id>
 
 The image is built by Cloud Build from the uploaded source (`.gcloudignore` reuses `.dockerignore`, so `.env` is never uploaded), so Docker is not needed locally. `BATON_LEARN_TOKEN` comes from `.env`. If the billing account is not in USD, set `BATON_SPEND_CAP` to about 1 USD in its currency, for example `BATON_SPEND_CAP=90` for INR. If the container runs out of memory, redeploy with `BATON_MEMORY=4Gi`, which halves the free hours. The first request after an idle period waits for HydraDB to start and the graph to restore.
 
+### Rate limits
+
+`app/server.py` caps requests per client IP per minute: 30 for `POST /route`, 10 for `POST /learn`, 60 each for `/graph`, `/curve` and `/stats`, and 300 for pages and assets. All clients together get 1,200 requests a minute, and request bodies over 64 KB get a 413. Rejected requests get a 429 with `Retry-After` and do not count against the limits. The client IP is the last `X-Forwarded-For` entry, the one Cloud Run's front end adds, so a client cannot dodge the cap by sending its own header. The counts live in memory, which works because the service runs one instance. Behind another proxy, such as a Vercel rewrite, every user shares that proxy's IP, so serve the dashboard from the Cloud Run URL. The limits slow one abuser down. The spend cap is still what keeps the bill at zero if traffic stays high all month.
+
 Hugging Face Docker Spaces now need a PRO subscription, so `scripts/deploy_hf_space.sh` only works on a paid account.
 
 ## Paid, about $10 a month: Fly.io
