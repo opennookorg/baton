@@ -11,3 +11,4 @@ results/curve_offline.json
 web/node_modules
 web/dist
 web/.vercel
+docs-site

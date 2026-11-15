@@ -1,0 +1,82 @@
+---
+title: Run it yourself
+description: Run Baton with Docker, deploy it free to Google Cloud Run, or set it up for development.
+---
+
+## With Docker (easiest)
+
+```sh
+git clone https://github.com/opennookorg/baton.git
+cd baton
+echo "BATON_LEARN_TOKEN=$(openssl rand -hex 24)" > .env
+docker compose up
+```
+
+Open [localhost:8000](http://localhost:8000). The token in `.env` protects `POST /learn`. The container starts HydraDB, loads the learned graph (1,700 issues) and serves the dashboard, API and MCP. It needs about 2 GB of memory.
+
+## On Google Cloud Run (free)
+
+You need a Google Cloud project with billing linked (Google asks for a card, but the script keeps the bill at zero).
+
+```sh
+gcloud auth login
+gcloud projects create <project-id>
+gcloud billing projects link <project-id> --billing-account=<billing-account-id>
+echo "BATON_LEARN_TOKEN=$(openssl rand -hex 24)" > .env
+scripts/deploy_cloud_run.sh <project-id>
+```
+
+The script adds a spend cap that pauses Cloud Run before any real charge, an email alert on the first charge, and keeps only the two newest images. It prints your live URL at the end.
+
+## Settings
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `PORT` | `7860` | Port for the API and dashboard |
+| `BATON_LEARN_TOKEN` | not set (open) | Token needed for `POST /learn`. Set it on a public server. |
+| `BATON_HYDRADB_TOKEN` | development token | HydraDB password. Set it on a public server. |
+| `BATON_STATE_DIR` | `/tmp/hydradb` | Where HydraDB keeps its data |
+
+Issues learned through `/learn` are lost when the container restarts, unless you give it a lasting disk at `BATON_STATE_DIR`.
+
+## For development (macOS)
+
+1. Install [uv](https://docs.astral.sh/uv/) and run `uv sync`.
+2. Install Rust with rustup, then build HydraDB:
+
+   ```sh
+   brew install just cmake pkg-config llvm suite-sparse coreutils
+   brew install cleishm/neo4j/libcypher-parser
+   git clone https://github.com/hydra-db/hydradb.git ~/Projects/hydradb
+   ```
+
+3. Start HydraDB (the first start compiles it and takes a few minutes):
+
+   ```sh
+   scripts/start_hydradb.sh --background
+   ```
+
+4. Load the learned graph in seconds:
+
+   ```sh
+   uv run python -m eval.restore_graph
+   ```
+
+5. Build the dashboard and start the server:
+
+   ```sh
+   (cd web && npm install && npm run build)
+   uv run uvicorn app.server:app --port 8000
+   ```
+
+Open [localhost:8000](http://localhost:8000). Run the tests with `uv run pytest`.
+
+## Reproduce the results
+
+```sh
+uv run python -m eval.run_curve            # all lines, live against HydraDB
+uv run python -m eval.run_curve --offline  # same scores, no HydraDB, about a minute
+uv run python -m eval.no_graph             # the no-graph classifiers
+uv run python -m eval.recovery             # the reorg simulation
+uv run python -m eval.loadtest             # the load test (server must be running)
+```

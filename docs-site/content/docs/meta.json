@@ -1,0 +1,18 @@
+{
+  "title": "Baton",
+  "pages": [
+    "---Start here---",
+    "index",
+    "quickstart",
+    "---Use it---",
+    "dashboard",
+    "agents",
+    "api",
+    "---How it works---",
+    "how-it-works",
+    "results",
+    "built-with",
+    "---Run it yourself---",
+    "self-host"
+  ]
+}

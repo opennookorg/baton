@@ -1,0 +1,65 @@
+---
+title: Results
+description: How well Baton routes real Kubernetes issues, and how we measured it.
+---
+
+## The test
+
+We took 2,000 closed issues from `kubernetes/kubernetes` and sorted them by date.
+
+- The **oldest 1,700** are fed to Baton in order, 100 at a time. It learns from these.
+- The **newest 300** are the test. Baton is scored on them after every batch and never learns from them.
+- An answer is **right** when Baton's top team is one of the issue's real `sig/` labels.
+
+## The learning curve
+
+![Top-1 accuracy against learning issues seen](/images/curve.png)
+
+| Approach | What it does | First guess right | Right in top 3 |
+|---|---|---|---|
+| Frozen | Graph built once from 200 issues, never updated (like an ownership list) | 54% | 74% |
+| Count-only | Every issue added, just counted, no learning | 59% | 78% |
+| **Baton** | **Reweighting + shortcuts + gap filling** | **70%** | **86%** |
+
+**What it means for a team:** Baton beats count-only on the same graph by 10.7 points. That is **107 fewer misrouted issues for every 1,000**: issues that do not sit in the wrong queue and reach the right people the first time.
+
+## Each technique on its own
+
+| Added to count-only | First guess right | Right in top 3 |
+|---|---|---|
+| Reweighting | 68.3% | 82.7% |
+| Shortcuts | 63.0% | 80.7% |
+| Merging | 59.3% | 78.7% |
+| Splitting | 64.3% | 85.3% |
+| Gap filling | 60.7% | 80.7% |
+| **Baton (the best mix)** | **70.0%** | **86.0%** |
+
+## Against a classifier with no graph
+
+| | Fixed test | Live stream (route first, learn after) |
+|---|---|---|
+| **Baton** | 70.0% | **70.0%** |
+| Naive Bayes (no graph) | 70.3% | 64.5% |
+| Lookup table (no graph) | 60.3% | 61.7% |
+
+On the fixed test they tie. On the live stream, which is how a router is really used, Baton is clearly ahead: on the same 1,700 issues, Baton alone gets 175 right that naive Bayes misses, and naive Bayes alone gets 82.
+
+## After a reorg
+
+![Accuracy on moved issues before and after a simulated reorg](/images/recovery.png)
+
+We pretended that from issue 900 on, all `sig/scheduling` work moved to `sig/apps`, then scored the 51 test issues that moved. Every approach drops at the change. 500 issues later, **Baton is back to 73%**, above where it was before. Naive Bayes is at 39% and count-only at 37%.
+
+This is a simulation: the real labels never changed.
+
+## Speed
+
+- **One route** takes 179 ms on its own (549 ms for the slowest 5%).
+- **Under load**, 20 users for 60 seconds on one laptop, routing while learning: 453 requests, **0 failures**, about 7 routes a second.
+
+## How we kept it fair
+
+- **Team names in titles are hidden**, so the answer never leaks in.
+- **All settings were tuned on the learning issues only.** The test set was never used to pick anything, even when a choice made the test score slightly worse.
+- **Merging and splitting were left out** because they did not help on the learning issues.
+- **Everything reproduces** with one command: `uv run python -m eval.run_curve`. The raw numbers are in `results/` in the repo.

@@ -1,0 +1,62 @@
+---
+title: Connect your AI agent
+description: Give Claude, ChatGPT, Codex, Cursor and other agents Baton's routing tools over MCP.
+---
+
+MCP (Model Context Protocol) is the standard way AI agents call outside tools. Baton is an MCP server, so any agent that speaks MCP can route issues with it. The agent does the talking, Baton does the routing.
+
+## The tools
+
+| Tool | What it gives the agent |
+|---|---|
+| `route_issue` | The top 3 teams for an issue, with confidence and the path. |
+| `similar_past_issues` | Past issues that share the most with this one, and who fixed them. |
+| `reporter_history` | Which teams fixed this person's earlier issues. |
+| `team_profile` | The words and names most strongly tied to a team. |
+| `record_outcome` | Tells Baton who really fixed an issue, so it learns. Local only. |
+
+The live server gives the first four. `record_outcome` changes the graph, so it is only on a copy you run yourself.
+
+## Claude Code
+
+```sh
+claude mcp add --transport http --scope user baton https://baton-134858271117.us-central1.run.app/mcp
+claude mcp list
+```
+
+`baton` should show as connected. For a full triage helper, start Claude with Baton's instructions:
+
+```sh
+claude --append-system-prompt "$(cat agent/TRIAGE.md)"
+```
+
+These instructions tell the agent to call `route_issue` first, and when confidence is under 0.6, to check similar issues, the reporter's history and team profiles before it answers with one team and its reason.
+
+## ChatGPT, Cursor and other remote clients
+
+Add a remote MCP server with this URL:
+
+```
+https://baton-134858271117.us-central1.run.app/mcp
+```
+
+The [MCP connector page](https://baton-134858271117.us-central1.run.app/connect) in the dashboard has exact steps for each client.
+
+## Codex (local)
+
+Clone the repo, then add this to `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.baton]
+command = "uv"
+args = ["run", "python", "-m", "agent.mcp_server"]
+cwd = "/path/to/baton"
+```
+
+Check with `codex mcp list`.
+
+## Example
+
+> **You:** Which team should own "kubelet OOM kills pods even when cgroup memory is under the limit"?
+>
+> **Agent** (after calling `route_issue`): **sig/node**, with 47% confidence. The path is `resources → sig/node`: issues about pod resources and memory limits are mostly fixed by sig/node. Confidence is under 60%, so it also checks similar past issues before it answers.
