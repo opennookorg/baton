@@ -1,0 +1,35 @@
+{
+ "repo": "octocat/Hello-World",
+ "closed_issues": 2589,
+ "sampled": 1000,
+ "recommended": null,
+ "verdict": "no owner signal: no label family, fixer or assignee covers any issue",
+ "candidates": [
+  {
+   "signal": "fixer",
+   "prefix": "",
+   "coverage": 0.0,
+   "owners": 0,
+   "effective_owners": 0.0,
+   "largest_share": 1.0,
+   "seen_share": 0.0,
+   "estimated_owned": 0,
+   "score": 0.0,
+   "verdict": "no owners: no sampled issue has one under this signal"
+  },
+  {
+   "signal": "assignee",
+   "prefix": "",
+   "coverage": 0.0,
+   "owners": 0,
+   "effective_owners": 0.0,
+   "largest_share": 1.0,
+   "seen_share": 0.0,
+   "estimated_owned": 0,
+   "score": 0.0,
+   "verdict": "no owners: no sampled issue has one under this signal"
+  }
+ ],
+ "folders": [],
+ "created_at": "2011-01-26"
+}

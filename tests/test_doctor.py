@@ -33,6 +33,7 @@ def test_verdict_rejects_one_owner_and_small_repos():
     assert doctor.verdict(base.__class__(**{**base.__dict__, "largest_share": 0.85})).startswith("one owner")
     assert doctor.verdict(base.__class__(**{**base.__dict__, "owners": 1})).startswith("one owner")
     assert doctor.verdict(base.__class__(**{**base.__dict__, "estimated_owned": 120})).startswith("too small")
+    assert doctor.verdict(base.__class__(**{**base.__dict__, "owners": 0})).startswith("no owners")
     assert doctor.verdict(None).startswith("no owner signal")
 
 

@@ -100,6 +100,8 @@ def verdict(candidate: Candidate | None) -> str:
     """Why a candidate cannot be routed on, or "ok"."""
     if candidate is None:
         return "no owner signal: no label family, fixer or assignee covers any issue"
+    if candidate.owners == 0:
+        return "no owners: no sampled issue has one under this signal"
     if candidate.owners < MIN_OWNERS or candidate.largest_share >= MAX_LARGEST_SHARE:
         return f"one owner: the largest owner takes {candidate.largest_share:.0%} of issues, nothing to route"
     if candidate.estimated_owned < MIN_OWNED:
