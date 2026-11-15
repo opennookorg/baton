@@ -4,7 +4,8 @@ import json
 from collections.abc import Iterable
 from pathlib import Path
 
-from baton.config import ENTITY_ID_BASE, ENTITY_TABLE_FILE, ISSUE_ID_BASE, MIN_ENTITY_ISSUES, TEAM_ID_BASE, TEAM_ID_MAX
+from baton import repos
+from baton.config import ENTITY_ID_BASE, ISSUE_ID_BASE, MIN_ENTITY_ISSUES, TEAM_ID_BASE, TEAM_ID_MAX
 from baton.dataset import load_issues, load_reserve, split
 from baton.entities import build_vocabulary
 
@@ -58,14 +59,16 @@ class IdTable:
             return f"#{node_id - ISSUE_ID_BASE}"
         return self.names_by_id[node_id]
 
-    def save(self, path: Path = ENTITY_TABLE_FILE) -> None:
-        """Write the table as JSON."""
+    def save(self, path: Path | None = None) -> None:
+        """Write the table as JSON, by default to the active repo's table file."""
+        path = path or repos.current().table_file
+        path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(json.dumps({"teams": self.teams, "entities": self.entities}, indent=1, sort_keys=True) + "\n")
 
     @classmethod
-    def load(cls, path: Path = ENTITY_TABLE_FILE) -> "IdTable":
-        """Read a table saved with `save`."""
-        payload = json.loads(path.read_text())
+    def load(cls, path: Path | None = None) -> "IdTable":
+        """Read a table saved with `save`, by default the active repo's."""
+        payload = json.loads((path or repos.current().table_file).read_text())
         return cls(payload["teams"], payload["entities"])
 
 
@@ -90,4 +93,4 @@ def build_default() -> IdTable:
 if __name__ == "__main__":
     table = build_default()
     table.save()
-    print(f"saved {len(table.teams)} teams and {len(table.entities)} entities to {ENTITY_TABLE_FILE}")
+    print(f"saved {len(table.teams)} teams and {len(table.entities)} entities to {repos.current().table_file}")

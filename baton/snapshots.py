@@ -5,7 +5,7 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from baton.config import SNAPSHOT_DIR
+from baton import repos
 
 Pair = tuple[str, str]
 COUNTER_NAMES = ("issues_learned", "links_reweighted", "shortcuts", "misroutes", "merges", "issues_pruned", "splits", "gap_issues")
@@ -111,19 +111,19 @@ class GraphState:
         return state
 
 
-def snapshot_path(as_of: int, directory: Path = SNAPSHOT_DIR) -> Path:
-    """Where the snapshot taken after `as_of` learning issues lives."""
-    return directory / f"{as_of}.json"
+def snapshot_path(as_of: int, directory: Path | None = None) -> Path:
+    """Where the snapshot taken after `as_of` learning issues lives, by default in the active repo's snapshot folder."""
+    return (directory or repos.current().snapshot_dir) / f"{as_of}.json"
 
 
-def save(state: GraphState, as_of: int, meta: dict | None = None, directory: Path = SNAPSHOT_DIR) -> Path:
+def save(state: GraphState, as_of: int, meta: dict | None = None, directory: Path | None = None) -> Path:
     """Write a snapshot of the state after `as_of` learning issues."""
-    directory.mkdir(parents=True, exist_ok=True)
     path = snapshot_path(as_of, directory)
+    path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps({"as_of": as_of, "meta": meta or {}, **state.to_json()}, separators=(",", ":")) + "\n")
     return path
 
 
-def load(as_of: int, directory: Path = SNAPSHOT_DIR) -> GraphState:
+def load(as_of: int, directory: Path | None = None) -> GraphState:
     """Read the snapshot taken after `as_of` learning issues."""
     return GraphState.from_json(json.loads(snapshot_path(as_of, directory).read_text()))

@@ -5,7 +5,8 @@ from functools import lru_cache
 
 from neo4j import Driver, GraphDatabase
 
-from baton.config import HISTORY_COST, HYDRADB_DATABASE, HYDRADB_TOKEN, HYDRADB_URI, SAME_AS_COST
+from baton import repos
+from baton.config import HISTORY_COST, HYDRADB_TOKEN, HYDRADB_URI, SAME_AS_COST
 
 CHUNK_SIZE = 1000
 LABELS = ("Team", "Entity", "Issue")
@@ -56,20 +57,20 @@ def close() -> None:
 
 def run(query: str, **params) -> None:
     """Run one auto-commit write statement."""
-    with driver().session(database=HYDRADB_DATABASE) as session:
+    with driver().session(database=repos.current().database) as session:
         session.run(query, **params).consume()
 
 
 def read(query: str, **params) -> list[dict]:
     """Run one read statement and return its rows as dicts."""
-    with driver().session(database=HYDRADB_DATABASE) as session:
+    with driver().session(database=repos.current().database) as session:
         return [record.data() for record in session.run(query, **params)]
 
 
 def write_rows(query: str, rows: Iterable[dict], chunk_size: int = CHUNK_SIZE) -> int:
     """Run an UNWIND $rows statement in chunks under the 1024-item batch cap; return rows written."""
     rows = list(rows)
-    with driver().session(database=HYDRADB_DATABASE) as session:
+    with driver().session(database=repos.current().database) as session:
         for start in range(0, len(rows), chunk_size):
             session.run(query, rows=rows[start : start + chunk_size]).consume()
     return len(rows)
@@ -123,7 +124,7 @@ def upsert_same_as(pairs: Iterable[tuple[int, int]]) -> int:
 def routes_from_entities(entity_ids: Iterable[int]) -> list[dict]:
     """Return ROUTES_TO links leaving the given entities."""
     query = f"MATCH (e:Entity {{id: $id}})-[r:ROUTES_TO]->(t) RETURN {ROUTE_COLUMNS}"
-    with driver().session(database=HYDRADB_DATABASE) as session:
+    with driver().session(database=repos.current().database) as session:
         return [record.data() for entity_id in entity_ids for record in session.run(query, id=entity_id)]
 
 
@@ -204,7 +205,7 @@ def ms_paths(
     if not sources or not targets:
         return []
     query = ms_paths_query(sources, targets, max_len, path_count, result_limit)
-    with driver().session(database=HYDRADB_DATABASE) as session:
+    with driver().session(database=repos.current().database) as session:
         records = list(session.run(query))
     return [
         {

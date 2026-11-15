@@ -2,8 +2,7 @@
 
 from collections.abc import Iterable
 
-from baton import db
-from baton.config import FROZEN_SIZE
+from baton import db, repos
 from baton.dataset import split
 from baton.entities import extract_issue, kind_of
 from baton.ids import IdTable
@@ -59,11 +58,11 @@ def expected_counts(rows: list[dict], table: IdTable) -> dict:
 
 
 def main() -> None:
-    """Ingest the first FROZEN_SIZE learning issues and check the graph counts match the data exactly."""
+    """Ingest the first frozen-size learning issues and check the graph counts match the data exactly."""
     table = IdTable.load()
     learning, _ = split()
     setup_graph(table)
-    rows = ingest_history(learning[:FROZEN_SIZE], table)
+    rows = ingest_history(learning[: repos.current().sizes.frozen], table)
     expected, actual = expected_counts(rows, table), db.counts()
     print(f"expected {expected}\nactual   {actual}")
     if expected != actual:
