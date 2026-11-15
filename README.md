@@ -143,7 +143,13 @@ The API behind it: `POST /route`, `POST /learn`, `GET /curve`, `GET /graph?entit
 | `team_profile(team)` | Entities most strongly linked to a team |
 | `record_outcome(issue, team)` | Feeds the real result back so the graph learns |
 
-Claude Code picks the server up from `.mcp.json` in this repo (check with `claude mcp list`). Start it with the triage instructions:
+The live deployment serves the four read tools over streamable HTTP at `/mcp`, so any client can connect without a checkout:
+
+```sh
+claude mcp add --transport http --scope user baton https://baton-134858271117.us-central1.run.app/mcp
+```
+
+`record_outcome` writes to the graph, so it is only on the local stdio server. Inside this repo Claude Code also picks that one up from `.mcp.json` (check with `claude mcp list`). Start it with the triage instructions:
 
 ```sh
 claude --append-system-prompt "$(cat agent/TRIAGE.md)"

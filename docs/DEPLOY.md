@@ -2,7 +2,7 @@
 
 Baton ships as one container. `scripts/serve.sh` starts a HydraDB node inside it, restores the learned graph from `results/snapshots/1700.json`, and serves the API, dashboard and `/route` on port 7860. The image builds on the public HydraDB image (`ghcr.io/hydra-db/hydradb:0.4.0`, amd64 and arm64), so nothing has to be compiled. The HydraDB node uses about 1.5 GB of memory, so the host needs at least 2 GB.
 
-The dashboard is built into the image and served by the same container, so no separate frontend host is needed. The live instance runs on Cloud Run at https://baton-134858271117.us-central1.run.app.
+The dashboard and a read-only MCP endpoint (`/mcp`, streamable HTTP) are served by the same container, so no separate frontend or MCP host is needed. The live instance runs on Cloud Run at https://baton-134858271117.us-central1.run.app.
 
 ## Free: Google Cloud Run
 
@@ -24,7 +24,7 @@ The image is built by Cloud Build from the uploaded source (`.gcloudignore` reus
 
 ### Rate limits
 
-`app/server.py` caps requests per client IP per minute: 30 for `POST /route`, 10 for `POST /learn`, 60 each for `/graph`, `/curve` and `/stats`, and 300 for pages and assets. All clients together get 1,200 requests a minute, and request bodies over 64 KB get a 413. Rejected requests get a 429 with `Retry-After` and do not count against the limits. The client IP is the last `X-Forwarded-For` entry, the one Cloud Run's front end adds, so a client cannot dodge the cap by sending its own header. The counts live in memory, which works because the service runs one instance. Behind another proxy, such as a Vercel rewrite, every user shares that proxy's IP, so serve the dashboard from the Cloud Run URL. The limits slow one abuser down. The spend cap is still what keeps the bill at zero if traffic stays high all month.
+`app/server.py` caps requests per client IP per minute: 30 for `POST /route`, 10 for `POST /learn`, 60 each for `/graph`, `/curve` and `/stats`, 120 for `/mcp`, and 300 for pages and assets. All clients together get 1,200 requests a minute, and request bodies over 64 KB get a 413. Rejected requests get a 429 with `Retry-After` and do not count against the limits. The client IP is the last `X-Forwarded-For` entry, the one Cloud Run's front end adds, so a client cannot dodge the cap by sending its own header. The counts live in memory, which works because the service runs one instance. Behind another proxy, such as a Vercel rewrite, every user shares that proxy's IP, so serve the dashboard from the Cloud Run URL. The limits slow one abuser down. The spend cap is still what keeps the bill at zero if traffic stays high all month.
 
 Hugging Face Docker Spaces now need a PRO subscription, so `scripts/deploy_hf_space.sh` only works on a paid account.
 
