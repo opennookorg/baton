@@ -206,7 +206,7 @@ export function GraphPage({ entity, onEntity }: { entity: string; onEntity: (ent
       </CardHeader>
       <CardContent className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_200px]">
         <div className="relative h-[400px] overflow-hidden rounded-lg border bg-background sm:h-[560px]">
-          <div ref={container} className="absolute inset-0" aria-label="Graph around the chosen entity" />
+          <div ref={container} className="size-full" aria-label="Graph around the chosen entity" />
           <StateOverlay state={load} />
         </div>
         <ul className="grid grid-cols-1 content-start gap-2.5 text-xs sm:grid-cols-2 lg:grid-cols-1" aria-label="Graph legend">
