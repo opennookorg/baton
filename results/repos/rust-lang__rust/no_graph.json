@@ -1,0 +1,288 @@
+{
+ "lines": {
+  "lookup": {
+   "issues": 1700,
+   "top1": 0.6933,
+   "top3": 0.93,
+   "stream_top1": 0.7294,
+   "points": [
+    {
+     "issues": 100,
+     "top1": 0.66,
+     "top3": 0.7867
+    },
+    {
+     "issues": 200,
+     "top1": 0.6733,
+     "top3": 0.79
+    },
+    {
+     "issues": 300,
+     "top1": 0.69,
+     "top3": 0.8067
+    },
+    {
+     "issues": 400,
+     "top1": 0.6867,
+     "top3": 0.8233
+    },
+    {
+     "issues": 500,
+     "top1": 0.6733,
+     "top3": 0.85
+    },
+    {
+     "issues": 600,
+     "top1": 0.6833,
+     "top3": 0.8833
+    },
+    {
+     "issues": 700,
+     "top1": 0.6833,
+     "top3": 0.8967
+    },
+    {
+     "issues": 800,
+     "top1": 0.6833,
+     "top3": 0.8967
+    },
+    {
+     "issues": 900,
+     "top1": 0.6833,
+     "top3": 0.8833
+    },
+    {
+     "issues": 1000,
+     "top1": 0.69,
+     "top3": 0.9
+    },
+    {
+     "issues": 1100,
+     "top1": 0.6933,
+     "top3": 0.9167
+    },
+    {
+     "issues": 1200,
+     "top1": 0.6933,
+     "top3": 0.9133
+    },
+    {
+     "issues": 1300,
+     "top1": 0.6933,
+     "top3": 0.9167
+    },
+    {
+     "issues": 1400,
+     "top1": 0.6933,
+     "top3": 0.9167
+    },
+    {
+     "issues": 1500,
+     "top1": 0.69,
+     "top3": 0.9267
+    },
+    {
+     "issues": 1600,
+     "top1": 0.69,
+     "top3": 0.9333
+    },
+    {
+     "issues": 1700,
+     "top1": 0.6933,
+     "top3": 0.93
+    }
+   ]
+  },
+  "naive_bayes": {
+   "issues": 1700,
+   "top1": 0.72,
+   "top3": 0.89,
+   "stream_top1": 0.7182,
+   "points": [
+    {
+     "issues": 100,
+     "top1": 0.5967,
+     "top3": 0.8333
+    },
+    {
+     "issues": 200,
+     "top1": 0.63,
+     "top3": 0.7967
+    },
+    {
+     "issues": 300,
+     "top1": 0.6233,
+     "top3": 0.8133
+    },
+    {
+     "issues": 400,
+     "top1": 0.63,
+     "top3": 0.84
+    },
+    {
+     "issues": 500,
+     "top1": 0.6467,
+     "top3": 0.86
+    },
+    {
+     "issues": 600,
+     "top1": 0.6367,
+     "top3": 0.87
+    },
+    {
+     "issues": 700,
+     "top1": 0.65,
+     "top3": 0.8633
+    },
+    {
+     "issues": 800,
+     "top1": 0.6733,
+     "top3": 0.8567
+    },
+    {
+     "issues": 900,
+     "top1": 0.6767,
+     "top3": 0.8667
+    },
+    {
+     "issues": 1000,
+     "top1": 0.67,
+     "top3": 0.8567
+    },
+    {
+     "issues": 1100,
+     "top1": 0.68,
+     "top3": 0.8633
+    },
+    {
+     "issues": 1200,
+     "top1": 0.6967,
+     "top3": 0.8567
+    },
+    {
+     "issues": 1300,
+     "top1": 0.6933,
+     "top3": 0.8633
+    },
+    {
+     "issues": 1400,
+     "top1": 0.6867,
+     "top3": 0.8633
+    },
+    {
+     "issues": 1500,
+     "top1": 0.7,
+     "top3": 0.87
+    },
+    {
+     "issues": 1600,
+     "top1": 0.72,
+     "top3": 0.8767
+    },
+    {
+     "issues": 1700,
+     "top1": 0.72,
+     "top3": 0.89
+    }
+   ]
+  },
+  "always_biggest": {
+   "issues": 1700,
+   "top1": 0.6533,
+   "top3": 0.8833,
+   "stream_top1": 0.6976,
+   "points": [
+    {
+     "issues": 100,
+     "top1": 0.6533,
+     "top3": 0.8833
+    },
+    {
+     "issues": 200,
+     "top1": 0.6533,
+     "top3": 0.72
+    },
+    {
+     "issues": 300,
+     "top1": 0.6533,
+     "top3": 0.8833
+    },
+    {
+     "issues": 400,
+     "top1": 0.6533,
+     "top3": 0.72
+    },
+    {
+     "issues": 500,
+     "top1": 0.6533,
+     "top3": 0.8833
+    },
+    {
+     "issues": 600,
+     "top1": 0.6533,
+     "top3": 0.8833
+    },
+    {
+     "issues": 700,
+     "top1": 0.6533,
+     "top3": 0.8833
+    },
+    {
+     "issues": 800,
+     "top1": 0.6533,
+     "top3": 0.8833
+    },
+    {
+     "issues": 900,
+     "top1": 0.6533,
+     "top3": 0.8833
+    },
+    {
+     "issues": 1000,
+     "top1": 0.6533,
+     "top3": 0.8833
+    },
+    {
+     "issues": 1100,
+     "top1": 0.6533,
+     "top3": 0.8833
+    },
+    {
+     "issues": 1200,
+     "top1": 0.6533,
+     "top3": 0.8833
+    },
+    {
+     "issues": 1300,
+     "top1": 0.6533,
+     "top3": 0.8833
+    },
+    {
+     "issues": 1400,
+     "top1": 0.6533,
+     "top3": 0.8833
+    },
+    {
+     "issues": 1500,
+     "top1": 0.6533,
+     "top3": 0.8833
+    },
+    {
+     "issues": 1600,
+     "top1": 0.6533,
+     "top3": 0.8833
+    },
+    {
+     "issues": 1700,
+     "top1": 0.6533,
+     "top3": 0.8833
+    }
+   ]
+  }
+ },
+ "meta": {
+  "learning_issues": 1700,
+  "test_issues": 300,
+  "note": "same time split and same extracted entities as the graph lines; learned one issue at a time with no graph, no paths and no learning passes; stream_top1 scores each learning issue before it is learned"
+ }
+}

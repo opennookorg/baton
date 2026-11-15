@@ -1,0 +1,51 @@
+{
+  "repo": "react/react",
+  "signal": "label_prefix",
+  "prefix": "Component: ",
+  "labels": [],
+  "available": 2270,
+  "path_roots": [
+    "compiler",
+    "fixtures",
+    "flow-typed",
+    "packages",
+    "scripts"
+  ],
+  "stop_words": [],
+  "hide_terms": [
+    "Component: Build Infrastructure",
+    "Component: Component API",
+    "Component: Concurrent Features",
+    "Component: Core Utilities",
+    "Component: DOM",
+    "Component: Developer Tools",
+    "Component: ESLint Rules",
+    "Component: Fast Refresh",
+    "Component: Flight",
+    "Component: Hooks",
+    "Component: React Compiler",
+    "Component: ReactIs",
+    "Component: Reconciler",
+    "Component: Scheduler",
+    "Component: Scheduling Profiler",
+    "Component: Server Rendering",
+    "Component: Shallow Renderer",
+    "Component: Suspense",
+    "Component: Test Renderer",
+    "Component: Test Utils"
+  ],
+  "doctor": {
+    "verdict": "ok",
+    "recommended": {
+      "signal": "label_prefix",
+      "prefix": "Component: ",
+      "coverage": 0.145,
+      "owners": 4,
+      "effective_owners": 2.24,
+      "largest_share": 0.541,
+      "seen_share": 1.0,
+      "estimated_owned": 2027
+    },
+    "closed_issues": 13976
+  }
+}

@@ -1,0 +1,170 @@
+{
+ "repo": "rust-lang/rust",
+ "closed_issues": 53527,
+ "sampled": 1000,
+ "recommended": {
+  "signal": "label_prefix",
+  "prefix": "T-",
+  "coverage": 0.812,
+  "owners": 15,
+  "effective_owners": 2.9,
+  "largest_share": 0.556,
+  "seen_share": 1.0,
+  "estimated_owned": 43464
+ },
+ "verdict": "ok",
+ "candidates": [
+  {
+   "signal": "label_prefix",
+   "prefix": "T-",
+   "coverage": 0.812,
+   "owners": 15,
+   "effective_owners": 2.9,
+   "largest_share": 0.556,
+   "seen_share": 1.0,
+   "estimated_owned": 43464,
+   "score": 0.361,
+   "verdict": "ok"
+  },
+  {
+   "signal": "fixer",
+   "prefix": "",
+   "coverage": 0.46,
+   "owners": 19,
+   "effective_owners": 3.72,
+   "largest_share": 0.48,
+   "seen_share": 0.826,
+   "estimated_owned": 24622,
+   "score": 0.198,
+   "verdict": "ok"
+  },
+  {
+   "signal": "assignee",
+   "prefix": "",
+   "coverage": 0.258,
+   "owners": 25,
+   "effective_owners": 45.42,
+   "largest_share": 0.069,
+   "seen_share": 0.487,
+   "estimated_owned": 13810,
+   "score": 0.117,
+   "verdict": "ok"
+  },
+  {
+   "signal": "label_prefix",
+   "prefix": "F-",
+   "coverage": 0.134,
+   "owners": 15,
+   "effective_owners": 21.74,
+   "largest_share": 0.145,
+   "seen_share": 0.85,
+   "estimated_owned": 7173,
+   "score": 0.097,
+   "verdict": "ok"
+  },
+  {
+   "signal": "label_prefix",
+   "prefix": "O-",
+   "coverage": 0.089,
+   "owners": 15,
+   "effective_owners": 22.77,
+   "largest_share": 0.099,
+   "seen_share": 0.769,
+   "estimated_owned": 4764,
+   "score": 0.062,
+   "verdict": "ok"
+  },
+  {
+   "signal": "label_prefix",
+   "prefix": "C-",
+   "coverage": 0.667,
+   "owners": 8,
+   "effective_owners": 1.19,
+   "largest_share": 0.915,
+   "seen_share": 1.0,
+   "estimated_owned": 35703,
+   "score": 0.057,
+   "verdict": "one owner: the largest owner takes 92% of issues, nothing to route"
+  },
+  {
+   "signal": "label_prefix",
+   "prefix": "D-",
+   "coverage": 0.043,
+   "owners": 7,
+   "effective_owners": 7.92,
+   "largest_share": 0.214,
+   "seen_share": 0.833,
+   "estimated_owned": 2302,
+   "score": 0.028,
+   "verdict": "ok"
+  },
+  {
+   "signal": "label_prefix",
+   "prefix": "requires-",
+   "coverage": 0.059,
+   "owners": 3,
+   "effective_owners": 2.51,
+   "largest_share": 0.45,
+   "seen_share": 0.778,
+   "estimated_owned": 3158,
+   "score": 0.025,
+   "verdict": "ok"
+  },
+  {
+   "signal": "label_prefix",
+   "prefix": "L-",
+   "coverage": 0.021,
+   "owners": 1,
+   "effective_owners": 15.24,
+   "largest_share": 0.12,
+   "seen_share": 0.667,
+   "estimated_owned": 1124,
+   "score": 0.012,
+   "verdict": "one owner: the largest owner takes 12% of issues, nothing to route"
+  },
+  {
+   "signal": "label_prefix",
+   "prefix": "WG-",
+   "coverage": 0.073,
+   "owners": 2,
+   "effective_owners": 1.22,
+   "largest_share": 0.904,
+   "seen_share": 0.818,
+   "estimated_owned": 3907,
+   "score": 0.006,
+   "verdict": "one owner: the largest owner takes 90% of issues, nothing to route"
+  },
+  {
+   "signal": "label_prefix",
+   "prefix": "disposition-",
+   "coverage": 0.007,
+   "owners": 1,
+   "effective_owners": 1.69,
+   "largest_share": 0.714,
+   "seen_share": 1.0,
+   "estimated_owned": 375,
+   "score": 0.002,
+   "verdict": "one owner: the largest owner takes 71% of issues, nothing to route"
+  },
+  {
+   "signal": "label_prefix",
+   "prefix": "PG-",
+   "coverage": 0.002,
+   "owners": 0,
+   "effective_owners": 2.0,
+   "largest_share": 0.5,
+   "seen_share": 0.0,
+   "estimated_owned": 107,
+   "score": 0.0,
+   "verdict": "one owner: the largest owner takes 50% of issues, nothing to route"
+  }
+ ],
+ "folders": [
+  "LICENSES",
+  "compiler",
+  "library",
+  "src",
+  "tests"
+ ],
+ "created_at": "2010-06-16"
+}
