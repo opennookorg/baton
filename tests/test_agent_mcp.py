@@ -1,10 +1,14 @@
 """MCP tool tests against a monkeypatched fake baton.service."""
 
 import json
+import socket
+import subprocess
 import sys
+import time
 from pathlib import Path
 
 import anyio
+import httpx
 import pytest
 from mcp import Client, StdioServerParameters
 
@@ -121,3 +125,43 @@ def test_stdio_server_starts_and_lists_tools():
                 return await client.list_tools()
 
     assert {tool.name for tool in anyio.run(run).tools} == TOOL_NAMES
+
+
+@pytest.fixture
+def http_server():
+    with socket.socket() as probe:
+        probe.bind(("127.0.0.1", 0))
+        port = probe.getsockname()[1]
+    process = subprocess.Popen(
+        [sys.executable, "-m", "agent.mcp_server", "--http", "--port", str(port), "--allow-host", "baton.example.com"],
+        cwd=ROOT,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    url = f"http://127.0.0.1:{port}/mcp"
+    deadline = time.monotonic() + 30
+    while time.monotonic() < deadline:
+        try:
+            socket.create_connection(("127.0.0.1", port), timeout=1).close()
+            break
+        except OSError:
+            time.sleep(0.2)
+    yield url
+    process.terminate()
+    process.wait(10)
+
+
+def test_http_server_serves_only_read_tools(http_server):
+    async def run():
+        with anyio.fail_after(30):
+            async with Client(http_server) as client:
+                return await client.list_tools()
+
+    assert {tool.name for tool in anyio.run(run).tools} == TOOL_NAMES - {"record_outcome"}
+
+
+def test_http_server_accepts_only_local_and_allowed_hosts(http_server):
+    ping = {"jsonrpc": "2.0", "id": 1, "method": "ping"}
+    headers = {"Accept": "application/json, text/event-stream"}
+    assert httpx.post(http_server, json=ping, headers={**headers, "Host": "evil.example.com"}).status_code == 421
+    assert httpx.post(http_server, json=ping, headers={**headers, "Host": "baton.example.com"}).status_code == 200

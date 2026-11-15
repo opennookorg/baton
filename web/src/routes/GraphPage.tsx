@@ -1,13 +1,16 @@
 import cytoscape, { type Core, type ElementDefinition, type StylesheetJson } from "cytoscape";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { api, token, type Graph, type GraphNode } from "../api";
+import { api, color, token, type Graph, type GraphNode } from "../api";
 import { errorState, StateOverlay, useThemeKey, type LoadState } from "../ui";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 
 function graphStyle(): StylesheetJson {
-  const ink = token("--ink");
-  const ink2 = token("--ink-2");
-  const surface = token("--surface-2");
-  const mono = token("--mono");
+  const ink = color("--foreground");
+  const ink2 = color("--muted-foreground");
+  const surface = color("--graph-surface");
+  const mono = token("--geist-mono");
   return [
     {
       selector: "node",
@@ -24,8 +27,8 @@ function graphStyle(): StylesheetJson {
         "text-background-shape": "roundrectangle",
       },
     },
-    { selector: "node.entity", style: { width: 16, height: 16, "background-color": token("--entity-fill"), "border-width": 2, "border-color": ink2 } },
-    { selector: "node.focus", style: { width: 28, height: 28, "background-color": token("--baton"), "border-width": 4, "border-color": token("--baton-soft"), "font-size": 13, "font-weight": 700 } },
+    { selector: "node.entity", style: { width: 16, height: 16, "background-color": color("--graph-entity"), "border-width": 2, "border-color": ink2 } },
+    { selector: "node.focus", style: { width: 28, height: 28, "background-color": color("--brand"), "border-width": 5, "border-color": color("--brand-soft"), "font-size": 13, "font-weight": 700 } },
     {
       selector: "node.team",
       style: {
@@ -33,22 +36,22 @@ function graphStyle(): StylesheetJson {
         width: "label",
         height: 24,
         padding: "8",
-        "background-color": token("--team-fill"),
-        color: token("--team-ink"),
+        "background-color": color("--graph-team"),
+        color: color("--graph-team-ink"),
         "text-valign": "center",
         "text-margin-y": 0,
         "text-background-opacity": 0,
         "font-weight": 600,
       },
     },
-    { selector: "node.issue", style: { width: 8, height: 8, "background-color": token("--issue-fill"), "font-size": 9, color: token("--muted"), "text-margin-y": 3 } },
-    { selector: "edge", style: { "curve-style": "bezier", "target-arrow-shape": "triangle", "arrow-scale": 0.8, width: 1.5, "line-color": token("--history"), "target-arrow-color": token("--history") } },
+    { selector: "node.issue", style: { width: 8, height: 8, "background-color": color("--graph-issue"), "font-size": 9, color: ink2, "text-margin-y": 3 } },
+    { selector: "edge", style: { "curve-style": "bezier", "target-arrow-shape": "triangle", "arrow-scale": 0.8, width: 1.5, "line-color": color("--graph-history"), "target-arrow-color": color("--graph-history") } },
     {
       selector: "edge.learned",
       style: {
         width: "data(width)",
-        "line-color": token("--count-only"),
-        "target-arrow-color": token("--count-only"),
+        "line-color": color("--line-count-only"),
+        "target-arrow-color": color("--line-count-only"),
         "source-label": "data(strengthLabel)",
         "source-text-offset": 46,
         "font-family": mono,
@@ -60,8 +63,8 @@ function graphStyle(): StylesheetJson {
         "text-background-shape": "roundrectangle",
       },
     },
-    { selector: "edge.shortcut", style: { "line-color": token("--shortcuts"), "target-arrow-color": token("--shortcuts") } },
-    { selector: "edge.merged", style: { width: 3, "line-style": "dashed", "line-dash-pattern": [6, 4], "line-color": token("--merging"), "target-arrow-shape": "none" } },
+    { selector: "edge.shortcut", style: { "line-color": color("--line-shortcuts"), "target-arrow-color": color("--line-shortcuts") } },
+    { selector: "edge.merged", style: { width: 3, "line-style": "dashed", "line-dash-pattern": [6, 4], "line-color": color("--line-merging"), "target-arrow-shape": "none" } },
     { selector: "node.entity:active, node.entity:selected", style: { "overlay-opacity": 0 } },
   ];
 }
@@ -185,37 +188,63 @@ export function GraphPage({ entity, onEntity }: { entity: string; onEntity: (ent
   };
 
   return (
-    <section className="card graph-card" aria-labelledby="graph-title">
-      <div className="card-head">
-        <div>
+    <Card aria-labelledby="graph-title">
+      <CardHeader className="md:grid-cols-[1fr_auto]">
+        <CardTitle>
           <h2 id="graph-title">Ownership graph</h2>
-          <p className="sub">Links around one entity. Thicker links are stronger. Click any entity to move there.</p>
-        </div>
-        <form className="graph-form" onSubmit={submit}>
-          <label className="visually-hidden" htmlFor="graph-entity">
+        </CardTitle>
+        <CardDescription>Links around one entity. Thicker links are stronger. Click any entity to move there.</CardDescription>
+        <form className="mt-2 flex w-full gap-2 md:col-start-2 md:row-span-2 md:row-start-1 md:mt-0 md:w-72 md:self-start" onSubmit={submit} role="search">
+          <label className="sr-only" htmlFor="graph-entity">
             Entity
           </label>
-          <input id="graph-entity" type="text" value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="kubelet" autoComplete="off" spellCheck={false} />
-          <button type="submit" className="ghost-btn">
+          <Input id="graph-entity" type="text" className="font-mono" value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="kubelet" autoComplete="off" spellCheck={false} />
+          <Button type="submit" variant="outline">
             Show
-          </button>
+          </Button>
         </form>
-      </div>
-      <div className="graph-body">
-        <div className="graph-wrap">
-          <div ref={container} className="graph-canvas" aria-label="Graph around the chosen entity" />
+      </CardHeader>
+      <CardContent className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_200px]">
+        <div className="relative h-[400px] overflow-hidden rounded-lg border bg-background sm:h-[560px]">
+          <div ref={container} className="size-full" aria-label="Graph around the chosen entity" />
           <StateOverlay state={load} />
         </div>
-        <ul className="graph-legend" aria-label="Graph legend">
-          <li><span className="key key-learned" />Learned link <span className="muted">entity to team</span></li>
-          <li><span className="key key-shortcut" />Shortcut <span className="muted">compressed from history</span></li>
-          <li><span className="key key-merged" />Merged name <span className="muted">SAME_AS</span></li>
-          <li><span className="key key-history" />History <span className="muted">past issue to fixing team</span></li>
-          <li className="legend-gap"><span className="node-key node-entity" />Entity</li>
-          <li><span className="node-key node-team" />Team</li>
-          <li><span className="node-key node-issue" />Past issue</li>
+        <ul className="grid grid-cols-1 content-start gap-2.5 text-xs sm:grid-cols-2 lg:grid-cols-1" aria-label="Graph legend">
+          {LEGEND_LINKS.map((item) => (
+            <li key={item.label} className="flex items-center gap-3">
+              <span className="w-7 shrink-0" style={{ borderTop: item.line }} aria-hidden="true" />
+              <span>
+                {item.label} <span className="text-muted-foreground">{item.note}</span>
+              </span>
+            </li>
+          ))}
+          <li className="flex items-center gap-3">
+            <span className="flex w-7 shrink-0 justify-center" aria-hidden="true">
+              <span className="size-3.5 rounded-full border-2 border-muted-foreground bg-card" />
+            </span>
+            Entity
+          </li>
+          <li className="flex items-center gap-3">
+            <span className="flex w-7 shrink-0 justify-center" aria-hidden="true">
+              <span className="h-3.5 w-6 rounded-sm bg-foreground" />
+            </span>
+            Team
+          </li>
+          <li className="flex items-center gap-3">
+            <span className="flex w-7 shrink-0 justify-center" aria-hidden="true">
+              <span className="size-2 rounded-full bg-(--graph-issue)" />
+            </span>
+            Past issue
+          </li>
         </ul>
-      </div>
-    </section>
+      </CardContent>
+    </Card>
   );
 }
+
+const LEGEND_LINKS = [
+  { label: "Learned link", note: "entity to team", line: "3px solid var(--line-count-only)" },
+  { label: "Shortcut", note: "compressed from history", line: "3px solid var(--line-shortcuts)" },
+  { label: "Merged name", note: "SAME_AS", line: "3px dashed var(--line-merging)" },
+  { label: "History", note: "past issue to fixing team", line: "1.5px solid var(--graph-history)" },
+];

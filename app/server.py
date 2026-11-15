@@ -16,7 +16,7 @@ from baton import service as real_service
 from baton.models import Issue
 
 WEB_DIST = Path(os.environ.get("BATON_WEB_DIST", Path(__file__).resolve().parent.parent / "web" / "dist"))
-PAGES = ("/", "/try", "/explore")
+PAGES = ("/", "/try", "/explore", "/connect")
 
 
 class RouteRequest(BaseModel):

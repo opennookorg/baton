@@ -140,7 +140,7 @@ def test_stats_has_counter_keys(client):
 
 
 def test_every_dashboard_page_serves_the_built_app(client):
-    for path in ("/", "/try", "/explore?entity=kubelet"):
+    for path in ("/", "/try", "/explore?entity=kubelet", "/connect?client=chatgpt"):
         page = client.get(path)
         assert page.status_code == 200
         assert '<div id="root">' in page.text
