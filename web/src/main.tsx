@@ -85,7 +85,7 @@ function RepoNotice() {
               <code>repo</code>.{" "}
             </>
           )}
-          Baton does not route other repos yet: they return "unknown repo" until someone onboards them.{" "}
+          Any other repo returns "unknown repo" here. To route your own repo, self-host Baton and onboard it.{" "}
           <a href={`${DOCS_URL}/repos`} target="_blank" rel="noreferrer" className="underline underline-offset-2">
             Which repos work
           </a>

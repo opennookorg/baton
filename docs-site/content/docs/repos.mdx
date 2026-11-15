@@ -33,7 +33,7 @@ curl -X POST https://baton-134858271117.us-central1.run.app/route \
 
 Any other repo gets a `404` with `unknown repo` and the list of repos that do work. Over MCP the tool returns the same message as an error.
 
-To add a repo, run your own copy of Baton ([Run it yourself](/docs/self-host)) and onboard it:
+You cannot add a repo to the hosted server. To use Baton on your own repo, self-host it: run your own copy ([Run it yourself](/docs/self-host)), onboard the repo there, and connect your agent to your copy instead of the hosted URL:
 
 ```sh
 uv run python -m eval.onboard doctor owner/name
