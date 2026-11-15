@@ -1,4 +1,5 @@
 import Chart, { type ChartDataset, type Plugin } from "chart.js/auto";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { api, color, fmt, pct, REDUCED_MOTION, token, type Curve, type Metric } from "../api";
 import { errorState, StateOverlay, useThemeKey, type LoadState } from "../ui";
@@ -160,21 +161,18 @@ function CurveChart({ curve, lines, metric }: { curve: Curve; lines: Line[]; met
 }
 
 export function CurvePage({ metric, onMetric }: { metric: Metric; onMetric: (metric: Metric) => void }) {
-  const [curve, setCurve] = useState<Curve | null>(null);
-  const [load, setLoad] = useState<LoadState>({ kind: "loading", title: "Loading accuracy points" });
+  const { data: curve, error } = useQuery({ queryKey: ["curve"], queryFn: api.curve });
   const [techniques, setTechniques] = useState<Set<string>>(new Set());
   useThemeKey();
 
-  useEffect(() => {
-    api.curve().then(
-      (data) => {
-        setCurve(data);
-        const hasLines = Object.values(data.lines ?? {}).some((points) => points.length);
-        setLoad(hasLines ? null : { kind: "empty", title: "No accuracy points yet", detail: <>Run <code>uv run python -m eval.run_curve</code> to score the test set, then reload.</> });
-      },
-      (error) => setLoad(errorState(error)),
-    );
-  }, []);
+  const hasLines = Object.values(curve?.lines ?? {}).some((points) => points.length);
+  const load: LoadState = error
+    ? errorState(error)
+    : !curve
+      ? { kind: "loading", title: "Loading accuracy points" }
+      : hasLines
+        ? null
+        : { kind: "empty", title: "No accuracy points yet", detail: <>Run <code>uv run python -m eval.run_curve</code> to score the test set, then reload.</> };
 
   const visible = useMemo(
     () => LINES.filter((line) => curve?.lines[line.key]?.length && (!line.technique || techniques.has(line.key))),

@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { CircleAlert, LoaderCircle } from "lucide-react";
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { api, ApiError, fmt, REDUCED_MOTION, type Stats } from "./api";
@@ -56,10 +57,7 @@ const COUNTERS: { key: keyof Stats; label: string; note?: string; hero?: boolean
 ];
 
 export function Counters() {
-  const [stats, setStats] = useState<Stats>({});
-  useEffect(() => {
-    api.stats().then(setStats, () => setStats({}));
-  }, []);
+  const { data: stats = {} } = useQuery({ queryKey: ["stats"], queryFn: api.stats });
   return (
     <section className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5" aria-label="What the graph has learned">
       {COUNTERS.map((counter) => (

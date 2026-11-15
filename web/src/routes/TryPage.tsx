@@ -1,3 +1,4 @@
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { ChevronRight, LoaderCircle } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
@@ -111,35 +112,40 @@ function Result({ outcome }: { outcome: Outcome }) {
 export function TryPage({ stage, onStage }: { stage: Stage; onStage: (stage: Stage) => void }) {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
-  const [outcome, setOutcome] = useState<Outcome>(null);
-  const [busy, setBusy] = useState(false);
-  const seq = useRef(0);
+  const [submitted, setSubmitted] = useState<{ title: string; body: string } | null>(null);
+  const [note, setNote] = useState<string | null>(null);
   const titleInput = useRef<HTMLInputElement>(null);
+  const routed = useQuery({
+    queryKey: ["route", submitted?.title, submitted?.body, stage],
+    queryFn: async () => ({ result: await api.route(submitted!.title, submitted!.body, stage), stage }),
+    enabled: submitted !== null,
+    placeholderData: keepPreviousData,
+    staleTime: Infinity,
+    retry: false,
+  });
+  const busy = routed.isFetching;
+  const outcome: Outcome = note
+    ? { kind: "note", text: note }
+    : routed.error
+      ? { kind: "error", state: errorState(routed.error) }
+      : routed.data
+        ? { kind: "result", ...routed.data }
+        : null;
 
-  async function route(nextTitle = title, nextBody = body, asOf = stage) {
+  function route(nextTitle = title, nextBody = body) {
     const trimmed = nextTitle.trim();
     if (!trimmed) {
-      setOutcome({ kind: "note", text: "Add a title to route the issue." });
+      setNote("Add a title to route the issue.");
       titleInput.current?.focus();
       return;
     }
-    const mine = ++seq.current;
-    setBusy(true);
-    try {
-      const result = await api.route(trimmed, nextBody, asOf);
-      if (mine === seq.current) setOutcome({ kind: "result", result, stage: asOf });
-    } catch (error) {
-      if (mine === seq.current) setOutcome({ kind: "error", state: errorState(error) });
-    } finally {
-      if (mine === seq.current) setBusy(false);
+    setNote(null);
+    if (submitted?.title === trimmed && submitted.body === nextBody) {
+      if (routed.isError) routed.refetch();
+      return;
     }
+    setSubmitted({ title: trimmed, body: nextBody });
   }
-
-  useEffect(() => {
-    if (outcome?.kind !== "result" || outcome.stage === stage) return;
-    const timer = setTimeout(() => route(), 120);
-    return () => clearTimeout(timer);
-  }, [stage]);
 
   const submit = (event: FormEvent) => {
     event.preventDefault();
