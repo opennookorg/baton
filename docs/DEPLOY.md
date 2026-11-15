@@ -1,6 +1,6 @@
 # Deploying Baton
 
-Baton ships as one container. `scripts/serve.sh` starts a HydraDB node inside it, restores the learned graph from `results/snapshots/1700.json`, and serves the API, dashboard and `/route` on port 7860. The image builds on the public HydraDB image (`ghcr.io/hydra-db/hydradb:0.4.0`, amd64 and arm64), so nothing has to be compiled. The HydraDB node uses about 1.5 GB of memory, so the host needs at least 2 GB.
+Baton ships as one container. `scripts/serve.sh` starts a HydraDB node inside it, restores the learned graph of every onboarded repo (Kubernetes from `results/snapshots/1700.json`), and serves the API, dashboard and `/route` on port 7860. The image builds on the public HydraDB image (`ghcr.io/hydra-db/hydradb:0.4.0`, amd64 and arm64), so nothing has to be compiled. The HydraDB node uses about 1.5 GB of memory, so the host needs at least 2 GB.
 
 The dashboard and a read-only MCP endpoint (`/mcp`, streamable HTTP) are served by the same container, so no separate frontend or MCP host is needed. The live instance runs on Cloud Run at https://baton-134858271117.us-central1.run.app.
 
@@ -49,6 +49,25 @@ Oracle Cloud's Always Free tier includes an ARM VM with 12 GB of memory (current
 docker build -t baton .
 docker run -p 7860:7860 baton
 ```
+
+## Your own repos
+
+The container serves every repo onboarded in the checkout it was built from. `eval.onboard onboard owner/name` writes the repo's profile, issues and name table under `data/repos/<owner>__<name>/` and its curve, baselines and routing snapshots under `results/repos/<owner>__<name>/`. Both folders go into the image. On start, `scripts/serve.sh` runs `eval.restore_graph --all`, which loads each repo's final snapshot into its own HydraDB database, so the graphs never mix. The raw GitHub records (`raw.jsonl.gz`) and live learning state stay out of the image.
+
+```sh
+uv run python -m eval.onboard onboard owner/name
+git add data/repos results/repos
+scripts/deploy_cloud_run.sh <project-id>
+curl -s https://<service-url>/repos
+```
+
+Then point Claude Code at it and pass the repo to any tool:
+
+```sh
+claude mcp add --transport http --scope user baton https://<service-url>/mcp
+```
+
+Each onboarded repo adds a few MB to the image and a few seconds to the restore on a cold start.
 
 ## Settings
 

@@ -141,19 +141,46 @@ Open <http://localhost:8000>.
 
 The API behind it: `POST /route`, `POST /learn`, `GET /curve`, `GET /graph?entity=...`, `GET /stats`. `app/server.py` and the MCP server both call `baton/service.py` and nothing else.
 
+## Use Baton on your repo
+
+Kubernetes is one case study. Baton routes any GitHub repo whose closed issues say who owned them, and [`docs/CASE_STUDIES.md`](docs/CASE_STUDIES.md) has the results on five more. One command onboards a repo end to end:
+
+```sh
+gh auth login
+uv sync && scripts/start_hydradb.sh
+uv run python -m eval.onboard doctor owner/name
+uv run python -m eval.onboard onboard owner/name
+```
+
+`doctor` samples the newest 1,000 closed issues and scores every owner signal it finds. The signals are a label family such as `sig/`, `T-` or `Component: `, the author of the merged PR that closed the issue (`fixer`), and the assignee. For each one it reports coverage, owners, the largest owner's share and the share of owners already seen earlier, then recommends one. It refuses a repo with one owner (fewer than 2 owners, or one owner with 80% or more of issues) or fewer than about 300 owned closed issues. The reasons are in [`docs/CASE_STUDIES.md`](docs/CASE_STUDIES.md#how-the-doctor-decides). `onboard` runs the doctor, fetches enough owned closed issues for the split, builds the name table, learns the graph in its own HydraDB database and runs every baseline. Override the pick with `--signal fixer` or `--signal label_prefix --prefix area/`. The token comes from `GITHUB_TOKEN` or the `gh` CLI and is never written to disk.
+
+Sizes scale to what the repo has. With 5,000 or more owned closed issues it is the Kubernetes run exactly: 2,000 issues, 1,700 to learn from and 300 held out, 3,000 in reserve, batches of 100. Smaller repos keep the 85/15 split and put the curve's points on batch boundaries.
+
+Then route through any client:
+
+```sh
+uv run uvicorn app.server:app --port 8000
+curl -s localhost:8000/repos
+curl -s localhost:8000/route -H 'content-type: application/json' -d '{"repo": "owner/name", "title": "..."}'
+claude mcp add --scope user baton -- uv run --directory "$PWD" python -m agent.mcp_server
+```
+
+In Claude Code, ask it to route an issue for `owner/name`, or call `list_repos` first. A repo Baton has not learned gets a 404 (or a tool error) that names the repos it has. A repo the doctor refused gets the doctor's reason.
+
 ## Triage agent over MCP
 
-`agent/mcp_server.py` exposes Baton to Claude Code or Codex as five tools:
+`agent/mcp_server.py` exposes Baton to Claude Code or Codex as six tools. Every tool except `list_repos` takes an optional `repo` (`owner/name`, Kubernetes when omitted):
 
 | Tool | Returns |
 |---|---|
-| `route_issue(title, body)` | Top 3 teams, confidence and path |
-| `similar_past_issues(title, body)` | Past issues sharing the most entities, with the fixing team |
-| `reporter_history(username)` | Teams that fixed this reporter's earlier issues |
-| `team_profile(team)` | Entities most strongly linked to a team |
-| `record_outcome(issue, team)` | Feeds the real result back so the graph learns |
+| `list_repos()` | The repos Baton has learned, with owner signal, owners and test top-1 |
+| `route_issue(title, body, repo)` | Top 3 teams, confidence and path, or a message saying why nothing matched |
+| `similar_past_issues(title, body, repo)` | Past issues sharing the most entities, with the fixing team |
+| `reporter_history(username, repo)` | Teams that fixed this reporter's earlier issues |
+| `team_profile(team, repo)` | Entities most strongly linked to a team |
+| `record_outcome(issue, team, repo)` | Feeds the real result back so the graph learns |
 
-The live deployment serves the four read tools over streamable HTTP at `/mcp`, so any client can connect without a checkout:
+The live deployment serves the five read tools over streamable HTTP at `/mcp`, so any client can connect without a checkout:
 
 ```sh
 claude mcp add --transport http --scope user baton https://baton-134858271117.us-central1.run.app/mcp
