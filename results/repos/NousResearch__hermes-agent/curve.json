@@ -1,0 +1,934 @@
+{
+ "lines": {
+  "frozen": [
+   {
+    "issues": 0,
+    "top1": 0.3267,
+    "top3": 0.72
+   },
+   {
+    "issues": 100,
+    "top1": 0.3267,
+    "top3": 0.72
+   },
+   {
+    "issues": 200,
+    "top1": 0.3267,
+    "top3": 0.72
+   },
+   {
+    "issues": 300,
+    "top1": 0.3267,
+    "top3": 0.72
+   },
+   {
+    "issues": 400,
+    "top1": 0.3267,
+    "top3": 0.72
+   },
+   {
+    "issues": 500,
+    "top1": 0.3267,
+    "top3": 0.72
+   },
+   {
+    "issues": 600,
+    "top1": 0.3267,
+    "top3": 0.72
+   },
+   {
+    "issues": 700,
+    "top1": 0.3267,
+    "top3": 0.72
+   },
+   {
+    "issues": 800,
+    "top1": 0.3267,
+    "top3": 0.72
+   },
+   {
+    "issues": 900,
+    "top1": 0.3267,
+    "top3": 0.72
+   },
+   {
+    "issues": 1000,
+    "top1": 0.3267,
+    "top3": 0.72
+   },
+   {
+    "issues": 1100,
+    "top1": 0.3267,
+    "top3": 0.72
+   },
+   {
+    "issues": 1200,
+    "top1": 0.3267,
+    "top3": 0.72
+   },
+   {
+    "issues": 1300,
+    "top1": 0.3267,
+    "top3": 0.72
+   },
+   {
+    "issues": 1400,
+    "top1": 0.3267,
+    "top3": 0.72
+   },
+   {
+    "issues": 1500,
+    "top1": 0.3267,
+    "top3": 0.72
+   },
+   {
+    "issues": 1600,
+    "top1": 0.3267,
+    "top3": 0.72
+   },
+   {
+    "issues": 1700,
+    "top1": 0.3267,
+    "top3": 0.72
+   }
+  ],
+  "count_only": [
+   {
+    "issues": 0,
+    "top1": 0.0,
+    "top3": 0.0
+   },
+   {
+    "issues": 100,
+    "top1": 0.35,
+    "top3": 0.6733
+   },
+   {
+    "issues": 200,
+    "top1": 0.3267,
+    "top3": 0.72
+   },
+   {
+    "issues": 300,
+    "top1": 0.2933,
+    "top3": 0.6667
+   },
+   {
+    "issues": 400,
+    "top1": 0.2433,
+    "top3": 0.6433
+   },
+   {
+    "issues": 500,
+    "top1": 0.26,
+    "top3": 0.6967
+   },
+   {
+    "issues": 600,
+    "top1": 0.2867,
+    "top3": 0.6967
+   },
+   {
+    "issues": 700,
+    "top1": 0.3233,
+    "top3": 0.6633
+   },
+   {
+    "issues": 800,
+    "top1": 0.3533,
+    "top3": 0.6667
+   },
+   {
+    "issues": 900,
+    "top1": 0.3633,
+    "top3": 0.6767
+   },
+   {
+    "issues": 1000,
+    "top1": 0.3567,
+    "top3": 0.6867
+   },
+   {
+    "issues": 1100,
+    "top1": 0.38,
+    "top3": 0.69
+   },
+   {
+    "issues": 1200,
+    "top1": 0.3833,
+    "top3": 0.7133
+   },
+   {
+    "issues": 1300,
+    "top1": 0.3767,
+    "top3": 0.7133
+   },
+   {
+    "issues": 1400,
+    "top1": 0.38,
+    "top3": 0.6933
+   },
+   {
+    "issues": 1500,
+    "top1": 0.41,
+    "top3": 0.7167
+   },
+   {
+    "issues": 1600,
+    "top1": 0.4067,
+    "top3": 0.7333
+   },
+   {
+    "issues": 1700,
+    "top1": 0.4367,
+    "top3": 0.74
+   }
+  ],
+  "baton": [
+   {
+    "issues": 0,
+    "top1": 0.0,
+    "top3": 0.0
+   },
+   {
+    "issues": 100,
+    "top1": 0.3633,
+    "top3": 0.7467
+   },
+   {
+    "issues": 200,
+    "top1": 0.4,
+    "top3": 0.7233
+   },
+   {
+    "issues": 300,
+    "top1": 0.3933,
+    "top3": 0.7333
+   },
+   {
+    "issues": 400,
+    "top1": 0.3733,
+    "top3": 0.7567
+   },
+   {
+    "issues": 500,
+    "top1": 0.4067,
+    "top3": 0.8033
+   },
+   {
+    "issues": 600,
+    "top1": 0.4167,
+    "top3": 0.8
+   },
+   {
+    "issues": 700,
+    "top1": 0.4067,
+    "top3": 0.7867
+   },
+   {
+    "issues": 800,
+    "top1": 0.4367,
+    "top3": 0.8067
+   },
+   {
+    "issues": 900,
+    "top1": 0.4433,
+    "top3": 0.7967
+   },
+   {
+    "issues": 1000,
+    "top1": 0.4767,
+    "top3": 0.81
+   },
+   {
+    "issues": 1100,
+    "top1": 0.4733,
+    "top3": 0.82
+   },
+   {
+    "issues": 1200,
+    "top1": 0.45,
+    "top3": 0.8133
+   },
+   {
+    "issues": 1300,
+    "top1": 0.4967,
+    "top3": 0.82
+   },
+   {
+    "issues": 1400,
+    "top1": 0.51,
+    "top3": 0.8333
+   },
+   {
+    "issues": 1500,
+    "top1": 0.5367,
+    "top3": 0.84
+   },
+   {
+    "issues": 1600,
+    "top1": 0.5433,
+    "top3": 0.84
+   },
+   {
+    "issues": 1700,
+    "top1": 0.5267,
+    "top3": 0.87
+   }
+  ]
+ },
+ "meta": {
+  "repo": "NousResearch/hermes-agent",
+  "signal": {
+   "signal": "label_prefix",
+   "prefix": "comp/"
+  },
+  "mode": "live",
+  "learning_issues": 1700,
+  "test_issues": 300,
+  "batch_size": 100,
+  "frozen_size": 200,
+  "snapshots": [
+   0,
+   500,
+   1000,
+   1700
+  ],
+  "hide_sig_mentions": true,
+  "params": {
+   "reward": 0.5,
+   "penalty": 0.8,
+   "floor": 0.05,
+   "shortcut_min_paths": 3,
+   "shortcut_scale": 2.0,
+   "history_keep": 500,
+   "merge_min_hits": 10,
+   "merge_similarity": 0.9,
+   "split_min_misses": 10,
+   "split_dominance": 0.5,
+   "split_min_support": 3,
+   "gap_confidence": 0.4,
+   "gap_min_known": 2,
+   "gap_pull": 20
+  },
+  "params_note": "values tuned on the learning stream only (eval/tune_stream.py, results/tuning.json); each line's own params are in meta.lines",
+  "top1": "top-ranked team is one of the issue's sigs",
+  "top3": "any of the top three teams is one of the issue's sigs",
+  "as_of_zero": "as_of=0 is the empty graph: teams and vocabulary only, no history and no links, so routing returns no teams",
+  "lines": {
+   "frozen": {
+    "techniques": {
+     "reweight": false,
+     "shortcuts": false,
+     "merging": false,
+     "splitting": false,
+     "gap_filling": false
+    },
+    "params": {
+     "reward": 0.5,
+     "penalty": 0.8,
+     "floor": 0.05,
+     "shortcut_min_paths": 3,
+     "shortcut_scale": 2.0,
+     "history_keep": 500,
+     "merge_min_hits": 10,
+     "merge_similarity": 0.9,
+     "split_min_misses": 10,
+     "split_dominance": 0.5,
+     "split_min_support": 3,
+     "gap_confidence": 0.4,
+     "gap_min_known": 2,
+     "gap_pull": 20
+    },
+    "graph": {
+     "200": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2810,
+       "Issue": 200
+      },
+      "links": {
+       "ROUTES_TO": 0,
+       "SEEN_IN": 2990,
+       "OWNED_BY": 279,
+       "SAME_AS": 0
+      }
+     }
+    },
+    "counters": {
+     "issues_learned": 200,
+     "links_reweighted": 0,
+     "shortcuts": 0,
+     "misroutes": 88,
+     "merges": 0,
+     "issues_pruned": 0,
+     "splits": 0,
+     "gap_issues": 0
+    },
+    "stream_top1": 0.56,
+    "latency_ms": {
+     "median": 125.43,
+     "p95": 321.48
+    },
+    "note": "graph built once from the first 200 learning issues and never updated; the same score at every x"
+   },
+   "count_only": {
+    "techniques": {
+     "reweight": false,
+     "shortcuts": false,
+     "merging": false,
+     "splitting": false,
+     "gap_filling": false
+    },
+    "params": {
+     "reward": 0.5,
+     "penalty": 0.8,
+     "floor": 0.05,
+     "shortcut_min_paths": 3,
+     "shortcut_scale": 2.0,
+     "history_keep": 500,
+     "merge_min_hits": 10,
+     "merge_similarity": 0.9,
+     "split_min_misses": 10,
+     "split_dominance": 0.5,
+     "split_min_support": 3,
+     "gap_confidence": 0.4,
+     "gap_min_known": 2,
+     "gap_pull": 20
+    },
+    "graph": {
+     "0": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2810,
+       "Issue": 0
+      },
+      "links": {
+       "ROUTES_TO": 0,
+       "SEEN_IN": 0,
+       "OWNED_BY": 0,
+       "SAME_AS": 0
+      }
+     },
+     "100": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2810,
+       "Issue": 100
+      },
+      "links": {
+       "ROUTES_TO": 0,
+       "SEEN_IN": 1500,
+       "OWNED_BY": 144,
+       "SAME_AS": 0
+      }
+     },
+     "200": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2810,
+       "Issue": 200
+      },
+      "links": {
+       "ROUTES_TO": 0,
+       "SEEN_IN": 2990,
+       "OWNED_BY": 279,
+       "SAME_AS": 0
+      }
+     },
+     "300": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2810,
+       "Issue": 300
+      },
+      "links": {
+       "ROUTES_TO": 0,
+       "SEEN_IN": 4468,
+       "OWNED_BY": 427,
+       "SAME_AS": 0
+      }
+     },
+     "400": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2810,
+       "Issue": 400
+      },
+      "links": {
+       "ROUTES_TO": 0,
+       "SEEN_IN": 5873,
+       "OWNED_BY": 578,
+       "SAME_AS": 0
+      }
+     },
+     "500": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2810,
+       "Issue": 500
+      },
+      "links": {
+       "ROUTES_TO": 0,
+       "SEEN_IN": 7319,
+       "OWNED_BY": 717,
+       "SAME_AS": 0
+      }
+     },
+     "600": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2810,
+       "Issue": 600
+      },
+      "links": {
+       "ROUTES_TO": 0,
+       "SEEN_IN": 8700,
+       "OWNED_BY": 855,
+       "SAME_AS": 0
+      }
+     },
+     "700": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2810,
+       "Issue": 700
+      },
+      "links": {
+       "ROUTES_TO": 0,
+       "SEEN_IN": 9962,
+       "OWNED_BY": 996,
+       "SAME_AS": 0
+      }
+     },
+     "800": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2810,
+       "Issue": 800
+      },
+      "links": {
+       "ROUTES_TO": 0,
+       "SEEN_IN": 11152,
+       "OWNED_BY": 1126,
+       "SAME_AS": 0
+      }
+     },
+     "900": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2810,
+       "Issue": 900
+      },
+      "links": {
+       "ROUTES_TO": 0,
+       "SEEN_IN": 12422,
+       "OWNED_BY": 1272,
+       "SAME_AS": 0
+      }
+     },
+     "1000": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2810,
+       "Issue": 1000
+      },
+      "links": {
+       "ROUTES_TO": 0,
+       "SEEN_IN": 13775,
+       "OWNED_BY": 1432,
+       "SAME_AS": 0
+      }
+     },
+     "1100": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2810,
+       "Issue": 1100
+      },
+      "links": {
+       "ROUTES_TO": 0,
+       "SEEN_IN": 15064,
+       "OWNED_BY": 1589,
+       "SAME_AS": 0
+      }
+     },
+     "1200": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2810,
+       "Issue": 1200
+      },
+      "links": {
+       "ROUTES_TO": 0,
+       "SEEN_IN": 16808,
+       "OWNED_BY": 1784,
+       "SAME_AS": 0
+      }
+     },
+     "1300": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2810,
+       "Issue": 1300
+      },
+      "links": {
+       "ROUTES_TO": 0,
+       "SEEN_IN": 18524,
+       "OWNED_BY": 1925,
+       "SAME_AS": 0
+      }
+     },
+     "1400": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2810,
+       "Issue": 1400
+      },
+      "links": {
+       "ROUTES_TO": 0,
+       "SEEN_IN": 19852,
+       "OWNED_BY": 2067,
+       "SAME_AS": 0
+      }
+     },
+     "1500": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2810,
+       "Issue": 1500
+      },
+      "links": {
+       "ROUTES_TO": 0,
+       "SEEN_IN": 21389,
+       "OWNED_BY": 2186,
+       "SAME_AS": 0
+      }
+     },
+     "1600": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2810,
+       "Issue": 1600
+      },
+      "links": {
+       "ROUTES_TO": 0,
+       "SEEN_IN": 22824,
+       "OWNED_BY": 2309,
+       "SAME_AS": 0
+      }
+     },
+     "1700": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2810,
+       "Issue": 1700
+      },
+      "links": {
+       "ROUTES_TO": 0,
+       "SEEN_IN": 24212,
+       "OWNED_BY": 2435,
+       "SAME_AS": 0
+      }
+     }
+    },
+    "counters": {
+     "issues_learned": 1700,
+     "links_reweighted": 0,
+     "shortcuts": 0,
+     "misroutes": 694,
+     "merges": 0,
+     "issues_pruned": 0,
+     "splits": 0,
+     "gap_issues": 0
+    },
+    "stream_top1": 0.5918,
+    "latency_ms": {
+     "median": 78.52,
+     "p95": 262.87
+    }
+   },
+   "baton": {
+    "techniques": {
+     "reweight": true,
+     "shortcuts": true,
+     "merging": false,
+     "splitting": false,
+     "gap_filling": true
+    },
+    "params": {
+     "reward": 0.5,
+     "penalty": 0.8,
+     "floor": 0.05,
+     "shortcut_min_paths": 3,
+     "shortcut_scale": 2.0,
+     "history_keep": 500,
+     "merge_min_hits": 10,
+     "merge_similarity": 0.9,
+     "split_min_misses": 10,
+     "split_dominance": 0.5,
+     "split_min_support": 3,
+     "gap_confidence": 0.5,
+     "gap_min_known": 12,
+     "gap_pull": 20
+    },
+    "graph": {
+     "0": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2810,
+       "Issue": 0
+      },
+      "links": {
+       "ROUTES_TO": 0,
+       "SEEN_IN": 0,
+       "OWNED_BY": 0,
+       "SAME_AS": 0
+      }
+     },
+     "100": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2831,
+       "Issue": 251
+      },
+      "links": {
+       "ROUTES_TO": 822,
+       "SEEN_IN": 3382,
+       "OWNED_BY": 351,
+       "SAME_AS": 0
+      }
+     },
+     "200": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2865,
+       "Issue": 574
+      },
+      "links": {
+       "ROUTES_TO": 1704,
+       "SEEN_IN": 7533,
+       "OWNED_BY": 782,
+       "SAME_AS": 0
+      }
+     },
+     "300": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2877,
+       "Issue": 782
+      },
+      "links": {
+       "ROUTES_TO": 2276,
+       "SEEN_IN": 10351,
+       "OWNED_BY": 1066,
+       "SAME_AS": 0
+      }
+     },
+     "400": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2901,
+       "Issue": 1052
+      },
+      "links": {
+       "ROUTES_TO": 3038,
+       "SEEN_IN": 13862,
+       "OWNED_BY": 1429,
+       "SAME_AS": 0
+      }
+     },
+     "500": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2923,
+       "Issue": 1294
+      },
+      "links": {
+       "ROUTES_TO": 3721,
+       "SEEN_IN": 17077,
+       "OWNED_BY": 1768,
+       "SAME_AS": 0
+      }
+     },
+     "600": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2942,
+       "Issue": 1516
+      },
+      "links": {
+       "ROUTES_TO": 4364,
+       "SEEN_IN": 19719,
+       "OWNED_BY": 2101,
+       "SAME_AS": 0
+      }
+     },
+     "700": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2961,
+       "Issue": 1707
+      },
+      "links": {
+       "ROUTES_TO": 4861,
+       "SEEN_IN": 22026,
+       "OWNED_BY": 2378,
+       "SAME_AS": 0
+      }
+     },
+     "800": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2985,
+       "Issue": 1942
+      },
+      "links": {
+       "ROUTES_TO": 5463,
+       "SEEN_IN": 24760,
+       "OWNED_BY": 2701,
+       "SAME_AS": 0
+      }
+     },
+     "900": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 2997,
+       "Issue": 2111
+      },
+      "links": {
+       "ROUTES_TO": 5901,
+       "SEEN_IN": 26846,
+       "OWNED_BY": 2936,
+       "SAME_AS": 0
+      }
+     },
+     "1000": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 3011,
+       "Issue": 2295
+      },
+      "links": {
+       "ROUTES_TO": 6403,
+       "SEEN_IN": 29044,
+       "OWNED_BY": 3217,
+       "SAME_AS": 0
+      }
+     },
+     "1100": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 3020,
+       "Issue": 2435
+      },
+      "links": {
+       "ROUTES_TO": 6843,
+       "SEEN_IN": 30714,
+       "OWNED_BY": 3451,
+       "SAME_AS": 0
+      }
+     },
+     "1200": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 3025,
+       "Issue": 2532
+      },
+      "links": {
+       "ROUTES_TO": 7362,
+       "SEEN_IN": 32419,
+       "OWNED_BY": 3643,
+       "SAME_AS": 0
+      }
+     },
+     "1300": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 3028,
+       "Issue": 2621
+      },
+      "links": {
+       "ROUTES_TO": 7894,
+       "SEEN_IN": 34047,
+       "OWNED_BY": 3786,
+       "SAME_AS": 0
+      }
+     },
+     "1400": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 3037,
+       "Issue": 2772
+      },
+      "links": {
+       "ROUTES_TO": 8359,
+       "SEEN_IN": 36015,
+       "OWNED_BY": 3999,
+       "SAME_AS": 0
+      }
+     },
+     "1500": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 3043,
+       "Issue": 2901
+      },
+      "links": {
+       "ROUTES_TO": 8831,
+       "SEEN_IN": 37842,
+       "OWNED_BY": 4161,
+       "SAME_AS": 0
+      }
+     },
+     "1600": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 3050,
+       "Issue": 3007
+      },
+      "links": {
+       "ROUTES_TO": 9164,
+       "SEEN_IN": 39372,
+       "OWNED_BY": 4297,
+       "SAME_AS": 0
+      }
+     },
+     "1700": {
+      "nodes": {
+       "Team": 12,
+       "Entity": 3055,
+       "Issue": 3132
+      },
+      "links": {
+       "ROUTES_TO": 9589,
+       "SEEN_IN": 40858,
+       "OWNED_BY": 4450,
+       "SAME_AS": 0
+      }
+     }
+    },
+    "counters": {
+     "issues_learned": 1700,
+     "links_reweighted": 22947,
+     "shortcuts": 7118,
+     "misroutes": 524,
+     "merges": 0,
+     "issues_pruned": 516,
+     "splits": 0,
+     "gap_issues": 1948
+    },
+    "stream_top1": 0.6918,
+    "latency_ms": {
+     "median": 151.25,
+     "p95": 611.27
+    }
+   }
+  },
+  "summary": {
+   "top1_gap": 0.09,
+   "top3_gap": 0.13,
+   "misroutes_avoided_per_1000": 90
+  }
+ }
+}
