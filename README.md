@@ -245,15 +245,18 @@ One container runs HydraDB and Baton together (`Dockerfile`, `scripts/serve.sh`)
 
 ```
 agent/      MCP server (mcp_server.py), triage instructions (TRIAGE.md)
-app/        FastAPI server (server.py) and the dashboard (static/index.html)
+app/        FastAPI server (server.py) that serves the API, /mcp and the built dashboard from web/dist
 baton/      config, models, db (HydraDB driver and MSpaths), entities, ids, dataset,
             ingest, router, learn, passes (merging, splitting, gap filling), snapshots,
+            repos (repo profiles), doctor (owner-signal check),
             service (the one interface the API and MCP server call)
-data/       fetch_issues.py, issues.jsonl, reserve.jsonl, entity_ids.json
+data/       fetch_issues.py, fetch_repo.py, issues.jsonl, reserve.jsonl, entity_ids.json,
+            repos/<owner>__<name>/ (one profile, issue set and name table per onboarded repo)
 docs-site/  documentation site (Fumadocs, static export served by nginx)
-docs/       SPEC.md, HYDRADB_NOTES.md, PITCH.md, DEMO.md, presentation/ (pitch deck), assets/
-eval/       run_curve, tune_stream, loadtest, restore_graph, recovery, charts
-results/    curve.json, tuning.json, loadtest.json, recovery.json, snapshots/
+docs/       SPEC.md, HYDRADB_NOTES.md, PITCH.md, DEMO.md, CASE_STUDIES.md, presentation/ (pitch deck), assets/
+eval/       run_curve, tune_stream, loadtest, restore_graph, recovery, charts, onboard
+results/    curve.json, tuning.json, loadtest.json, recovery.json, snapshots/,
+            repos/<owner>__<name>/ (curve, baselines, summary and snapshots per repo)
 scripts/    start_hydradb.sh
 tests/      pytest suite
 ```
