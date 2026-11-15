@@ -1,155 +1,149 @@
-import cytoscape, { type Core, type ElementDefinition, type StylesheetJson } from "cytoscape";
-import { useEffect, useRef, useState, type FormEvent } from "react";
-import { api, color, token, type Graph, type GraphNode } from "../api";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import ForceGraph2D, { type ForceGraphMethods, type LinkObject, type NodeObject } from "react-force-graph-2d";
+import { api, color, token, type Graph, type GraphLink, type GraphNode } from "../api";
 import { errorState, StateOverlay, useThemeKey, type LoadState } from "../ui";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
-function graphStyle(): StylesheetJson {
-  const ink = color("--foreground");
-  const ink2 = color("--muted-foreground");
-  const surface = color("--graph-surface");
-  const mono = token("--geist-mono");
-  return [
-    {
-      selector: "node",
-      style: {
-        label: "data(name)",
-        "font-family": mono,
-        "font-size": 11,
-        color: ink,
-        "text-valign": "bottom",
-        "text-margin-y": 5,
-        "text-background-color": surface,
-        "text-background-opacity": 0.85,
-        "text-background-padding": "2",
-        "text-background-shape": "roundrectangle",
-      },
-    },
-    { selector: "node.entity", style: { width: 16, height: 16, "background-color": color("--graph-entity"), "border-width": 2, "border-color": ink2 } },
-    { selector: "node.focus", style: { width: 28, height: 28, "background-color": color("--brand"), "border-width": 5, "border-color": color("--brand-soft"), "font-size": 13, "font-weight": 700 } },
-    {
-      selector: "node.team",
-      style: {
-        shape: "round-rectangle",
-        width: "label",
-        height: 24,
-        padding: "8",
-        "background-color": color("--graph-team"),
-        color: color("--graph-team-ink"),
-        "text-valign": "center",
-        "text-margin-y": 0,
-        "text-background-opacity": 0,
-        "font-weight": 600,
-      },
-    },
-    { selector: "node.issue", style: { width: 8, height: 8, "background-color": color("--graph-issue"), "font-size": 9, color: ink2, "text-margin-y": 3 } },
-    { selector: "edge", style: { "curve-style": "bezier", "target-arrow-shape": "triangle", "arrow-scale": 0.8, width: 1.5, "line-color": color("--graph-history"), "target-arrow-color": color("--graph-history") } },
-    {
-      selector: "edge.learned",
-      style: {
-        width: "data(width)",
-        "line-color": color("--line-count-only"),
-        "target-arrow-color": color("--line-count-only"),
-        "source-label": "data(strengthLabel)",
-        "source-text-offset": 46,
-        "font-family": mono,
-        "font-size": 10,
-        color: ink2,
-        "text-background-color": surface,
-        "text-background-opacity": 1,
-        "text-background-padding": "2",
-        "text-background-shape": "roundrectangle",
-      },
-    },
-    { selector: "edge.shortcut", style: { "line-color": color("--line-shortcuts"), "target-arrow-color": color("--line-shortcuts") } },
-    { selector: "edge.merged", style: { width: 3, "line-style": "dashed", "line-dash-pattern": [6, 4], "line-color": color("--line-merging"), "target-arrow-shape": "none" } },
-    { selector: "node.entity:active, node.entity:selected", style: { "overlay-opacity": 0 } },
-  ];
+type Node = NodeObject<GraphNode & { focus: boolean }>;
+type Link = LinkObject<Node, Omit<GraphLink, "source" | "target">>;
+type Data = { nodes: Node[]; links: Link[] };
+type ForceFn = ((alpha: number) => void) & { initialize?: (nodes: Node[]) => void };
+
+const endId = (end: Link["source"]) => (typeof end === "object" ? end.id : end) ?? "";
+
+function palette() {
+  return {
+    ink: color("--foreground"),
+    muted: color("--muted-foreground"),
+    surface: color("--graph-surface"),
+    entity: color("--graph-entity"),
+    team: color("--graph-team"),
+    teamInk: color("--graph-team-ink"),
+    issue: color("--graph-issue"),
+    history: color("--graph-history"),
+    learned: color("--line-count-only"),
+    shortcut: color("--line-shortcuts"),
+    merged: color("--line-merging"),
+    brand: color("--brand"),
+    brandSoft: color("--brand-soft"),
+    mono: token("--geist-mono") || "monospace",
+  };
 }
 
-function graphElements(graph: Graph, focusName: string): ElementDefinition[] {
-  const focus = graph.nodes.find((node) => node.name.toLowerCase() === focusName.toLowerCase());
-  const mergedWithFocus = new Set<GraphNode["id"]>();
+function toData(graph: Graph, focusName: string): Data {
+  const focus = graph.nodes.find((node) => node.name.toLowerCase() === focusName.toLowerCase()) ?? graph.nodes.find((node) => node.label === "Entity");
   const seenPairs = new Set<string>();
-  const edges: ElementDefinition[] = [];
-  graph.links.forEach((link, i) => {
-    if (link.type === "SAME_AS") {
-      const pair = [link.source, link.target].map(String).sort().join("|");
-      if (seenPairs.has(pair)) return;
-      seenPairs.add(pair);
-      if (focus && (link.source === focus.id || link.target === focus.id)) mergedWithFocus.add(link.source === focus.id ? link.target : link.source);
-    }
-    const strength = Number(link.strength) || 0;
-    edges.push({
-      group: "edges",
-      data: { id: `e${i}`, source: String(link.source), target: String(link.target), width: 1 + Math.min(strength, 4) * 1.1, strengthLabel: strength.toFixed(1) },
-      classes: link.type === "ROUTES_TO" ? (link.shortcut ? "learned shortcut" : "learned") : link.type === "SAME_AS" ? "merged" : "history",
-    });
+  const links = graph.links.filter((link) => {
+    if (link.type !== "SAME_AS") return true;
+    const pair = [link.source, link.target].map(String).sort().join("|");
+    if (seenPairs.has(pair)) return false;
+    seenPairs.add(pair);
+    return true;
   });
-  const strengthOf = (link: Graph["links"][number]) => Number(link.strength) || 0;
-  const teamRank = new Map<GraphNode["id"], number>();
-  graph.links
-    .filter((link) => link.type === "ROUTES_TO" && focus && link.source === focus.id)
-    .sort((a, b) => strengthOf(b) - strengthOf(a))
-    .forEach((link) => teamRank.set(link.target, teamRank.size));
-  graph.nodes.filter((node) => node.label === "Team" && !teamRank.has(node.id)).forEach((node) => teamRank.set(node.id, teamRank.size));
-  const anchor = (node: GraphNode) => {
-    if (node.label === "Team") return teamRank.get(node.id) ?? 0;
-    const strongest = graph.links.filter((link) => link.source === node.id && teamRank.has(link.target)).sort((a, b) => strengthOf(b) - strengthOf(a))[0];
-    if (strongest) return teamRank.get(strongest.target) ?? 0;
-    const owner = graph.links.find((link) => link.source === node.id && link.type === "OWNED_BY");
-    return owner ? (teamRank.get(owner.target) ?? 0) : 0;
+  return {
+    nodes: graph.nodes.map((node) => ({ ...node, focus: node.id === focus?.id, ...(node.id === focus?.id ? { fx: 0, fy: 0 } : {}) })),
+    links: links.map((link) => ({ ...link })),
   };
-  const priority = (node: GraphNode) => (focus && node.id === focus.id ? 0 : mergedWithFocus.has(node.id) ? 1 : 2);
-  const columnOf = (node: GraphNode) => (node.label === "Team" ? 2 : node.label === "Issue" ? 1 : 0);
-  const columns: GraphNode[][] = [[], [], []];
-  graph.nodes.forEach((node) => columns[columnOf(node)].push(node));
-  const positions = new Map<GraphNode["id"], { x: number; y: number }>();
-  const columnGap = window.innerWidth < 640 ? 200 : 360;
-  columns.forEach((list, c) => {
-    list.sort((a, b) => anchor(a) - anchor(b) || priority(a) - priority(b) || a.name.localeCompare(b.name));
-    list.forEach((node, i) => positions.set(node.id, { x: c * columnGap, y: (i - (list.length - 1) / 2) * 66 }));
-  });
-  const nodes: ElementDefinition[] = graph.nodes.map((node) => ({
-    group: "nodes",
-    data: { id: String(node.id), name: node.name },
-    position: positions.get(node.id),
-    classes: [node.label.toLowerCase(), focus && node.id === focus.id ? "focus" : ""].join(" ").trim(),
-  }));
-  return [...nodes, ...edges];
+}
+
+function radiusOf(node: Node) {
+  if (node.label === "Team") return ((node.__box as [number, number] | undefined)?.[0] ?? 90) / 2 + 4;
+  return node.label === "Issue" ? 5 : node.focus ? 22 : 14;
+}
+
+function collide(): ForceFn {
+  let nodes: Node[] = [];
+  const force = (alpha: number) => {
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const [a, b] = [nodes[i], nodes[j]];
+        const dx = b.x! - a.x! || 0.01;
+        const dy = (b.y! - a.y!) * 2.2 || 0.01;
+        const distance = Math.hypot(dx, dy);
+        const overlap = radiusOf(a) + radiusOf(b) - distance;
+        if (overlap <= 0) continue;
+        const push = (overlap / distance) * Math.max(alpha, 0.3) * 0.6;
+        const share = a.fx === undefined ? (b.fx === undefined ? 0.5 : 1) : 0;
+        a.x! -= dx * push * share;
+        a.y! -= (dy / 2.2) * push * share;
+        b.x! += dx * push * (1 - share);
+        b.y! += (dy / 2.2) * push * (1 - share);
+      }
+    }
+  };
+  force.initialize = (next: Node[]) => (nodes = next);
+  return force;
+}
+
+function pillWidth(ctx: CanvasRenderingContext2D, text: string, fontSize: number) {
+  return ctx.measureText(text).width + fontSize * 1.4;
+}
+
+function drawLabel(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, fontSize: number, ink: string, surface: string) {
+  const width = ctx.measureText(text).width;
+  ctx.fillStyle = surface;
+  ctx.globalAlpha *= 0.85;
+  ctx.fillRect(x - width / 2 - 2, y - 1, width + 4, fontSize + 2);
+  ctx.globalAlpha /= 0.85;
+  ctx.fillStyle = ink;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "top";
+  ctx.fillText(text, x, y);
+}
+
+function useSize(ref: React.RefObject<HTMLDivElement | null>) {
+  const [size, setSize] = useState({ width: 0, height: 0 });
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+    const observer = new ResizeObserver(([entry]) => setSize({ width: entry.contentRect.width, height: entry.contentRect.height }));
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [ref]);
+  return size;
 }
 
 export function GraphPage({ entity, onEntity }: { entity: string; onEntity: (entity: string) => void }) {
   const container = useRef<HTMLDivElement>(null);
-  const cy = useRef<Core | null>(null);
-  const onEntityRef = useRef(onEntity);
+  const graphRef = useRef<ForceGraphMethods<Node, Link> | undefined>(undefined);
+  const fitted = useRef(false);
   const [draft, setDraft] = useState(entity);
   const [load, setLoad] = useState<LoadState>(null);
+  const [data, setData] = useState<Data>({ nodes: [], links: [] });
+  const [hover, setHover] = useState<Node | null>(null);
   const themeKey = useThemeKey();
-  onEntityRef.current = onEntity;
+  const { width, height } = useSize(container);
+  const colors = useMemo(palette, [themeKey]);
 
-  useEffect(() => {
-    const instance = cytoscape({ container: container.current, style: graphStyle(), minZoom: 0.4, maxZoom: 2.5, wheelSensitivity: 0.2, boxSelectionEnabled: false });
-    instance.on("tap", "node.entity", (event) => {
-      if (!event.target.hasClass("focus")) onEntityRef.current(event.target.data("name"));
+  const neighbours = useMemo(() => {
+    const map = new Map<Node["id"], Set<Node["id"]>>();
+    data.links.forEach((link) => {
+      const [a, b] = [endId(link.source), endId(link.target)];
+      map.set(a, (map.get(a) ?? new Set()).add(b));
+      map.set(b, (map.get(b) ?? new Set()).add(a));
     });
-    instance.on("mouseover", "node.entity", () => (container.current!.style.cursor = "pointer"));
-    instance.on("mouseout", "node.entity", () => (container.current!.style.cursor = ""));
-    cy.current = instance;
-    return () => instance.destroy();
-  }, []);
+    return map;
+  }, [data]);
+  const lit = (id: Node["id"]) => !hover || id === hover.id || !!neighbours.get(hover.id)?.has(id);
+  const linkLit = (link: Link) => !hover || endId(link.source) === hover.id || endId(link.target) === hover.id;
 
   useEffect(() => {
-    cy.current?.style(graphStyle());
-  }, [themeKey]);
+    const graph = graphRef.current;
+    if (!graph) return;
+    graph.d3Force("charge")?.strength(-220);
+    graph.d3Force("link")?.distance((link: Link) => (link.type === "ROUTES_TO" ? 90 + 160 / (1 + (Number(link.strength) || 0)) : link.type === "SAME_AS" ? 70 : 55));
+    graph.d3Force("collide", collide());
+    fitted.current = false;
+    graph.d3ReheatSimulation();
+  }, [data]);
 
   useEffect(() => {
     setDraft(entity);
     const name = entity.trim();
     if (!name) {
-      cy.current?.elements().remove();
+      setData({ nodes: [], links: [] });
       setLoad({ kind: "empty", title: "Pick an entity", detail: <>Type a component, file path or word, such as <code>kubelet</code>.</> });
       return;
     }
@@ -157,23 +151,19 @@ export function GraphPage({ entity, onEntity }: { entity: string; onEntity: (ent
     setLoad({ kind: "loading", title: `Loading the graph around ${name}` });
     api.graph(name).then(
       (graph) => {
-        if (!live || !cy.current) return;
-        cy.current.elements().remove();
+        if (!live) return;
         if (!graph.nodes?.length) {
+          setData({ nodes: [], links: [] });
           setLoad({ kind: "empty", title: `${name} is not in the graph`, detail: <>Try <code>kubelet</code>, <code>csi</code> or <code>kube-apiserver</code>. Entities need at least 3 learning issues.</> });
           return;
         }
         setLoad(null);
-        cy.current.add(graphElements(graph, name));
-        cy.current.fit(undefined, 48);
-        if (cy.current.zoom() > 1.15) {
-          cy.current.zoom(1.15);
-          cy.current.center();
-        }
+        setHover(null);
+        setData(toData(graph, name));
       },
       (error) => {
         if (!live) return;
-        cy.current?.elements().remove();
+        setData({ nodes: [], links: [] });
         setLoad(errorState(error));
       },
     );
@@ -193,7 +183,7 @@ export function GraphPage({ entity, onEntity }: { entity: string; onEntity: (ent
         <CardTitle>
           <h2 id="graph-title">Ownership graph</h2>
         </CardTitle>
-        <CardDescription>Links around one entity. Thicker links are stronger. Click any entity to move there.</CardDescription>
+        <CardDescription>Links around one entity. Thicker links are stronger. Drag to rearrange, scroll to zoom, hover to trace, click an entity to move there.</CardDescription>
         <form className="mt-2 flex w-full gap-2 md:col-start-2 md:row-span-2 md:row-start-1 md:mt-0 md:w-72 md:self-start" onSubmit={submit} role="search">
           <label className="sr-only" htmlFor="graph-entity">
             Entity
@@ -206,7 +196,114 @@ export function GraphPage({ entity, onEntity }: { entity: string; onEntity: (ent
       </CardHeader>
       <CardContent className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_200px]">
         <div className="relative h-[400px] overflow-hidden rounded-lg border bg-background sm:h-[560px]">
-          <div ref={container} className="size-full" aria-label="Graph around the chosen entity" />
+          <div ref={container} className="size-full" aria-label="Graph around the chosen entity">
+            {width > 0 && (
+              <ForceGraph2D<Node, Link>
+                ref={graphRef}
+                width={width}
+                height={height}
+                graphData={data}
+                backgroundColor="rgba(0,0,0,0)"
+                minZoom={0.3}
+                maxZoom={6}
+                warmupTicks={120}
+                cooldownTicks={120}
+                d3VelocityDecay={0.32}
+                onEngineStop={() => {
+                  if (fitted.current) return;
+                  fitted.current = true;
+                  graphRef.current?.zoomToFit(500, 40);
+                }}
+                onNodeHover={(node) => setHover(node)}
+                onNodeClick={(node) => {
+                  if (node.label === "Entity" && !node.focus) onEntity(node.name);
+                }}
+                showPointerCursor={(object) => !!object && "label" in object && object.label === "Entity" && !object.focus}
+                nodeLabel={(node) => (node.label === "Issue" ? `Issue ${node.name}` : node.label === "Team" ? `Team ${node.name}` : node.name)}
+                linkColor={(link) => {
+                  const base = link.type === "ROUTES_TO" ? (link.shortcut ? colors.shortcut : colors.learned) : link.type === "SAME_AS" ? colors.merged : colors.history;
+                  return linkLit(link) ? base : `color-mix(in oklab, ${base} 18%, transparent)`;
+                }}
+                linkWidth={(link) => (link.type === "ROUTES_TO" ? 1 + Math.min(Number(link.strength) || 0, 4) * 1.1 : link.type === "SAME_AS" ? 2.5 : 0.8)}
+                linkLineDash={(link) => (link.type === "SAME_AS" ? [6, 4] : null)}
+                linkDirectionalArrowLength={(link) => (link.type === "SAME_AS" ? 0 : link.type === "ROUTES_TO" ? 5 : 3)}
+                linkDirectionalArrowRelPos={1}
+                linkDirectionalParticles={(link) => (link.type === "ROUTES_TO" && linkLit(link) ? 2 : 0)}
+                linkDirectionalParticleWidth={(link) => 1.5 + Math.min(Number(link.strength) || 0, 4) * 0.5}
+                linkDirectionalParticleColor={(link) => (link.shortcut ? colors.shortcut : colors.brand)}
+                linkDirectionalParticleSpeed={(link) => 0.003 + Math.min(Number(link.strength) || 0, 4) * 0.002}
+                linkCanvasObjectMode={() => "after"}
+                linkCanvasObject={(link, ctx, scale) => {
+                  if (link.type !== "ROUTES_TO" || !linkLit(link) || scale < 0.7) return;
+                  const [a, b] = [link.source, link.target];
+                  if (typeof a !== "object" || typeof b !== "object") return;
+                  const fontSize = 10 / scale;
+                  ctx.font = `${fontSize}px ${colors.mono}`;
+                  drawLabel(ctx, (Number(link.strength) || 0).toFixed(1), a.x! + (b.x! - a.x!) * 0.5, a.y! + (b.y! - a.y!) * 0.5 - fontSize / 2, fontSize, colors.muted, colors.surface);
+                }}
+                nodeCanvasObject={(node, ctx, scale) => {
+                  const x = node.x!;
+                  const y = node.y!;
+                  ctx.globalAlpha = lit(node.id) ? 1 : 0.18;
+                  if (node.label === "Team") {
+                    const fontSize = Math.max(11 / scale, 4);
+                    ctx.font = `600 ${fontSize}px ${colors.mono}`;
+                    const w = pillWidth(ctx, node.name, fontSize);
+                    const h = fontSize * 2;
+                    ctx.fillStyle = colors.team;
+                    ctx.beginPath();
+                    ctx.roundRect(x - w / 2, y - h / 2, w, h, h / 2);
+                    ctx.fill();
+                    ctx.fillStyle = colors.teamInk;
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.fillText(node.name, x, y);
+                    node.__box = [w, h];
+                  } else if (node.label === "Issue") {
+                    ctx.fillStyle = colors.issue;
+                    ctx.beginPath();
+                    ctx.arc(x, y, 3, 0, 2 * Math.PI);
+                    ctx.fill();
+                    if (scale > 1.6 || hover?.id === node.id) {
+                      const fontSize = 9 / scale;
+                      ctx.font = `${fontSize}px ${colors.mono}`;
+                      drawLabel(ctx, node.name, x, y + 4, fontSize, colors.muted, colors.surface);
+                    }
+                  } else {
+                    const radius = node.focus ? 10 : 6;
+                    if (node.focus) {
+                      ctx.fillStyle = colors.brandSoft;
+                      ctx.beginPath();
+                      ctx.arc(x, y, radius + 6, 0, 2 * Math.PI);
+                      ctx.fill();
+                    }
+                    ctx.fillStyle = node.focus ? colors.brand : colors.entity;
+                    ctx.strokeStyle = node.focus ? colors.brand : colors.muted;
+                    ctx.lineWidth = 2 / scale;
+                    ctx.beginPath();
+                    ctx.arc(x, y, radius, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.stroke();
+                    const fontSize = (node.focus ? 13 : 11) / scale;
+                    ctx.font = `${node.focus ? 700 : 400} ${fontSize}px ${colors.mono}`;
+                    drawLabel(ctx, node.name, x, y + radius + (node.focus ? 8 : 4), fontSize, colors.ink, colors.surface);
+                  }
+                  ctx.globalAlpha = 1;
+                }}
+                nodePointerAreaPaint={(node, paint, ctx) => {
+                  ctx.fillStyle = paint;
+                  if (node.label === "Team" && node.__box) {
+                    const [w, h] = node.__box as [number, number];
+                    ctx.fillRect(node.x! - w / 2, node.y! - h / 2, w, h);
+                    return;
+                  }
+                  ctx.beginPath();
+                  ctx.arc(node.x!, node.y!, node.label === "Issue" ? 5 : node.focus ? 16 : 9, 0, 2 * Math.PI);
+                  ctx.fill();
+                }}
+              />
+            )}
+          </div>
           <StateOverlay state={load} />
         </div>
         <ul className="grid grid-cols-1 content-start gap-2.5 text-xs sm:grid-cols-2 lg:grid-cols-1" aria-label="Graph legend">
