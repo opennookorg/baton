@@ -64,7 +64,7 @@ const CLIENTS: Client[] = [
     docs: "https://developers.openai.com/api/docs/guides/developer-mode",
     remote: {
       steps: [
-        "Start the remote server below and copy its public URL.",
+        "Copy the server URL below. This deployment already serves it.",
         "Open chatgpt.com/plugins, press the plus button and choose Add custom MCP server.",
         "Name it Baton, paste the server URL and set Authentication to No authentication.",
         "Tick I understand and want to continue, then Create as a plugin and install it.",
@@ -154,7 +154,8 @@ const TOOLS = [
   { name: "record_outcome", about: "Feeds a human-confirmed owner back into the graph so it learns.", writes: true },
 ];
 
-const DEFAULT_PLACE: Place = { dir: "/path/to/baton", url: "https://your-tunnel.trycloudflare.com/mcp" };
+const HOSTED_URL = `${window.location.origin}/mcp`;
+const DEFAULT_PLACE: Place = { dir: "/path/to/baton", url: HOSTED_URL };
 
 function storedPlace(): Place {
   try {
@@ -211,7 +212,7 @@ function ClientLogo({ client }: { client: Client }) {
 }
 
 function ClientSetup({ client, place }: { client: Client; place: Place }) {
-  const [chosen, setChosen] = useState<Transport>("local");
+  const [chosen, setChosen] = useState<Transport>("remote");
   const transport: Transport = client.local ? chosen : "remote";
   const setup = transport === "local" && client.local ? client.local : client.remote;
   return (
@@ -237,11 +238,11 @@ function ClientSetup({ client, place }: { client: Client; place: Place }) {
       <CardContent className="space-y-4">
         {client.local ? (
           <ToggleGroup type="single" variant="outline" size="sm" value={transport} onValueChange={(value) => value && setChosen(value as Transport)} aria-label="Transport">
-            <ToggleGroupItem value="local">
-              <HardDrive /> Local
-            </ToggleGroupItem>
             <ToggleGroupItem value="remote">
-              <Globe /> Remote
+              <Globe /> Remote (HTTP)
+            </ToggleGroupItem>
+            <ToggleGroupItem value="local">
+              <HardDrive /> Local (stdio)
             </ToggleGroupItem>
           </ToggleGroup>
         ) : (
@@ -301,7 +302,7 @@ export function ConnectPage({ client, onClient }: { client: ClientId; onClient: 
             <div className="space-y-1.5">
               <Label htmlFor="baton-url">Public MCP URL</Label>
               <Input id="baton-url" value={place.url} spellCheck={false} className="font-mono" onChange={(event) => update({ url: event.target.value })} />
-              <p className="text-xs text-muted-foreground">For ChatGPT and other remote clients. Ends in /mcp.</p>
+              <p className="text-xs text-muted-foreground">This deployment serves it already. Change it only if you host Baton yourself.</p>
             </div>
           </CardContent>
         </Card>
@@ -335,11 +336,13 @@ export function ConnectPage({ client, onClient }: { client: ClientId; onClient: 
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Globe className="size-4 text-muted-foreground" aria-hidden="true" />
-              Run the remote server
+              Remote server
             </CardTitle>
-            <CardDescription>Remote clients need an HTTPS URL. A free Cloudflare quick tunnel gives you one, no account needed.</CardDescription>
+            <CardDescription>This deployment serves the read-only tools over streamable HTTP, so remote clients need nothing else.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
+            <CodeBlock title="Hosted MCP URL" code={HOSTED_URL} />
+            <p className="text-muted-foreground">To run your own instead, open a free Cloudflare quick tunnel and start Baton with its host:</p>
             <CodeBlock title="1. Open a tunnel to port 8001" code="cloudflared tunnel --url http://127.0.0.1:8001" />
             <CodeBlock title="2. Start Baton with the tunnel host" code={`cd ${place.dir}\nuv run python -m agent.mcp_server --http --allow-host ${host}`} />
             <p className="text-muted-foreground">
