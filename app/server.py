@@ -1,4 +1,4 @@
-"""FastAPI app serving the Baton API and the dashboard page."""
+"""FastAPI app serving the Baton API and the built web dashboard."""
 
 import os
 import secrets
@@ -7,7 +7,7 @@ from types import ModuleType
 from typing import Literal
 
 from fastapi import FastAPI, Header, HTTPException, Query, Request
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -15,7 +15,8 @@ from app import fake_service
 from baton import service as real_service
 from baton.models import Issue
 
-STATIC_DIR = Path(__file__).resolve().parent / "static"
+WEB_DIST = Path(os.environ.get("BATON_WEB_DIST", Path(__file__).resolve().parent.parent / "web" / "dist"))
+PAGES = ("/", "/try", "/explore")
 
 
 class RouteRequest(BaseModel):
@@ -86,11 +87,15 @@ def create_app(service: ModuleType, learn_token: str | None = None) -> FastAPI:
     def stats() -> dict:
         return service.stats()
 
-    @app.get("/", include_in_schema=False)
-    def index() -> FileResponse:
-        return FileResponse(STATIC_DIR / "index.html")
+    def page() -> Response:
+        index = WEB_DIST / "index.html"
+        if not index.exists():
+            return PlainTextResponse("The dashboard is not built. Run: cd web && npm ci && npm run build", status_code=503)
+        return FileResponse(index)
 
-    app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+    for path in PAGES:
+        app.add_api_route(path, page, methods=["GET"], include_in_schema=False)
+    app.mount("/assets", StaticFiles(directory=WEB_DIST / "assets", check_dir=False), name="assets")
     return app
 
 

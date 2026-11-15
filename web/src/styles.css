@@ -204,7 +204,7 @@ button, input, textarea { font: inherit; color: inherit; }
   min-width: 0;
 }
 .card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
-.graph-card { grid-column: 1 / -1; }
+.try-card { max-width: 860px; }
 
 .segmented { display: inline-flex; background: var(--surface-2); border: 1px solid var(--hairline); border-radius: 9px; padding: 2px; flex: none; }
 .seg { border: 0; background: transparent; padding: 5px 12px; border-radius: 7px; cursor: pointer; font-size: 13px; font-weight: 500; color: var(--ink-2); }
@@ -344,8 +344,8 @@ button, input, textarea { font: inherit; color: inherit; }
   color: var(--ink);
   white-space: nowrap;
 }
-button.chip { cursor: pointer; }
-button.chip:hover { border-color: var(--baton); color: var(--baton); }
+button.chip, a.chip { cursor: pointer; text-decoration: none; }
+button.chip:hover, a.chip:hover { border-color: var(--baton); color: var(--baton); }
 .chip-team { background: var(--team-fill); color: var(--team-ink); border-color: var(--team-fill); font-weight: 600; }
 .chip-issue { background: var(--surface-2); color: var(--muted); border-style: dashed; }
 .arrow { color: var(--muted); font-size: 12px; padding: 0 1px; }
@@ -358,7 +358,7 @@ button.chip:hover { border-color: var(--baton); color: var(--baton); }
 .graph-form input { width: 220px; font-family: var(--mono); font-size: 13px; padding: 6px 10px; }
 .graph-body { display: grid; grid-template-columns: minmax(0, 1fr) 220px; gap: 16px; }
 .graph-wrap { position: relative; height: 420px; border-radius: 10px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--hairline); overflow: hidden; }
-#graph { position: absolute; inset: 0; }
+.graph-canvas { position: absolute; inset: 0; }
 .graph-legend { list-style: none; margin: 0; padding: 4px 0 0; display: grid; gap: 9px; align-content: start; font-size: 12.5px; }
 .graph-legend li { display: grid; grid-template-columns: 30px 1fr; align-items: center; column-gap: 8px; }
 .graph-legend li .muted { grid-column: 2; font-size: 11.5px; }
@@ -403,4 +403,26 @@ button.chip:hover { border-color: var(--baton); color: var(--baton); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+.tabs { display: flex; gap: 4px; margin-bottom: 16px; border-bottom: 1px solid var(--hairline); overflow-x: auto; }
+.tab {
+  padding: 8px 14px;
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--ink-2);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  white-space: nowrap;
+}
+.tab:hover { color: var(--ink); }
+.tab.active { color: var(--ink); border-bottom-color: var(--baton); font-weight: 600; }
+.chart-wrap { min-height: 420px; }
+.path-step { display: inline-flex; align-items: center; gap: 4px; }
+.graph-wrap { height: 560px; }
+.footer { margin-top: 20px; font-size: 12.5px; color: var(--muted); }
+@media (max-width: 640px) {
+  .chart-wrap { min-height: 300px; }
+  .graph-wrap { height: 400px; }
 }

@@ -1,5 +1,6 @@
 """API tests for app.server against the fake service and the unimplemented real service."""
 
+import re
 from types import SimpleNamespace
 
 import pytest
@@ -138,12 +139,13 @@ def test_stats_has_counter_keys(client):
         assert isinstance(data[key], int)
 
 
-def test_dashboard_and_assets_are_served(client):
-    page = client.get("/")
-    assert page.status_code == 200
-    assert "Baton" in page.text
-    assert client.get("/static/app.js").status_code == 200
-    assert client.get("/static/styles.css").status_code == 200
+def test_every_dashboard_page_serves_the_built_app(client):
+    for path in ("/", "/try", "/explore?entity=kubelet"):
+        page = client.get(path)
+        assert page.status_code == 200
+        assert '<div id="root">' in page.text
+    asset = re.search(r'src="(/assets/[^"]+\.js)"', client.get("/").text).group(1)
+    assert client.get(asset).status_code == 200
 
 
 @pytest.mark.parametrize(
