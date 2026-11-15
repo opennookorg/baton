@@ -5,7 +5,7 @@ from baton.entities import extract
 from baton.ids import IdTable
 from baton.ingest import ingest_history, issue_entities, issue_teams
 from baton.models import Issue
-from baton.router import cheapest_per_pair, rank, route_live, route_state
+from baton.router import cheapest_per_pair, display_name, rank, route_live, route_state
 from baton.snapshots import GraphState, Link, PastIssue
 from tests.test_db import node_listening
 
@@ -104,3 +104,9 @@ def test_live_and_pure_routers_agree(live_graph):
         live = route_live(issue.title, issue.body, issue.reporter, table, issue.number).result
         pure = route_state(state, issue.title, issue.body, issue.reporter, table, issue.number).result
         assert live == pure
+
+
+def test_display_name_strips_entity_kinds_but_keeps_team_names_with_colons():
+    assert display_name("path:pkg/kubelet") == "pkg/kubelet"
+    assert display_name("Component: DOM") == "Component: DOM"
+    assert display_name("sig/node") == "sig/node"
