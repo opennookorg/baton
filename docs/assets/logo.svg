@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-label="Baton">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3B7BF6"/>
+      <stop offset="1" stop-color="#1D4ED8"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="url(#bg)"/>
+  <g fill="none" stroke="#fff" stroke-linecap="round" stroke-width="6">
+    <path d="M34 64H92" opacity=".35"/>
+    <path d="M34 64C62 64 64 94 92 94" opacity=".35"/>
+    <path d="M34 64C62 64 64 34 92 34" stroke-width="8"/>
+  </g>
+  <circle cx="34" cy="64" r="11" fill="#fff"/>
+  <circle cx="94" cy="34" r="10" fill="#fff"/>
+  <circle cx="94" cy="64" r="7" fill="#fff" opacity=".5"/>
+  <circle cx="94" cy="94" r="7" fill="#fff" opacity=".5"/>
+</svg>
