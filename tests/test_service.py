@@ -69,3 +69,16 @@ def test_route_as_of_scores_against_a_snapshot(offline, monkeypatch):
     monkeypatch.setattr(service, "snapshot", lambda as_of: offline.state)
     result = service.route_issue("kubelet oom", "", "", as_of=1700)
     assert result.top_team == NODE and result.teams[0].path[-1] == NODE
+
+
+def test_stats_reads_graph_counts_once_until_a_learning_step(offline, monkeypatch):
+    calls = []
+    monkeypatch.setattr(service.db, "counts", lambda: calls.append(1) or {"nodes": {"Team": 1, "Entity": 2, "Issue": 3}, "links": {"ROUTES_TO": 4}})
+    service.graph_counts.cache_clear()
+    assert service.stats()["nodes"] == 6
+    service.stats()
+    assert len(calls) == 1
+    service.record_outcome(replace(ISSUES[0], number=ISSUES[0].number + 20_000), NODE)
+    service.stats()
+    assert len(calls) == 2
+    service.graph_counts.cache_clear()
