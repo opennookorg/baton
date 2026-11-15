@@ -10,6 +10,7 @@ export type RouteResult = { teams: TeamScore[]; confidence: number; entities_fou
 export type GraphNode = { id: number | string; name: string; label: "Team" | "Entity" | "Issue" };
 export type GraphLink = { source: number | string; target: number | string; type: "ROUTES_TO" | "SEEN_IN" | "OWNED_BY" | "SAME_AS"; strength?: number; shortcut?: boolean };
 export type Graph = { nodes: GraphNode[]; links: GraphLink[] };
+export type Repo = { repo: string; owners: number; issues_learned: number; test_top1: number };
 
 export class ApiError extends Error {
   constructor(readonly status: number, detail: string) {
@@ -42,6 +43,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const api = {
+  repos: () => request<{ repos: Repo[] }>("/repos"),
   stats: () => request<Stats>("/stats"),
   curve: () => request<Curve>("/curve"),
   graph: (entity: string) => request<Graph>(`/graph?entity=${encodeURIComponent(entity)}`),

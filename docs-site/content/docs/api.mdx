@@ -1,18 +1,21 @@
 ---
 title: API reference
-description: Five HTTP endpoints for routing, learning and reading the graph.
+description: Six HTTP endpoints for routing, learning and reading the graph.
 ---
 
 Base URL of the live server: `https://baton-134858271117.us-central1.run.app`. On your own machine it is `http://localhost:8000`.
 
 | Endpoint | What it does |
 |---|---|
+| `GET /repos` | The repos Baton has learned. |
 | `POST /route` | Route an issue to a team. |
 | `POST /learn` | Teach Baton who fixed an issue. Needs a token on public servers. |
 | `GET /stats` | The five dashboard counters. |
 | `GET /curve` | The learning curve data. |
 | `GET /graph?entity=scheduler` | The graph around one entity. |
 | `/mcp` | The same tools for AI agents, over MCP. See [Connect your AI agent](/docs/agents). |
+
+Every endpoint except `/repos` takes `repo` (in the JSON body for `POST`, as a query parameter for `GET`). Leave it out and you get `kubernetes/kubernetes`. A repo Baton has not learned gets a `404` with `unknown repo`; see [Supported repos](/docs/repos).
 
 ## Route an issue
 
@@ -27,7 +30,8 @@ curl -X POST https://baton-134858271117.us-central1.run.app/route \
 | `title` | yes | The issue title (up to 500 characters). |
 | `body` | no | The issue text. Logs, paths and errors help. |
 | `reporter` | no | GitHub username of the person who filed it. |
-| `as_of` | no | Route against the graph as it was at 0, 500, 1000 or 1700 issues. |
+| `repo` | no | One of the [supported repos](/docs/repos), such as `rust-lang/rust`. Default `kubernetes/kubernetes`. |
+| `as_of` | no | Route against the graph as it was at one of the repo's snapshots (0, 500, 1000 or 1700 issues for Kubernetes). |
 
 The answer has the top teams (each with `team`, `share` and `path`), a `confidence`, and how many entities were found and unknown.
 
