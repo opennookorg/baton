@@ -8,6 +8,13 @@ from baton.models import RouteResult, TeamScore
 from baton.repos import KUBERNETES_PROFILE, RepoProfile, Sizes
 
 
+@pytest.fixture
+def repo_dirs(monkeypatch, tmp_path):
+    monkeypatch.setattr(repos, "REPOS_DATA_DIR", tmp_path / "data")
+    monkeypatch.setattr(repos, "REPOS_RESULTS_DIR", tmp_path / "results")
+    return tmp_path
+
+
 def test_kubernetes_sizes_reproduce_the_original_run_exactly():
     assert KUBERNETES_PROFILE.sizes == Sizes(
         total=2000, learning=1700, test=300, reserve=3000, batch=100, frozen=200, snapshots=(0, 500, 1000, 1700)
@@ -50,16 +57,9 @@ def test_owners_read_off_each_signal():
     assert RepoProfile(repo="a/b", signal="assignee").owners(labels, assignees=("bob", "amy")) == ["amy", "bob"]
 
 
-def test_profile_round_trips_through_json():
+def test_profile_round_trips_through_json(repo_dirs):
     profile = RepoProfile(repo="a/b", signal="labels", labels=("x", "y"), available=812, path_roots=("src",), doctor={"verdict": "ok"})
     assert RepoProfile.from_json(json.loads(json.dumps(json.loads(profile.save().read_text())))) == profile
-
-
-@pytest.fixture
-def repo_dirs(monkeypatch, tmp_path):
-    monkeypatch.setattr(repos, "REPOS_DATA_DIR", tmp_path / "data")
-    monkeypatch.setattr(repos, "REPOS_RESULTS_DIR", tmp_path / "results")
-    return tmp_path
 
 
 def routable(profile: RepoProfile) -> RepoProfile:
