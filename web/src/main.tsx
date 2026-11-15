@@ -1,11 +1,31 @@
-import { createRootRoute, createRoute, createRouter, Link, Outlet, RouterProvider } from "@tanstack/react-router";
-import { Monitor, Moon, Route as RouteIcon, Sun } from "lucide-react";
+import { createRootRoute, createRoute, createRouter, Link, Outlet, RouterProvider, useRouterState } from "@tanstack/react-router";
+import { ArrowRight, ChartLine, FlaskConical, Monitor, Moon, Plug, Route as RouteIcon, Sun, Waypoints } from "lucide-react";
 import { StrictMode, useEffect, useLayoutEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { onServiceUnavailable, STAGES, type Metric, type Stage } from "./api";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarInset,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
+  useSidebar,
+} from "@/components/ui/sidebar";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { CLIENT_IDS, ConnectPage, type ClientId } from "./routes/ConnectPage";
 import { CurvePage } from "./routes/CurvePage";
 import { GraphPage } from "./routes/GraphPage";
 import { TryPage } from "./routes/TryPage";
@@ -37,10 +57,70 @@ function saveTheme(theme: Theme) {
 }
 
 const NAV = [
-  { to: "/", label: "Learning curve", exact: true },
-  { to: "/try", label: "Try an issue", exact: false },
-  { to: "/explore", label: "Ownership graph", exact: false },
+  { to: "/", label: "Learning curve", icon: ChartLine, group: "Dashboard", stats: true, about: "Routes each Kubernetes issue to the team that owns it, and learns ownership from what actually gets fixed." },
+  { to: "/try", label: "Try an issue", icon: FlaskConical, group: "Dashboard", stats: true, about: "Paste an issue and see which team Baton picks, and the graph path behind it." },
+  { to: "/explore", label: "Ownership graph", icon: Waypoints, group: "Dashboard", stats: true, about: "Walk the learned graph: entities, the teams they lead to, and how strong each link is." },
+  { to: "/connect", label: "MCP connector", icon: Plug, group: "Integrations", stats: false, about: "Give any agent Baton's routing tools: Claude Code, ChatGPT, Codex, Cursor, OpenCode, Hermes Agent, OpenClaw and other MCP clients." },
 ] as const;
+const GROUPS = ["Dashboard", "Integrations"] as const;
+
+function AppSidebar({ pathname }: { pathname: string }) {
+  const { setOpenMobile } = useSidebar();
+  return (
+    <Sidebar variant="inset" collapsible="icon">
+      <SidebarHeader>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton size="lg" asChild tooltip="Baton">
+              <Link to="/" onClick={() => setOpenMobile(false)}>
+                <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-brand text-white" aria-hidden="true">
+                  <RouteIcon className="size-4" />
+                </span>
+                <span className="grid leading-tight">
+                  <span className="font-semibold tracking-tight">Baton</span>
+                  <span className="text-xs text-muted-foreground">Issue router</span>
+                </span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+      <SidebarContent>
+        {GROUPS.map((group) => (
+          <SidebarGroup key={group}>
+            <SidebarGroupLabel>{group}</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {NAV.filter((item) => item.group === group).map((item) => (
+                  <SidebarMenuItem key={item.to}>
+                    <SidebarMenuButton asChild isActive={pathname === item.to} tooltip={item.label}>
+                      <Link to={item.to} onClick={() => setOpenMobile(false)}>
+                        <item.icon />
+                        <span>{item.label}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        ))}
+      </SidebarContent>
+      <SidebarFooter className="group-data-[collapsible=icon]:hidden">
+        <div className="rounded-lg border bg-card p-3 text-xs shadow-xs">
+          <p className="font-medium">Use Baton from your agent</p>
+          <p className="mt-0.5 text-muted-foreground">Five MCP tools for routing and triage.</p>
+          <Button size="sm" className="mt-2.5 w-full" asChild>
+            <Link to="/connect" onClick={() => setOpenMobile(false)}>
+              Connect a client <ArrowRight />
+            </Link>
+          </Button>
+        </div>
+      </SidebarFooter>
+      <SidebarRail />
+    </Sidebar>
+  );
+}
 
 function ThemeMenu({ theme, onTheme }: { theme: Theme; onTheme: (theme: Theme) => void }) {
   const Icon = THEMES.find((option) => option.value === theme)!.icon;
@@ -85,51 +165,40 @@ function Layout() {
     setTheme(next);
   };
 
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const page = NAV.find((item) => item.to === pathname) ?? NAV[0];
+
   return (
     <ThemeKey.Provider value={`${theme}-${systemDark}`}>
-      <div className="flex min-h-svh flex-col">
-        <header className="sticky top-0 z-30 border-b bg-background/90 backdrop-blur-sm">
-          <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-1 px-4 py-2.5 sm:px-6">
-            <h1 className="flex items-center gap-2 text-[15px] font-semibold tracking-tight">
-              <span className="grid size-6 place-items-center rounded-md bg-brand text-white" aria-hidden="true">
-                <RouteIcon className="size-3.5" />
-              </span>
-              Baton
-            </h1>
-            <nav className="order-last -mx-2.5 flex w-[calc(100%+1.25rem)] gap-0.5 sm:order-none sm:mx-0 sm:w-auto" aria-label="Pages">
-              {NAV.map((item) => (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  activeOptions={{ exact: item.exact, includeSearch: false }}
-                  className="rounded-md px-2.5 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground data-[status=active]:bg-muted data-[status=active]:font-medium data-[status=active]:text-foreground"
-                >
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
-            <div className="ml-auto">
-              <ThemeMenu theme={theme} onTheme={chooseTheme} />
-            </div>
-          </div>
-        </header>
-        <main className="mx-auto w-full max-w-6xl flex-1 space-y-6 px-4 py-8 sm:px-6">
-          {banner && (
-            <Alert variant="destructive" role="status">
-              <AlertTitle>Baton service unavailable.</AlertTitle>
-              <AlertDescription>{banner}</AlertDescription>
-            </Alert>
-          )}
-          <p className="max-w-2xl text-balance text-muted-foreground">Routes each Kubernetes issue to the team that owns it, and learns ownership from what actually gets fixed.</p>
-          <Counters />
-          <Outlet />
-        </main>
-        <footer className="border-t">
-          <p className="mx-auto max-w-6xl px-4 py-6 text-xs text-muted-foreground sm:px-6">
-            Trained on 1,700 real kubernetes/kubernetes issues, scored on the 300 newest ones it never saw. Graph stored in a self-hosted HydraDB node.
-          </p>
-        </footer>
-      </div>
+      <TooltipProvider delayDuration={0}>
+        <SidebarProvider>
+          <AppSidebar pathname={pathname} />
+          <SidebarInset className="min-w-0">
+            <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center gap-2 border-b bg-background/90 px-4 backdrop-blur-sm md:rounded-t-xl">
+              <SidebarTrigger className="-ml-1" />
+              <Separator orientation="vertical" className="mr-1 data-vertical:h-4 data-vertical:self-center" />
+              <h1 className="truncate text-sm font-medium">{page.label}</h1>
+              <div className="ml-auto">
+                <ThemeMenu theme={theme} onTheme={chooseTheme} />
+              </div>
+            </header>
+            <main className="flex-1 space-y-6 px-4 py-6 sm:px-6">
+              {banner && (
+                <Alert variant="destructive" role="status">
+                  <AlertTitle>Baton service unavailable.</AlertTitle>
+                  <AlertDescription>{banner}</AlertDescription>
+                </Alert>
+              )}
+              <p className="max-w-2xl text-balance text-muted-foreground">{page.about}</p>
+              {page.stats && <Counters />}
+              <Outlet />
+            </main>
+            <footer className="border-t px-4 py-5 text-xs text-muted-foreground sm:px-6">
+              Trained on 1,700 real kubernetes/kubernetes issues, scored on the 300 newest ones it never saw. Graph stored in a self-hosted HydraDB node.
+            </footer>
+          </SidebarInset>
+        </SidebarProvider>
+      </TooltipProvider>
     </ThemeKey.Provider>
   );
 }
@@ -172,7 +241,18 @@ const exploreRoute = createRoute({
   },
 });
 
-const router = createRouter({ routeTree: rootRoute.addChildren([curveRoute, tryRoute, exploreRoute]) });
+const connectRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/connect",
+  validateSearch: (search: Record<string, unknown>): { client?: ClientId } => (CLIENT_IDS.includes(search.client as ClientId) && search.client !== "claude-code" ? { client: search.client as ClientId } : {}),
+  component: function ConnectRoute() {
+    const { client = "claude-code" } = connectRoute.useSearch();
+    const navigate = connectRoute.useNavigate();
+    return <ConnectPage client={client} onClient={(next) => navigate({ search: next === "claude-code" ? {} : { client: next }, replace: true })} />;
+  },
+});
+
+const router = createRouter({ routeTree: rootRoute.addChildren([curveRoute, tryRoute, exploreRoute, connectRoute]) });
 
 declare module "@tanstack/react-router" {
   interface Register {
