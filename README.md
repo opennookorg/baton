@@ -1,4 +1,8 @@
-# Baton
+<p align="center">
+  <img src="docs/assets/logo.svg" width="96" height="96" alt="Baton logo">
+</p>
+
+<h1 align="center">Baton</h1>
 
 **Ownership lists go stale the day they are written. Baton learns ownership from what actually gets fixed.**
 
