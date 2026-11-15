@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRootRoute, createRoute, createRouter, Link, Outlet, RouterProvider, useRouterState } from "@tanstack/react-router";
-import { ArrowRight, ChartLine, FlaskConical, Monitor, Moon, Plug, Route as RouteIcon, Sun, Waypoints } from "lucide-react";
+import { ArrowRight, BookOpen, ChartLine, FlaskConical, Monitor, Moon, Plug, Route as RouteIcon, Sun, Waypoints } from "lucide-react";
 import { lazy, StrictMode, Suspense, useEffect, useLayoutEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { api, onServiceUnavailable, STAGES, type Metric, type Stage } from "./api";
@@ -65,6 +65,7 @@ const NAV = [
   { to: "/connect", label: "MCP connector", icon: Plug, group: "Integrations", stats: false, about: "Give any agent Baton's routing tools: Claude Code, ChatGPT, Codex, Cursor, OpenCode, Hermes Agent, OpenClaw and other MCP clients." },
 ] as const;
 const GROUPS = ["Dashboard", "Integrations"] as const;
+const DOCS_URL = "https://baton-docs-134858271117.us-central1.run.app/docs";
 
 function AppSidebar({ pathname }: { pathname: string }) {
   const { setOpenMobile } = useSidebar();
@@ -107,6 +108,21 @@ function AppSidebar({ pathname }: { pathname: string }) {
             </SidebarGroupContent>
           </SidebarGroup>
         ))}
+        <SidebarGroup>
+          <SidebarGroupLabel>Resources</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild tooltip="Documentation">
+                  <a href={DOCS_URL} target="_blank" rel="noreferrer">
+                    <BookOpen />
+                    <span>Documentation</span>
+                  </a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
       <SidebarFooter className="group-data-[collapsible=icon]:hidden">
         <div className="rounded-lg border bg-card p-3 text-xs shadow-xs">
