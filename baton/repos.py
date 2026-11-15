@@ -142,6 +142,11 @@ class RepoProfile:
         tenant = base64.urlsafe_b64encode(self.repo.encode()).decode().rstrip("=")
         return f"{HYDRADB_DATABASE}.scope1.{tenant}._"
 
+    @property
+    def routable(self) -> bool:
+        """True once the repo has a final snapshot to route with."""
+        return (self.snapshot_dir / f"{self.sizes.snapshots[-1]}.json").exists()
+
     def owners(self, labels: list[str], fixer: str = "", assignees: tuple[str, ...] = ()) -> list[str]:
         """The owners this profile's signal reads off one closed issue."""
         if self.signal == "label_prefix":
@@ -193,16 +198,18 @@ def load(repo: str | None = None) -> RepoProfile:
     if repo in (None, "", "kubernetes", KUBERNETES):
         return KUBERNETES_PROFILE
     path = profile_path(repo)
+    doctor_file = path.with_name("doctor.json")
+    if not path.exists() and doctor_file.exists():
+        raise LookupError(f"{repo} cannot be routed: {json.loads(doctor_file.read_text())['verdict']}")
     if not path.exists():
-        raise LookupError(f"unknown repo {repo!r}; loaded repos: {', '.join(loaded())}")
-    return RepoProfile.from_json(json.loads(path.read_text()))
+        raise LookupError(f"unknown repo {repo!r}; Baton routes for: {', '.join(loaded())}")
+    profile = RepoProfile.from_json(json.loads(path.read_text()))
+    if not profile.routable:
+        raise LookupError(f"{repo} has no learned graph yet: run `uv run python -m eval.onboard onboard {repo}`")
+    return profile
 
 
 def loaded() -> list[str]:
     """Repos that have a final snapshot to route with, Kubernetes first."""
-    found = [KUBERNETES]
-    for path in sorted(REPOS_DATA_DIR.glob(f"*/{PROFILE_FILE}")):
-        profile = RepoProfile.from_json(json.loads(path.read_text()))
-        if (profile.snapshot_dir / f"{profile.sizes.snapshots[-1]}.json").exists():
-            found.append(profile.repo)
-    return found
+    profiles = (RepoProfile.from_json(json.loads(path.read_text())) for path in sorted(REPOS_DATA_DIR.glob(f"*/{PROFILE_FILE}")))
+    return [KUBERNETES] + [profile.repo for profile in profiles if profile.routable]

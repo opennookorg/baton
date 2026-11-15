@@ -32,7 +32,7 @@ def test_route_returns_top_teams_with_paths(client):
     res = client.post("/route", json={"title": CSI_TITLE, "body": "", "reporter": "alice"})
     assert res.status_code == 200
     data = res.json()
-    assert set(data) == {"teams", "confidence", "entities_found", "entities_unknown"}
+    assert set(data) == {"teams", "confidence", "entities_found", "entities_unknown", "message"}
     assert 1 <= len(data["teams"]) <= 3
     top = data["teams"][0]
     assert top["team"] == "sig/storage"

@@ -55,6 +55,7 @@ class RouteResult:
     confidence: float = 0.0
     entities_found: int = 0
     entities_unknown: int = 0
+    message: str = ""
 
     def to_dict(self) -> dict:
         """Serialise to the documented JSON shape."""
