@@ -16,7 +16,7 @@
 
 Baton routes a new GitHub issue to the team that owns it. It keeps a graph of past issues, the entities in them (components, file paths, words, error phrases, reporters) and the teams that fixed them. Every fixed issue is fed back into the graph: links that predicted the right team get cheaper, links that pointed the wrong way get dearer, and strong patterns become direct shortcuts. The graph lives in [HydraDB](https://github.com/hydra-db/hydradb), and one weighted path query answers "who owns this?".
 
-**No hosted version.** Baton is not deployed anywhere. This README is the documentation: run your own copy with [Setup from scratch](#setup-from-scratch).
+**No hosted version.** Baton is not deployed anywhere. This README is the documentation: run your own copy with [Self-host Baton](#self-host-baton).
 
 **Supported repos:** a checkout ships graphs for six GitHub repos: `kubernetes/kubernetes`, `rust-lang/rust`, `react/react`, `NousResearch/hermes-agent`, `earendil-works/pi` and `openclaw/openclaw`. The dashboard shows Kubernetes only, and the API and MCP tools reach all six with `repo`. Every other repo returns "unknown repo" until you onboard it (see [Use Baton on your repo](#use-baton-on-your-repo)).
 
@@ -171,7 +171,7 @@ claude mcp add --scope user baton -- uv run --directory "$PWD" python -m agent.m
 
 In Claude Code, ask it to route an issue for `owner/name`, or call `list_repos` first. A repo Baton has not learned gets a 404 (or a tool error) that names the repos it has. A repo the doctor refused gets the doctor's reason.
 
-This API and MCP server know your repo and the six that ship with the checkout. To share your repo's routing with a team, deploy your copy: the container serves every repo onboarded in the checkout it was built from (see [Deploy](#deploy)).
+This API and MCP server know your repo and the six that ship with the checkout. To share your repo's routing with a team, deploy your copy: the container serves every repo onboarded in the checkout it was built from (see [Self-host Baton](#self-host-baton)).
 
 ## Triage agent over MCP
 
@@ -270,9 +270,103 @@ The baton graph at 1,700 issues: 22 teams, 1,257 entities, 2,618 issues, 3,770 `
 - **as_of 0 is the empty graph**, so the slider routes nothing there. That is the honest starting point, not a hidden baseline.
 - **The recovery demo is simulated** (see above), and the load test ran on one laptop.
 
-## Deploy
+## Self-host Baton
 
-One container runs HydraDB and Baton together (`Dockerfile`, `scripts/serve.sh`) and serves the API and dashboard on one port. It deploys to Google Cloud Run with `scripts/deploy_cloud_run.sh <gcp-project-id>` (a spend cap keeps the bill at zero). It also runs locally with `docker compose up`, or on Fly.io with `fly deploy` (about $10 a month for the 2 GB machine HydraDB needs). Details and the other options are in [`docs/DEPLOY.md`](docs/DEPLOY.md). A deployed copy serves every repo onboarded in the checkout it was built from, so deploying your own copy is how a team gets Baton on its own repo. The docs site (`docs-site/`, Fumadocs) deploys as a static site to its own Cloud Run service with `scripts/deploy_docs.sh <gcp-project-id>`.
+Baton has no hosted version, so every user runs their own copy. One container holds both HydraDB and Baton (`Dockerfile`, `scripts/serve.sh`). On start it restores the learned graph of every onboarded repo and serves the dashboard, the API and a read-only MCP endpoint (`/mcp`) on one port.
+
+### What you need
+
+- A Linux or macOS machine with Docker, amd64 or arm64. Your laptop works, and so does any VPS or cloud VM.
+- At least 2 GB of memory. HydraDB alone uses about 1.5 GB.
+- About 2 GB of disk for the image.
+- No GPU and no paid API keys. Routing is plain code.
+
+### 1. Run it with Docker
+
+```sh
+git clone https://github.com/opennookorg/baton.git
+cd baton
+echo "BATON_LEARN_TOKEN=$(openssl rand -hex 32)" > .env
+docker compose up -d --build
+```
+
+The first build takes a few minutes. The first start then waits for HydraDB and restores the graphs, which can take up to a few minutes. To check that it is up:
+
+```sh
+docker compose logs -f baton
+curl -s localhost:8000/stats
+curl -s localhost:8000/repos
+```
+
+Open <http://localhost:8000> for the dashboard. `compose.yaml` maps host port 8000 to the container's port 7860. It also pins `platform: linux/amd64`. On an arm64 host (Apple Silicon, Graviton, Ampere) delete that line to run natively instead of under emulation.
+
+Without Compose:
+
+```sh
+docker build -t baton .
+docker run -d --name baton -p 8000:7860 --env-file .env --restart unless-stopped baton
+```
+
+### 2. Put it on the internet (optional)
+
+To share Baton with a team, run it on a server and put HTTPS in front of it. With [Caddy](https://caddyserver.com), which gets the certificate for you, the whole config is:
+
+```
+baton.example.com {
+    reverse_proxy 127.0.0.1:8000
+}
+```
+
+Any proxy works (nginx, Traefik, a Cloudflare Tunnel) as long as it appends the client address to `X-Forwarded-For`. Baton rate-limits by the last entry in that header, so it sees each real client instead of the proxy. Only publish the HTTP port. HydraDB's Bolt port stays inside the container.
+
+Before you make it public:
+
+- Keep `BATON_LEARN_TOKEN` set. Without it `POST /learn` is open and anyone can rewrite your graph. Calls to it need `Authorization: Bearer <token>`.
+- The built-in limits (30 routes per client per minute, 1,200 requests per minute in total, 64 KB bodies) slow one abuser down. They are not a substitute for a firewall.
+
+Hosts that run a container from a Dockerfile also work: Google Cloud Run (`scripts/deploy_cloud_run.sh <gcp-project-id>` adds a spend cap so the bill stays at zero), Fly.io (`fly launch --copy-config --no-deploy && fly deploy`, about $10 a month), or a free VM such as Oracle Cloud's Always Free ARM tier. [`docs/DEPLOY.md`](docs/DEPLOY.md) has the details for each.
+
+### 3. Add your own repo
+
+The container serves every repo onboarded in the checkout it was built from. Onboard on your machine first (it needs the local HydraDB from [Setup from scratch](#setup-from-scratch) and a GitHub token), then rebuild:
+
+```sh
+uv run python -m eval.onboard onboard owner/name
+docker compose up -d --build
+curl -s localhost:8000/repos
+```
+
+`onboard` writes the repo under `data/repos/<owner>__<name>/` and `results/repos/<owner>__<name>/`. Both folders go into the image. Commit them if you build the image somewhere else.
+
+### 4. Connect your agent
+
+Point any MCP client at your copy's `/mcp` URL:
+
+```sh
+claude mcp add --transport http --scope user baton https://baton.example.com/mcp
+```
+
+Use `http://localhost:8000/mcp` for a copy on your own machine. The HTTP endpoint has the five read tools. `record_outcome` writes to the graph, so it is only on the local stdio server (see [Triage agent over MCP](#triage-agent-over-mcp)). The dashboard's Connect page has setup for other clients.
+
+### Updating
+
+```sh
+git pull
+docker compose up -d --build
+```
+
+### Good to know
+
+- **Learned outcomes do not survive a restart.** The graph lives on the container's temporary disk and is restored from the committed snapshots on every start. Anything sent to `POST /learn` since then is lost. To keep it, onboard or rerun the curve locally and rebuild the image.
+- **A cold start is slow.** After a restart, or on a host that scales to zero, the first request waits for HydraDB to start and the graphs to restore.
+- **Out of memory:** if the container dies on start, give it 4 GB.
+- **Without Docker:** follow [Setup from scratch](#setup-from-scratch), then serve with `uv run uvicorn app.server:app --host 0.0.0.0 --port 8000`.
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `PORT` | `7860` | HTTP port inside the container |
+| `BATON_LEARN_TOKEN` | unset, so `POST /learn` is open | Bearer token for `POST /learn` |
+| `BATON_STATE_DIR` | `/tmp/hydradb` | HydraDB data directory inside the container |
 
 ## Repo layout
 
