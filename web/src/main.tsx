@@ -65,7 +65,7 @@ const NAV = [
   { to: "/connect", label: "MCP connector", icon: Plug, group: "Integrations", stats: false, about: "Give any agent Baton's routing tools: Claude Code, ChatGPT, Codex, Cursor, OpenCode, Hermes Agent, OpenClaw and other MCP clients." },
 ] as const;
 const GROUPS = ["Dashboard", "Integrations"] as const;
-const DOCS_URL = "https://baton-docs-134858271117.us-central1.run.app/docs";
+const DOCS_URL = "https://github.com/opennookorg/baton#readme";
 const DASHBOARD_REPO = "kubernetes/kubernetes";
 
 function RepoNotice() {
@@ -86,7 +86,7 @@ function RepoNotice() {
             </>
           )}
           Any other repo returns "unknown repo" here. To route your own repo, self-host Baton and onboard it.{" "}
-          <a href={`${DOCS_URL}/repos`} target="_blank" rel="noreferrer" className="underline underline-offset-2">
+          <a href={DOCS_URL} target="_blank" rel="noreferrer" className="underline underline-offset-2">
             Which repos work
           </a>
         </p>
