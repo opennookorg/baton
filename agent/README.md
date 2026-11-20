@@ -21,10 +21,10 @@ The dashboard's Connect page (`/connect`) has copy-ready setup for Claude Code, 
 
 ## Remote clients (ChatGPT and other web clients)
 
-The API server (`app/server.py`) mounts the same read-only tools at `/mcp`, so every deployment is already a remote MCP server. The live one is `https://baton-134858271117.us-central1.run.app/mcp`:
+The API server (`app/server.py`) mounts the same read-only tools at `/mcp`, so every deployment is already a remote MCP server:
 
 ```sh
-claude mcp add --transport http --scope user baton https://baton-134858271117.us-central1.run.app/mcp
+claude mcp add --transport http --scope user baton http://localhost:8000/mcp
 ```
 
 To serve them from your own machine instead: `--http` serves streamable HTTP at `/mcp` on port 8001 with `record_outcome` removed, so a public URL can read the graph but never write to it. Start a tunnel, then start the server with the tunnel's host name:

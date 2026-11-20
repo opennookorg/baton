@@ -8,4 +8,4 @@ npm run dev     # http://localhost:3000
 npm run build   # static site in out/
 ```
 
-Deploy: `scripts/deploy_docs.sh <gcp-project-id>` from the repo root. Live at https://baton-docs-134858271117.us-central1.run.app.
+Deploy: `scripts/deploy_docs.sh <gcp-project-id>` from the repo root.

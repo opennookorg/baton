@@ -2,7 +2,7 @@
 
 Baton ships as one container. `scripts/serve.sh` starts a HydraDB node inside it, restores the learned graph of every onboarded repo (Kubernetes from `results/snapshots/1700.json`), and serves the API, dashboard and `/route` on port 7860. The image builds on the public HydraDB image (`ghcr.io/hydra-db/hydradb:0.4.0`, amd64 and arm64), so nothing has to be compiled. The HydraDB node uses about 1.5 GB of memory, so the host needs at least 2 GB.
 
-The dashboard and a read-only MCP endpoint (`/mcp`, streamable HTTP) are served by the same container, so no separate frontend or MCP host is needed. The live instance runs on Cloud Run at https://baton-134858271117.us-central1.run.app.
+The dashboard and a read-only MCP endpoint (`/mcp`, streamable HTTP) are served by the same container, so no separate frontend or MCP host is needed.
 
 ## Free: Google Cloud Run
 
@@ -28,7 +28,7 @@ The image is built by Cloud Build from the uploaded source (`.gcloudignore` reus
 
 ### Docs site
 
-`docs-site/` is a Fumadocs site built as a static export and served by nginx. `scripts/deploy_docs.sh <project-id>` deploys it as the `baton-docs` Cloud Run service (256 MiB, scales to zero, one instance), under the same spend cap. It runs at https://baton-docs-134858271117.us-central1.run.app. Preview locally with `cd docs-site && npm install && npm run dev`.
+`docs-site/` is a Fumadocs site built as a static export and served by nginx. `scripts/deploy_docs.sh <project-id>` deploys it as the `baton-docs` Cloud Run service (256 MiB, scales to zero, one instance), under the same spend cap. Preview locally with `cd docs-site && npm install && npm run dev`.
 
 Hugging Face Docker Spaces now need a PRO subscription, so `scripts/deploy_hf_space.sh` only works on a paid account.
 
